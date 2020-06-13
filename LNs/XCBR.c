@@ -16,6 +16,8 @@ typedef struct sXCBR
   simulationFunction call_simulation; //as long as we place the function on top, it can be recast into a generic struct(TODO: make this nicer)
   IedServer server;
   DataAttribute* Pos_stVal;
+  DataAttribute* Pos_t;
+  void * Pos_stVal_callback;
   bool conducting;
 } XCBR;
 
@@ -57,17 +59,27 @@ void XCBR_callback(InputEntry* extRef )
   printf("XCBR: input signal received\n");
   bool state = MmsValue_getBoolean(extRef->value);
   if(state == true)
+  {
+    //printf("open\n");
     XCBR_open(extRef->callBackParam);
+  }
   else
+  {
+    //printf("close\n");
     XCBR_close(extRef->callBackParam);
+  }
 }
 
 //initialise XCBR instance for process simulation, and publish/subscription of GOOSE
-void *XCBR_init(IedServer server, LogicalNode* ln, Input* input)
+void *XCBR_init(IedServer server, LogicalNode* ln, Input* input ,LinkedList allInputValues)
 {
   XCBR* inst = (XCBR *) malloc(sizeof(XCBR));//create new instance with MALLOC
   inst->server = server;
   inst->Pos_stVal = (DataAttribute*) ModelNode_getChild((ModelNode*) ln, "Pos.stVal");
+  inst->Pos_t = (DataAttribute*) ModelNode_getChild((ModelNode*) ln, "Pos.t");//the node to operate on when a operate is triggered
+  inst->Pos_stVal_callback = _findAttributeValueEx(inst->Pos_stVal, allInputValues);//find node that this element was subscribed to, so that it will be called during an update
+
+
   inst->conducting = true;
   inst->call_simulation = XCBR_updateValue;
 
@@ -101,13 +113,17 @@ void *XCBR_init(IedServer server, LogicalNode* ln, Input* input)
 
 void XCBR_change_switch(XCBR * inst, Dbpos value)
 {
+  uint64_t timestamp = Hal_getTimeInMs();
   IedServer_updateDbposValue(inst->server,inst->Pos_stVal,value);
+  IedServer_updateUTCTimeAttributeValue(inst->server, inst->Pos_t, timestamp);
+  InputValueHandleExtensionCallbacks(inst->Pos_stVal_callback); //update the associated callbacks with this Data Element
 }
 
 //threath for process-simulation: open/close switch
 void XCBR_simulate_switch(Input* input)
 {
   int state = 3;//default state is closed
+  printf("XCBR: initialised in state: %i (0=opening, 1=opened, 2=closing, 3=closed)\n", state);
   int step = 0;
 
   XCBR* inst = input->extRefs->callBackParam;//take the initial callback, as they all contain the same object instance

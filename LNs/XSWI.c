@@ -15,6 +15,8 @@ typedef struct sXSWI
   simulationFunction call_simulation; //as long as we place the function on top, it can be recast into a generic struct(TODO: make this nicer)
   IedServer server;
   DataAttribute* Pos_stVal;
+  DataAttribute* Pos_t;
+  void * Pos_stVal_callback;
   bool conducting;
 } XSWI;
 
@@ -60,11 +62,14 @@ void XSWI_callback(InputEntry* extRef )
 }
 
 //initialise XSWI instance for process simulation, and publish/subscription of GOOSE
-void *XSWI_init(IedServer server, LogicalNode* ln, Input* input)
+void *XSWI_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allInputValues)
 {
   XSWI* inst = (XSWI *) malloc(sizeof(XSWI));//create new instance with MALLOC
   inst->server = server;
   inst->Pos_stVal = (DataAttribute*) ModelNode_getChild((ModelNode*) ln, "Pos.stVal");
+  inst->Pos_t = (DataAttribute*) ModelNode_getChild((ModelNode*) ln, "Pos.t");//the node to operate on when a operate is triggered
+  inst->Pos_stVal_callback = _findAttributeValueEx(inst->Pos_stVal, allInputValues);//find node that this element was subscribed to, so that it will be called during an update
+
   inst->conducting = true;
   inst->call_simulation = XSWI_updateValue;
 
@@ -98,7 +103,10 @@ void *XSWI_init(IedServer server, LogicalNode* ln, Input* input)
 
 void XSWI_change_switch(XSWI * inst, Dbpos value)
 {
+  uint64_t timestamp = Hal_getTimeInMs();
   IedServer_updateDbposValue(inst->server,inst->Pos_stVal,value);
+  IedServer_updateUTCTimeAttributeValue(inst->server, inst->Pos_t, timestamp);
+  InputValueHandleExtensionCallbacks(inst->Pos_stVal_callback); //update the associated callbacks with this Data Element
 }
 
 //threath for process-simulation: open/close switch

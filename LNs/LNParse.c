@@ -34,11 +34,11 @@ void attachLogicalNodes(IedServer server, IedModel_extensions* model, LinkedList
     //simulated
     else if(strcmp(lnClass->lnClass,"XSWI") == 0)
     {
-      lnClass->instance = XSWI_init(server, lnClass->parent, input); 
+      lnClass->instance = XSWI_init(server, lnClass->parent, input, allInputValues); 
     }
     else if(strcmp(lnClass->lnClass,"XCBR") == 0)
     {
-      lnClass->instance = XCBR_init(server, lnClass->parent, input);
+      lnClass->instance = XCBR_init(server, lnClass->parent, input, allInputValues);
     }
     else if(strcmp(lnClass->lnClass,"TCTR") == 0)
     {
