@@ -165,6 +165,7 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
           <LN lnClass="XCBR" lnType="XCBR1" inst="1" prefix="">
             <Inputs>
               <ExtRef intAddr="Tr" desc="Trip" iedName="IED2_PTOC" ldInst="GenericIO" lnClass="PTRC" lnInst="1" doName="Tr" daName="general" serviceType="GOOSE" srcLDInst="GenericIO" srcLNClass="LLN0" srcCBName="GoCB" />
+              <ExtRef intAddr="Tr" desc="Operate" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="CSWI" lnInst="1" doName="Pos" daName="opOk" serviceType="Poll" />
             </Inputs>
           </LN>
           <LN lnClass="CSWI" lnType="CSWIa" inst="1" prefix="">

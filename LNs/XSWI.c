@@ -74,10 +74,12 @@ void *XSWI_init(IedServer server, LogicalNode* ln, Input* input)
     InputEntry* extref = input->extRefs;
     while(extref != NULL)
     {
-      //register callbacks for GOOSE-subscription
-      extref->callBack = (callBackFunction) XSWI_callback;
-      extref->callBackParam = inst;//pass instance in param
-
+      if(strcmp(extref->intAddr,"Tr") == 0)
+      {
+        //register callbacks for GOOSE-subscription
+        extref->callBack = (callBackFunction) XSWI_callback;
+        extref->callBackParam = inst;//pass instance in param
+      }
       extref = extref->sibling;
     }
   }
