@@ -1,4 +1,4 @@
-# iec61850_inputs
+# iec61850_open_server
 An implementation of an IED using the libiec61850 library.
 
 This project aims to simulate some options according to the IEC61850 standard, using only the SCL file. 
@@ -45,4 +45,5 @@ Run the Docker compose file;
 
 # Under development
 
+process simulation using pySpice
 iec61850 python based client. This is a client that is configured using an SVG file for the mimics and data-references.
