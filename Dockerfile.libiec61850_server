@@ -1,0 +1,23 @@
+FROM debian:stable-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
+              git \
+              build-essential \            
+         && rm -rf /var/lib/apt/lists/*
+ENV DEBIAN_FRONTEND=
+
+RUN git clone https://github.com/mz-automation/libiec61850.git /tmp/libiec61850
+
+RUN cd /tmp/libiec61850 && make \
+        && make examples 
+
+RUN git clone https://github.com/robidev/iec61850_open_server.git /tmp/iec61850_open_server
+
+RUN cd /tmp/iec61850_open_server && make
+
+WORKDIR /srv
+RUN cd /tmp/iec61850_open_server && cp open_server /srv/libiec61850_server
+
+CMD ["./libiec61850_server","eth0"]
+

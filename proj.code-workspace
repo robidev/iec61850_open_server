@@ -1,0 +1,35 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../libiec61850"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"static_model.h": "c",
+			"hal_thread.h": "c",
+			"iec61850_server.h": "c",
+			"iec61850_dynamic_model_input.h": "c",
+			"inputs_api.h": "c",
+			"libiec61850_platform_includes.h": "c",
+			"*.tcc": "c",
+			"algorithm": "c",
+			"memory": "c",
+			"random": "c",
+			"fstream": "c",
+			"iosfwd": "c",
+			"istream": "c",
+			"ostream": "c",
+			"numeric": "c",
+			"sstream": "c",
+			"streambuf": "c",
+			"functional": "c",
+			"iec61850_model.h": "c",
+			"unordered_map": "c",
+			"cmath": "c"
+		}
+	}
+}

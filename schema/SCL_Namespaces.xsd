@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.iec.ch/61850/2003/SCL" xmlns:scl="http://www.iec.ch/61850/2003/SCL" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.iec.ch/61850/2003/SCL" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.0">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">Extension syntax of SCL for XML description of parts 7-3/7-4. Draft 2007/08/29.</xs:documentation>
+	</xs:annotation>
+	<!--	<xs:include schemaLocation="SCL_BaseTypes.xsd"/>-->
+	<xs:redefine schemaLocation="SCL_DataTypeTemplates.xsd">
+		<xs:complexType name="tLNodeType">
+			<xs:complexContent>
+				<xs:extension base="tLNodeType">
+					<xs:sequence>
+						<xs:element name="Doc" type="tDoc" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Documentation for this LNodeType.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+					<xs:attributeGroup ref="agExtension"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:complexType name="tDOType">
+			<xs:complexContent>
+				<xs:extension base="tDOType">
+					<xs:sequence>
+						<xs:element name="Doc" type="tDoc" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Documentation for this DOType.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="Services" type="xs:string" default="" minOccurs="0"/>
+					</xs:sequence>
+					<xs:attributeGroup ref="agExtension"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:complexType name="tDAType">
+			<xs:complexContent>
+				<xs:extension base="tDAType">
+					<xs:sequence>
+						<xs:element name="Doc" type="tDoc" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Documentation for this DAType.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+					<xs:attributeGroup ref="agExtension"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:complexType name="tEnumType">
+			<xs:complexContent>
+				<xs:extension base="tEnumType">
+					<xs:sequence>
+						<xs:element name="Doc" type="tDoc" minOccurs="0">
+							<xs:annotation>
+								<xs:documentation>Documentation for this EnumType.</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+					<xs:attributeGroup ref="agExtension"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:complexType name="tDO">
+			<xs:complexContent>
+				<xs:extension base="tDO">
+					<xs:attributeGroup ref="agCondition"/>
+					<xs:attributeGroup ref="agCategory"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:complexType name="tSDO">
+			<xs:complexContent>
+				<xs:extension base="tSDO">
+					<xs:attributeGroup ref="agCondition"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:complexType name="tDA">
+			<xs:complexContent>
+				<xs:extension base="tDA">
+					<xs:attributeGroup ref="agCondition"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+		<xs:complexType name="tBDA">
+			<xs:complexContent>
+				<xs:extension base="tBDA">
+					<xs:attributeGroup ref="agCondition"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:redefine>
+	<xs:complexType name="tDoc" mixed="true">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:any processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tDocWithName">
+		<xs:complexContent>
+			<xs:extension base="tDoc">
+				<xs:attribute name="name" use="required">
+					<xs:simpleType>
+						<xs:restriction base="xs:normalizedString">
+							<xs:minLength value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="tCategory">
+		<xs:annotation>
+			<xs:documentation>Category a DO belongs to.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:normalizedString">
+			<xs:enumeration value="Common"/>
+			<xs:enumeration value="Descriptions"/>
+			<xs:enumeration value="Control and access service tracking"/>
+			<xs:enumeration value="Status"/>
+			<xs:enumeration value="Controls"/>
+			<xs:enumeration value="Measurements"/>
+			<xs:enumeration value="Metered Values"/>
+			<xs:enumeration value="Settings"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:attributeGroup name="agCategory">
+		<xs:annotation>
+			<xs:documentation>Category description of the element.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="category" use="required">
+			<xs:simpleType>
+				<xs:restriction base="tCategory"/>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:attributeGroup>
+	<xs:simpleType name="tCondition">
+		<xs:annotation>
+			<xs:documentation>Condition on presence</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:normalizedString">
+			<xs:minLength value="1"/>
+			<xs:enumeration value="M"/>
+			<xs:enumeration value="O"/>
+			<xs:enumeration value="PICS_SUBST">
+				<xs:annotation>
+					<xs:documentation>
+            Attribute is mandatory, if substitution is supported (For substitution, see IEC
+            61850-7-2).
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="C">
+				<xs:annotation>
+					<xs:documentation>
+            Special condition C.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="C1">
+				<xs:annotation>
+					<xs:documentation>
+            Special condition C1.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="C2">
+				<xs:annotation>
+					<xs:documentation>
+            Special condition C2.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="C3">
+				<xs:annotation>
+					<xs:documentation>
+            Special condition C3.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="GC_1">
+				<xs:annotation>
+					<xs:documentation>
+            At least one of the attributes shall be present for a given instance of DATA.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="GC_2">
+				<xs:annotation>
+					<xs:documentation>
+            At least one of the attributes shall be present for a given instance of DATA.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="GC_2_1">
+				<xs:annotation>
+					<xs:documentation>
+            All or none of the data attributes belonging to the same group (_1) shall be present for
+            a given instance of DATA.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="GC_2_2">
+				<xs:annotation>
+					<xs:documentation>
+            All or none of the data attributes belonging to the same group (_2) shall be present for
+            a given instance of DATA.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="GC_2_3">
+				<xs:annotation>
+					<xs:documentation>
+            All or none of the data attributes belonging to the same group (_3) shall be present for
+            a given instance of DATA.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="GC_2_4">
+				<xs:annotation>
+					<xs:documentation>
+            All or none of the data attributes belonging to the same group (_4) shall be present for
+            a given instance of DATA.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="GC_CON">
+				<xs:annotation>
+					<xs:documentation>
+            A configuration data attribute shall only be present, if the (optional) specific data
+            attributes to which this configuration relates, is present as well.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_LN0_M">
+				<xs:annotation>
+					<xs:documentation>
+            The attribute shall be present for LLN0.NamPlt; otherwise (DomainLN.NamPlt) it may be
+            optional.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_LN0_EX">
+				<xs:annotation>
+					<xs:documentation>
+            The attribute may be present only if describing LLN0.NamPlt, but not for
+            DomainLN.NamPlt.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_DLD_M">
+				<xs:annotation>
+					<xs:documentation>
+            The attribute shall be present if LN name space of this LN (LLN0.NamPlt.lnNs or
+            Domain.NamPlt.lnNs) deviates from the LN name space referenced by ldNs
+            (LLN0.NamPlt.ldNs) of the logical device in which this LN is contained.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_DLN_M">
+				<xs:annotation>
+					<xs:documentation>
+            The attribute shall be present, if data name space of this data deviates from the data
+            name space referenced by either lnNs of the logical node in which the data is contained
+            or ldNs of the logical device in which the data is contained.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_DLNDA_M">
+				<xs:annotation>
+					<xs:documentation>
+            The attribute shall be present, if CDC name space of this data deviates from the CDC
+            name space referenced by either the dataNs of the data, the lnNs of the logical node in
+            which the data is defined or ldNs of the logical device in which the data is contained.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_SCAV">
+				<xs:annotation>
+					<xs:documentation>
+            The presence of the configuration data attribute depends on the presence of i and f of
+            the Analog Value of the data attribute to which this configuration attribute relates.
+            For a given data object, that attribute: (1) shall be present, if both i and f are
+            present; (2) shall be optional if only i is present, and, (3) is not required if only f
+            is present. NOTE: If only i is present in a device without floating point capabilities,
+            the configuration parameter may be exchanged offline.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_ST">
+				<xs:annotation>
+					<xs:documentation>
+            If the controllable status class supports status information, the attribute is
+            mandatory.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_CO_M">
+				<xs:annotation>
+					<xs:documentation>
+            If the controllable status class supports control, this attribute is available and a
+            mandatory attribute.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_CO_O">
+				<xs:annotation>
+					<xs:documentation>
+            If the controllable status class supports control, this attribute is available and an
+            optional attribute.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_SG_M">
+				<xs:annotation>
+					<xs:documentation>
+            The attribute is mandatory, if setting group is supported.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_SG_O">
+				<xs:annotation>
+					<xs:documentation>
+            The attribute is optional, if setting group is supported.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_SG_C1">
+				<xs:annotation>
+					<xs:documentation>
+            The attribute is mandatory, if setting group is supported and condition fulfilled.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_NSG_M">
+				<xs:annotation>
+					<xs:documentation>
+            The attribute is mandatory, if setting group is not supported.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_NSG_O">
+				<xs:annotation>
+					<xs:documentation>
+            The attribute is optional, if setting group is not supported.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_NSG_C1">
+				<xs:annotation>
+					<xs:documentation>
+            The attribute is mandatory, if setting group is not supported and condition fulfilled.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_RMS_M">
+				<xs:annotation>
+					<xs:documentation>
+            The attribute is mandatory when the harmonics reference type is rms.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_CO_SBO_N_M">
+				<xs:annotation>
+					<xs:documentation>
+            Attribute is mandatory, if the control model SBO with normal security is used.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_CO_SBOW_E_M">
+				<xs:annotation>
+					<xs:documentation>
+            Attribute is mandatory, if the control model SBO with enhanced security is used.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_CO_E_M">
+				<xs:annotation>
+					<xs:documentation>
+            Attribute is mandatory, if control models with enhanced security are used.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_CO_TA_E_M">
+				<xs:annotation>
+					<xs:documentation>
+            Attribute is mandatory, if time activated control and enhanced security are used.
+          </xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="AC_CO_SBO_N_M__SBOW_E_M__TA_E_M">
+				<xs:annotation>
+					<xs:documentation>AC_CO_SBO_N_M and AC_CO_SBOW_E_M and AC_CO_TA_E_M.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:attributeGroup name="agCondition">
+		<xs:annotation>
+			<xs:documentation>Presence condition of the element.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="cond" type="tCondition" use="optional" default="M"/>
+	</xs:attributeGroup>
+	<xs:simpleType name="tNSName">
+		<xs:annotation>
+			<xs:documentation>IEC 61850 Namespace name type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:normalizedString">
+			<xs:minLength value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:attributeGroup name="agNSRef">
+		<xs:annotation>
+			<xs:documentation>Reference to the default IEC 61850 Namespace that defines the DOTypes, DATYpes, and EnumTypes. These elements shall only be included if they differ from the default settings provided at parent NS level.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="fromNS" type="tNSName" use="optional" default="IEC 61850-7-4:2003"/>
+		<xs:attribute name="version" type="tSclVersion" use="optional" default="2003"/>
+		<xs:attribute name="revision" type="tSclRevision" use="optional" default="A"/>
+	</xs:attributeGroup>
+	<xs:attributeGroup name="agExtension">
+		<xs:annotation>
+			<xs:documentation>If true, extends element from base namespace.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="extends" type="xs:boolean" use="optional" default="false"/>
+	</xs:attributeGroup>
+	<xs:complexType name="tIEC61850">
+		<xs:sequence>
+			<xs:element name="NS" type="tNS" maxOccurs="unbounded">
+				<xs:unique name="uniqueLNodeTypeNS">
+					<xs:selector xpath="scl:LNodeType"/>
+					<xs:field xpath="@id"/>
+				</xs:unique>
+				<xs:unique name="uniqueDOTypeNS">
+					<xs:selector xpath="scl:DOType"/>
+					<xs:field xpath="@id"/>
+				</xs:unique>
+				<xs:unique name="uniqueDATypeNS">
+					<xs:selector xpath="scl:DAType"/>
+					<xs:field xpath="@id"/>
+				</xs:unique>
+				<xs:unique name="uniqueEnumTypeNS">
+					<xs:selector xpath="scl:EnumType"/>
+					<xs:field xpath="@id"/>
+				</xs:unique>
+				<xs:unique name="uniqueDataDoc">
+					<xs:selector xpath="scl:DataDoc"/>
+					<xs:field xpath="@name"/>
+				</xs:unique>
+				<xs:unique name="uniqueAttributeDoc">
+					<xs:selector xpath="scl:AttributeDoc"/>
+					<xs:field xpath="@name"/>
+				</xs:unique>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tNS">
+		<xs:complexContent>
+			<xs:extension base="tNaming">
+				<xs:sequence>
+					<xs:element name="BaseNS" minOccurs="0">
+						<xs:complexType>
+							<xs:attributeGroup ref="agNSRef">
+								<xs:annotation>
+									<xs:documentation>Reference to the default IEC 61850 Namespace that defines the DOTypes, DATypes, and EnumTypes. These elements shall only be included if they differ from the default settings provided at parent NS level.</xs:documentation>
+								</xs:annotation>
+							</xs:attributeGroup>
+							<xs:attribute name="reuseLNodeTypes" type="xs:boolean" use="optional" default="false"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="LNodeType" type="tLNodeType" minOccurs="0" maxOccurs="unbounded">
+						<xs:unique name="uniqueDOInLNodeTypeNS">
+							<xs:selector xpath="scl:DO"/>
+							<xs:field xpath="@name"/>
+						</xs:unique>
+					</xs:element>
+					<xs:element name="DOType" type="tDOType" minOccurs="0" maxOccurs="unbounded">
+						<xs:unique name="uniqueDAorSDOInDOTypeNS">
+							<xs:selector xpath="./*"/>
+							<xs:field xpath="@name"/>
+							<xs:field xpath="@cond"/>
+						</xs:unique>
+					</xs:element>
+					<xs:element name="DAType" type="tDAType" minOccurs="0" maxOccurs="unbounded">
+						<xs:unique name="uniqueBDAInDATypeNS">
+							<xs:selector xpath="scl:BDA"/>
+							<xs:field xpath="@name"/>
+							<xs:field xpath="@cond"/>
+						</xs:unique>
+					</xs:element>
+					<xs:element name="EnumType" type="tEnumType" minOccurs="0" maxOccurs="unbounded">
+						<xs:unique name="uniqueOrdInEnumTypeNS">
+							<xs:selector xpath="scl:EnumVal"/>
+							<xs:field xpath="@ord"/>
+						</xs:unique>
+					</xs:element>
+					<xs:element name="DataDoc" type="tDocWithName" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="AttributeDoc" type="tDocWithName" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="version" type="tSclVersion" use="optional" default="2003"/>
+				<xs:attribute name="revision" type="tSclRevision" use="optional" default="A"/>
+				<xs:attribute name="application" use="optional" default="substation automation">
+					<xs:simpleType>
+						<xs:restriction base="xs:normalizedString">
+							<xs:minLength value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="IEC61850" type="tIEC61850">
+		<xs:unique name="uniqueNS">
+			<xs:selector xpath="./scl:NS"/>
+			<xs:field xpath="@name"/>
+		</xs:unique>
+	</xs:element>
+</xs:schema>
