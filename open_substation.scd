@@ -2,78 +2,78 @@
 <SCL version="2007" revision="A" xmlns="http://www.iec.ch/61850/2003/SCL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL
 schema/SCL.xsd" xmlns:ext="http://www.private.org">
   <Header id="proto" nameStructure="IEDName"/>
-	<Substation name="S12" desc="Baden">
-		<VoltageLevel name="D1">
-			<PowerTransformer name="T1" type="PTR">
-				<TransformerWinding name="W1" type="PTW">
-					<Terminal connectivityNode="S12/D1/Q1/L1" substationName="S12" voltageLevelName="D1" bayName="Q1" cNodeName="L1"/>
-				</TransformerWinding>
-				<TransformerWinding name="W2" type="PTW">
-					<Terminal connectivityNode="S12/E1/Q1/L3" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L3"/>
-				</TransformerWinding>
-			</PowerTransformer>
-			<Voltage multiplier="k" unit="V">220</Voltage>
-			<Bay name="Q1">
+  <Substation name="S12" desc="Baden">
+    <VoltageLevel name="D1">
+      <PowerTransformer name="T1" type="PTR">
+        <TransformerWinding name="W1" type="PTW">
+          <Terminal connectivityNode="S12/D1/Q1/L1" substationName="S12" voltageLevelName="D1" bayName="Q1" cNodeName="L1"/>
+        </TransformerWinding>
+        <TransformerWinding name="W2" type="PTW">
+          <Terminal connectivityNode="S12/E1/Q1/L3" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L3"/>
+        </TransformerWinding>
+      </PowerTransformer>
+      <Voltage multiplier="k" unit="V">220</Voltage>
+      <Bay name="Q1">
         <ConductingEquipment name="external" type="IFL">
           <Terminal connectivityNode="S12/D1/Q1/L0" substationName="S12" voltageLevelName="D1" bayName="Q1" cNodeName="L0"/>
         </ConductingEquipment>
-				<ConductingEquipment name="I1" type="CTR">
+        <ConductingEquipment name="I1" type="CTR">
           <Terminal connectivityNode="S12/D1/Q1/L1" substationName="S12" voltageLevelName="D1" bayName="Q1" cNodeName="L1"/>
           <Terminal connectivityNode="S12/D1/Q1/L0" substationName="S12" voltageLevelName="D1" bayName="Q1" cNodeName="L0"/>
-					<SubEquipment name="R" phase="A">
-						<LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="1"/>
-					</SubEquipment>
-					<SubEquipment name="S" phase="B">
-						<LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="2"/>
-					</SubEquipment>
-					<SubEquipment name="T" phase="C">
-						<LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="3"/>
-					</SubEquipment>
-					<SubEquipment name="I0" phase="N">
-						<LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="4"/>
-					</SubEquipment>
+          <SubEquipment name="R" phase="A">
+            <LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="1"/>
+          </SubEquipment>
+          <SubEquipment name="S" phase="B">
+            <LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="2"/>
+          </SubEquipment>
+          <SubEquipment name="T" phase="C">
+            <LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="3"/>
+          </SubEquipment>
+          <SubEquipment name="I0" phase="N">
+            <LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="4"/>
+          </SubEquipment>
         </ConductingEquipment>
-				<ConnectivityNode name="L1" pathName="S12/D1/Q1/L1"/>
-			</Bay>
-		</VoltageLevel>
-		<VoltageLevel name="E1">
-			<Voltage multiplier="k" unit="V">132</Voltage>
-			<Bay name="Q1">
-				<ConductingEquipment name="QA1" type="CBR">
-					<LNode lnInst="1" lnClass="XCBR" ldInst="GenericIO" iedName="IED1_XCBR"/>
-					<Terminal connectivityNode="S12/E1/Q1/L1" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L1"/>
-					<Terminal connectivityNode="S12/E1/Q1/L2" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L2"/>
-				</ConductingEquipment>
-				<ConductingEquipment name="QB1" type="DIS">
+        <ConnectivityNode name="L1" pathName="S12/D1/Q1/L1"/>
+      </Bay>
+    </VoltageLevel>
+    <VoltageLevel name="E1">
+      <Voltage multiplier="k" unit="V">132</Voltage>
+      <Bay name="Q1">
+        <ConductingEquipment name="QA1" type="CBR">
+          <LNode lnInst="1" lnClass="XCBR" ldInst="GenericIO" iedName="IED1_XCBR"/>
+          <Terminal connectivityNode="S12/E1/Q1/L1" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L1"/>
+          <Terminal connectivityNode="S12/E1/Q1/L2" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L2"/>
+        </ConductingEquipment>
+        <ConductingEquipment name="QB1" type="DIS">
           <LNode lnInst="1" lnClass="XSWI" ldInst="GenericIO" iedName="IED1_XCBR"/>
-					<Terminal connectivityNode="S12/E1/W1/BB1" substationName="S12" voltageLevelName="E1" bayName="W1" cNodeName="BB1"/>
-					<Terminal connectivityNode="S12/E1/Q1/L1" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L1"/>
-				</ConductingEquipment>
-				<ConductingEquipment name="U1" type="VTR">
-					<Terminal connectivityNode="S12/E1/Q1/L2" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L2"/>
-					<SubEquipment name="A" phase="A">
-						<LNode lnClass="TVTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="1" desc="VT phase L1"/>
+          <Terminal connectivityNode="S12/E1/W1/BB1" substationName="S12" voltageLevelName="E1" bayName="W1" cNodeName="BB1"/>
+          <Terminal connectivityNode="S12/E1/Q1/L1" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L1"/>
+        </ConductingEquipment>
+        <ConductingEquipment name="U1" type="VTR">
+          <Terminal connectivityNode="S12/E1/Q1/L2" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L2"/>
+          <SubEquipment name="A" phase="A">
+            <LNode lnClass="TVTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="1" desc="VT phase L1"/>
           </SubEquipment>
           <SubEquipment name="B" phase="B">
-						<LNode lnClass="TVTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="2" desc="VT phase L2"/>
+            <LNode lnClass="TVTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="2" desc="VT phase L2"/>
           </SubEquipment>
           <SubEquipment name="C" phase="C">
-						<LNode lnClass="TVTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="3" desc="VT phase L3"/>
-					</SubEquipment>
-				</ConductingEquipment>
-				<ConductingEquipment name="I1" type="CTR">
-					<Terminal connectivityNode="S12/E1/Q1/L2" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L2"/>
-					<Terminal connectivityNode="S12/E1/Q1/L3" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L3"/>
-				</ConductingEquipment>
-				<ConnectivityNode name="L1" pathName="S12/E1/Q1/L1"/>
-				<ConnectivityNode name="L2" pathName="S12/E1/Q1/L2"/>
-				<ConnectivityNode name="L3" pathName="S12/E1/Q1/L3"/>
+            <LNode lnClass="TVTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="3" desc="VT phase L3"/>
+          </SubEquipment>
+        </ConductingEquipment>
+        <ConductingEquipment name="I1" type="CTR">
+          <Terminal connectivityNode="S12/E1/Q1/L2" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L2"/>
+          <Terminal connectivityNode="S12/E1/Q1/L3" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L3"/>
+        </ConductingEquipment>
+        <ConnectivityNode name="L1" pathName="S12/E1/Q1/L1"/>
+        <ConnectivityNode name="L2" pathName="S12/E1/Q1/L2"/>
+        <ConnectivityNode name="L3" pathName="S12/E1/Q1/L3"/>
       </Bay>
       <Bay name="W1">
-				<ConnectivityNode name="BB1" pathName="S12/E1/W1/BB1" ext:type="load" ext:rload="5500"/>
-			</Bay>
-		</VoltageLevel>
-	</Substation>
+        <ConnectivityNode name="BB1" pathName="S12/E1/W1/BB1" ext:type="load" ext:rload="5500"/>
+      </Bay>
+    </VoltageLevel>
+  </Substation>
 
   <Communication>
     <SubNetwork name="subnetwork1" type="8-MMS">
@@ -93,7 +93,7 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
                 <P type="MAC-Address">01-0c-cd-04-00-01</P>
                 <P type="APPID">1000</P>
            </Address>
-	    </GSE>
+      </GSE>
       </ConnectedAP>
       <ConnectedAP iedName="IED2_PTOC" apName="accessPoint2">
         <Address>
@@ -111,7 +111,7 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
                 <P type="MAC-Address">01-0c-cd-01-00-02</P>
                 <P type="APPID">1002</P>
            </Address>
-	    </GSE>
+      </GSE>
       </ConnectedAP>
       <ConnectedAP iedName="IED3_SMV" apName="accessPoint3">
         <Address>
@@ -123,12 +123,12 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
           <P type="OSI-SSEL">0001</P>
         </Address>
         <SMV ldInst="MUnn" cbName="MSVCB01">
-	        <Address>
-		        <P type="VLAN-ID">1</P>
-		        <P type="VLAN-PRIORITY">4</P>
-		        <P type="MAC-Address">01-0c-cd-01-00-01</P>
-		        <P type="APPID">4000</P>
-	        </Address>
+          <Address>
+            <P type="VLAN-ID">1</P>
+            <P type="VLAN-PRIORITY">4</P>
+            <P type="MAC-Address">01-0c-cd-01-00-01</P>
+            <P type="APPID">4000</P>
+          </Address>
         </SMV>
       </ConnectedAP>
     </SubNetwork>
@@ -155,7 +155,7 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
         <Authentication />
         <LDevice inst="GenericIO">
           <LN0 lnClass="LLN0" lnType="LLN01" inst="">
-          	<DataSet name="Events" desc="Events">
+            <DataSet name="Events" desc="Events">
               <FCDA ldInst="GenericIO" lnClass="XCBR" fc="ST" lnInst="1" doName="Pos" daName="stVal" />
             </DataSet>
             
@@ -223,7 +223,7 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
         <Authentication />
         <LDevice inst="GenericIO">
           <LN0 lnClass="LLN0" lnType="LLN01" inst="">
-          	<DataSet name="Events" desc="Events">
+            <DataSet name="Events" desc="Events">
               <FCDA ldInst="GenericIO" lnClass="GGIO" fc="ST" lnInst="1" doName="SPCSO1" daName="stVal" />
               <FCDA ldInst="GenericIO" lnClass="PTRC" fc="ST" lnInst="1" doName="Tr" daName="general" />
             </DataSet>
@@ -293,41 +293,40 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
       </Server>
     </AccessPoint>
   </IED>
-	<IED name="IED3_SMV">
-		<AccessPoint name="accessPoint3">
-			<Server>
-				<Authentication />
-				<LDevice inst="MUnn">
-					<LN0 lnType="9-2LELLN0" lnClass="LLN0" inst="">
-						<DataSet name="PhsMeas1">
+  <IED name="IED3_SMV">
+    <AccessPoint name="accessPoint3">
+      <Server>
+        <Authentication />
+        <LDevice inst="MUnn">
+          <LN0 lnType="9-2LELLN0" lnClass="LLN0" inst="">
+            <DataSet name="PhsMeas1">
 
-							<FCDA ldInst="MUnn" lnClass="TCTR" lnInst="1" fc="MX" doName="Amp" />
-							<FCDA ldInst="MUnn" lnClass="TCTR" lnInst="2" fc="MX"	doName="Amp" />
-							<FCDA ldInst="MUnn" lnClass="TCTR" lnInst="3" fc="MX" doName="Amp" />
-							<FCDA ldInst="MUnn" lnClass="TCTR" lnInst="4" fc="MX"	doName="Amp" />
-							<FCDA ldInst="MUnn" lnClass="TVTR" lnInst="1" fc="MX"	doName="Vol" />
-							<FCDA ldInst="MUnn" lnClass="TVTR" lnInst="2" fc="MX"	doName="Vol" />
-							<FCDA ldInst="MUnn" lnClass="TVTR" lnInst="3" fc="MX"	doName="Vol" />
-							<FCDA ldInst="MUnn" lnClass="TVTR" lnInst="4" fc="MX"	doName="Vol" />
+              <FCDA ldInst="MUnn" lnClass="TCTR" lnInst="1" fc="MX" doName="Amp" />
+              <FCDA ldInst="MUnn" lnClass="TCTR" lnInst="2" fc="MX"	doName="Amp" />
+              <FCDA ldInst="MUnn" lnClass="TCTR" lnInst="3" fc="MX" doName="Amp" />
+              <FCDA ldInst="MUnn" lnClass="TCTR" lnInst="4" fc="MX"	doName="Amp" />
+              <FCDA ldInst="MUnn" lnClass="TVTR" lnInst="1" fc="MX"	doName="Vol" />
+              <FCDA ldInst="MUnn" lnClass="TVTR" lnInst="2" fc="MX"	doName="Vol" />
+              <FCDA ldInst="MUnn" lnClass="TVTR" lnInst="3" fc="MX"	doName="Vol" />
+              <FCDA ldInst="MUnn" lnClass="TVTR" lnInst="4" fc="MX"	doName="Vol" />
 
-						</DataSet>
-						<SampledValueControl name="MSVCB01" datSet="PhsMeas1"
-							smvID="xxxxMUnn01" smpRate="80" nofASDU="1" confRev="1">
+            </DataSet>
+            <SampledValueControl name="MSVCB01" datSet="PhsMeas1"
+              smvID="xxxxMUnn01" smpRate="80" nofASDU="1" confRev="1">
+              <SmvOpts refreshTime="false" sampleSynchronized="true"
+                security="false" />
+            </SampledValueControl>
+          </LN0>
 
-							<SmvOpts refreshTime="false" sampleSynchronized="true"
-								security="false" />
-						</SampledValueControl>
-					</LN0>
+          <LN lnType="9-2LETCTR" lnClass="TCTR" inst="1" />
+          <LN lnType="9-2LETCTR" lnClass="TCTR" inst="2" />
+          <LN lnType="9-2LETCTR" lnClass="TCTR" inst="3" />
+          <LN lnType="9-2LETCTR" lnClass="TCTR" inst="4" />
 
-					<LN lnType="9-2LETCTR" lnClass="TCTR" inst="1" />
-					<LN lnType="9-2LETCTR" lnClass="TCTR" inst="2" />
-					<LN lnType="9-2LETCTR" lnClass="TCTR" inst="3" />
-					<LN lnType="9-2LETCTR" lnClass="TCTR" inst="4" />
-
-					<LN lnType="9-2LETVTR" lnClass="TVTR" inst="1" />
-					<LN lnType="9-2LETVTR" lnClass="TVTR" inst="2" />
-					<LN lnType="9-2LETVTR" lnClass="TVTR" inst="3" />
-					<LN lnType="9-2LETVTR" lnClass="TVTR" inst="4" />
+          <LN lnType="9-2LETVTR" lnClass="TVTR" inst="1" />
+          <LN lnType="9-2LETVTR" lnClass="TVTR" inst="2" />
+          <LN lnType="9-2LETVTR" lnClass="TVTR" inst="3" />
+          <LN lnType="9-2LETVTR" lnClass="TVTR" inst="4" />
 
           <LN lnType="MMXUa" lnClass="MMXU" inst="1" >
             <Inputs>
@@ -341,7 +340,7 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
               <ExtRef intAddr="Vol4" desc="sample_v4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
             </Inputs>
           </LN>
-	  <LN lnType="MMXUa" lnClass="MMXU" inst="2" >
+          <LN lnType="MMXUa" lnClass="MMXU" inst="2" >
             <Inputs>
               <ExtRef intAddr="Amp1" desc="sample_a1" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
               <ExtRef intAddr="Amp2" desc="sample_a2" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="2" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
@@ -353,24 +352,23 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
               <ExtRef intAddr="Vol4" desc="sample_v4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
             </Inputs>
           </LN>
-
-				</LDevice>
-			</Server>
-		</AccessPoint>
-	</IED>
+        </LDevice>
+      </Server>
+    </AccessPoint>
+  </IED>
   <DataTypeTemplates>
 
-	<LNodeType id="9-2LELLN0" lnClass="LLN0">
-		<DO name="Mod" type="9-2LEINC" />
-	</LNodeType>
+    <LNodeType id="9-2LELLN0" lnClass="LLN0">
+      <DO name="Mod" type="9-2LEINC" />
+    </LNodeType>
 
-	<LNodeType id="9-2LETCTR" lnClass="TCTR">
-		<DO name="Amp" type="9-2LESAVAmp" />
-	</LNodeType>
+    <LNodeType id="9-2LETCTR" lnClass="TCTR">
+      <DO name="Amp" type="9-2LESAVAmp" />
+    </LNodeType>
 
-	<LNodeType id="9-2LETVTR" lnClass="TVTR">
-		<DO name="Vol" type="9-2LESAVVol" />
-	</LNodeType>
+    <LNodeType id="9-2LETVTR" lnClass="TVTR">
+      <DO name="Vol" type="9-2LESAVVol" />
+    </LNodeType>
 
     <LNodeType id="LLN01" lnClass="LLN0">
       <DO name="Mod" type="INC_1_Mod" />
@@ -429,25 +427,25 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
     </LNodeType>
 
     <LNodeType id="CSWIa" lnClass="CSWI" desc="Controlable switch">
-			<DO name="Mod" type="INC_2_Mod"/>
-			<DO name="Beh" type="INS_1_Beh"/>
-			<DO name="Health" type="INS_1_Beh"/>
-			<DO name="NamPlt" type="LPL_2_NamPlt"/>
-			<DO name="Pos" type="DPC_CO"/>
-		</LNodeType>
+      <DO name="Mod" type="INC_2_Mod"/>
+      <DO name="Beh" type="INS_1_Beh"/>
+      <DO name="Health" type="INS_1_Beh"/>
+      <DO name="NamPlt" type="LPL_2_NamPlt"/>
+      <DO name="Pos" type="DPC_CO"/>
+    </LNodeType>
 
-		<LNodeType id="MMXUa" lnClass="MMXU">
-			<DO name="Mod" type="INC_2_Mod"/>
-			<DO name="Beh" type="INS_1_Beh"/>
-			<DO name="Health" type="INS_1_Beh"/>
-			<DO name="NamPlt" type="LPL_2_NamPlt"/>
-			<DO name="AvAPhs" type="myMV"/>
-			<DO name="AvPhVPhs" type="myMV"/>
+    <LNodeType id="MMXUa" lnClass="MMXU">
+      <DO name="Mod" type="INC_2_Mod"/>
+      <DO name="Beh" type="INS_1_Beh"/>
+      <DO name="Health" type="INS_1_Beh"/>
+      <DO name="NamPlt" type="LPL_2_NamPlt"/>
+      <DO name="AvAPhs" type="myMV"/>
+      <DO name="AvPhVPhs" type="myMV"/>
       <DO name="MaxAPhs" type="myMV"/>
-			<DO name="MaxPhVPhs" type="myMV"/>
+      <DO name="MaxPhVPhs" type="myMV"/>
       <DO name="MinAPhs" type="myMV"/>
-			<DO name="MinPhVPhs" type="myMV"/>
-		</LNodeType>
+      <DO name="MinPhVPhs" type="myMV"/>
+    </LNodeType>
 
     <LNodeType id="GGIO1" lnClass="GGIO">
       <DO name="Mod" type="INC_2_Mod" />
@@ -468,71 +466,71 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
       <DO name="Ind4" type="SPS_1_Proxy" />
     </LNodeType>
 
-  <DOType id="CURVE" cdc="CURVE">
-    <DA name="setCharact" fc="SP" dchg="true" bType="Enum" type="setCharact_1"/>
-    <DA name="setParA" fc="SP" dchg="true" bType="FLOAT32"/>
-    <DA name="setParB" fc="SP" dchg="true" bType="FLOAT32"/>
-    <DA name="setParC" fc="SP" dchg="true" bType="FLOAT32"/>
-    <DA name="setParD" fc="SP" dchg="true" bType="FLOAT32"/>
-    <DA name="setParE" fc="SP" dchg="true" bType="FLOAT32"/>
-    <DA name="setParF" fc="SP" dchg="true" bType="FLOAT32"/>
-  </DOType>
+    <DOType id="CURVE" cdc="CURVE">
+      <DA name="setCharact" fc="SP" dchg="true" bType="Enum" type="setCharact_1"/>
+      <DA name="setParA" fc="SP" dchg="true" bType="FLOAT32"/>
+      <DA name="setParB" fc="SP" dchg="true" bType="FLOAT32"/>
+      <DA name="setParC" fc="SP" dchg="true" bType="FLOAT32"/>
+      <DA name="setParD" fc="SP" dchg="true" bType="FLOAT32"/>
+      <DA name="setParE" fc="SP" dchg="true" bType="FLOAT32"/>
+      <DA name="setParF" fc="SP" dchg="true" bType="FLOAT32"/>
+    </DOType>
 
-  <DOType id="myMV" cdc="MV">
-    <DA name="mag" fc="MX" dchg="true" bType="Struct" type="AnalogueValue_1"/>
-    <DA name="q" fc="MX" qchg="true" bType="Quality"/>
-    <DA name="t" fc="MX" bType="Timestamp"/>
-    <DA name="sVC" fc="CF" dchg="true" bType="Struct" type="ScaledValueConfig"/>
-  </DOType>
-  <DOType cdc="DPC" id="DPC" desc="Controllable double point CDC.">
-    <DA name="stVal" bType="Dbpos" fc="ST" dchg="true" desc="intermediate-state | off | on | bad-state" />
-    <DA name="q" bType="Quality" fc="ST" qchg="true" desc="Quality of the data value: 'stVal'." />
-    <DA name="t" bType="Timestamp" fc="ST" desc="Timestamp of the last change in one of the attributes representing the data value ('stVal') or the data quality ('q'), i.e., those which have 'dchg' or 'qchg'." />
-  </DOType>
-  <DOType cdc="ENS" id="ENS" desc="Enumerated status">
-    <DA name="stVal" bType="Enum" type="SwTyp_Enum" fc="ST" dchg="true" desc="" />
-    <DA name="q" bType="Quality" fc="ST" qchg="true" desc="Quality of the data value: 'stVal'." />
-    <DA name="t" bType="Timestamp" fc="ST" desc="Timestamp of the last change in one of the attributes representing the data value ('stVal') or the data quality ('q'), i.e., those which have 'dchg' or 'qchg'." />
-  </DOType>
-  <DOType cdc="DPC" id="DPC_CO" desc="Controllable double point CDC.">
-    <DA name="stVal" bType="Dbpos" fc="ST" dchg="true" desc="intermediate-state | off | on | bad-state" />
-    <DA name="q" bType="Quality" fc="ST" qchg="true" desc="Quality of the data value: 'stVal'." />
-    <DA name="t" bType="Timestamp" fc="ST" desc="Timestamp of the last change in one of the attributes representing the data value ('stVal') or the data quality ('q'), i.e., those which have 'dchg' or 'qchg'." />
-    <DA name="opOk" bType="BOOLEAN" fc="OR" dchg="true" />
-    <DA name="ctlModel" fc="CF" bType="Enum" type="CtlModels"/>
-    <DA name="Oper" fc="CO" bType="Struct" type="DPCOperate_1"/>
-    <DA name="SBOw" fc="CO" bType="Struct" type="DPCOperate_1"/>
-    <DA name="Cancel" fc="CO" bType="Struct" type="myCancel"/>
-  </DOType>
-  <DOType id="ACD" cdc="ACD">
-    <DA name="general" fc="ST" dchg="true" bType="BOOLEAN" />
-    <DA name="dirGeneral" fc="ST" dchg="true" bType="Enum" type="ACDdir" />
-    <DA name="q" fc="ST" qchg="true" bType="Quality" />
-    <DA name="t" fc="ST" bType="Timestamp" />
-  </DOType>
-  <DOType id="ACT" cdc="ACT">
-    <DA name="general" fc="ST" dchg="true" bType="BOOLEAN" />
-    <DA name="q" fc="ST" qchg="true" bType="Quality" />
-    <DA name="t" fc="ST" bType="Timestamp" />
-  </DOType>
+    <DOType id="myMV" cdc="MV">
+      <DA name="mag" fc="MX" dchg="true" bType="Struct" type="AnalogueValue_1"/>
+      <DA name="q" fc="MX" qchg="true" bType="Quality"/>
+      <DA name="t" fc="MX" bType="Timestamp"/>
+      <DA name="sVC" fc="CF" dchg="true" bType="Struct" type="ScaledValueConfig"/>
+    </DOType>
+    <DOType cdc="DPC" id="DPC" desc="Controllable double point CDC.">
+      <DA name="stVal" bType="Dbpos" fc="ST" dchg="true" desc="intermediate-state | off | on | bad-state" />
+      <DA name="q" bType="Quality" fc="ST" qchg="true" desc="Quality of the data value: 'stVal'." />
+      <DA name="t" bType="Timestamp" fc="ST" desc="Timestamp of the last change in one of the attributes representing the data value ('stVal') or the data quality ('q'), i.e., those which have 'dchg' or 'qchg'." />
+    </DOType>
+    <DOType cdc="ENS" id="ENS" desc="Enumerated status">
+      <DA name="stVal" bType="Enum" type="SwTyp_Enum" fc="ST" dchg="true" desc="" />
+      <DA name="q" bType="Quality" fc="ST" qchg="true" desc="Quality of the data value: 'stVal'." />
+      <DA name="t" bType="Timestamp" fc="ST" desc="Timestamp of the last change in one of the attributes representing the data value ('stVal') or the data quality ('q'), i.e., those which have 'dchg' or 'qchg'." />
+    </DOType>
+    <DOType cdc="DPC" id="DPC_CO" desc="Controllable double point CDC.">
+      <DA name="stVal" bType="Dbpos" fc="ST" dchg="true" desc="intermediate-state | off | on | bad-state" />
+      <DA name="q" bType="Quality" fc="ST" qchg="true" desc="Quality of the data value: 'stVal'." />
+      <DA name="t" bType="Timestamp" fc="ST" desc="Timestamp of the last change in one of the attributes representing the data value ('stVal') or the data quality ('q'), i.e., those which have 'dchg' or 'qchg'." />
+      <DA name="opOk" bType="BOOLEAN" fc="OR" dchg="true" />
+      <DA name="ctlModel" fc="CF" bType="Enum" type="CtlModels"/>
+      <DA name="Oper" fc="CO" bType="Struct" type="DPCOperate_1"/>
+      <DA name="SBOw" fc="CO" bType="Struct" type="DPCOperate_1"/>
+      <DA name="Cancel" fc="CO" bType="Struct" type="myCancel"/>
+    </DOType>
+    <DOType id="ACD" cdc="ACD">
+      <DA name="general" fc="ST" dchg="true" bType="BOOLEAN" />
+      <DA name="dirGeneral" fc="ST" dchg="true" bType="Enum" type="ACDdir" />
+      <DA name="q" fc="ST" qchg="true" bType="Quality" />
+      <DA name="t" fc="ST" bType="Timestamp" />
+    </DOType>
+    <DOType id="ACT" cdc="ACT">
+      <DA name="general" fc="ST" dchg="true" bType="BOOLEAN" />
+      <DA name="q" fc="ST" qchg="true" bType="Quality" />
+      <DA name="t" fc="ST" bType="Timestamp" />
+    </DOType>
 
-	<DOType id="9-2LESAVAmp" cdc="SAV">
-		<DA name="instMag" bType="Struct" type="9-2LEAV" fc="MX" />
-		<DA name="q" bType="Quality" fc="MX" />
-		<DA name="sVC" bType="Struct" type="9-2LEsVCAmp" fc="CF" />
-	</DOType>
+    <DOType id="9-2LESAVAmp" cdc="SAV">
+      <DA name="instMag" bType="Struct" type="9-2LEAV" fc="MX" />
+      <DA name="q" bType="Quality" fc="MX" />
+      <DA name="sVC" bType="Struct" type="9-2LEsVCAmp" fc="CF" />
+    </DOType>
 
-	<DOType id="9-2LESAVVol" cdc="SAV">
-		<DA name="instMag" bType="Struct" type="9-2LEAV" fc="MX" />
-		<DA name="q" bType="Quality" fc="MX" />
-		<DA name="sVC" bType="Struct" type="9-2LEsVCVol" fc="CF" />
-	</DOType>
+    <DOType id="9-2LESAVVol" cdc="SAV">
+      <DA name="instMag" bType="Struct" type="9-2LEAV" fc="MX" />
+      <DA name="q" bType="Quality" fc="MX" />
+      <DA name="sVC" bType="Struct" type="9-2LEsVCVol" fc="CF" />
+    </DOType>
 
-	<DOType id="9-2LEINC" cdc="INC">
-		<DA name="stVal" fc="ST" bType="INT32" dchg="true" />
-		<DA name="q" fc="ST" bType="Quality" dchg="true" />
-		<DA name="t" fc="ST" bType="Timestamp" dchg="true" />
-	</DOType>
+    <DOType id="9-2LEINC" cdc="INC">
+      <DA name="stVal" fc="ST" bType="INT32" dchg="true" />
+      <DA name="q" fc="ST" bType="Quality" dchg="true" />
+      <DA name="t" fc="ST" bType="Timestamp" dchg="true" />
+    </DOType>
 
     <DOType id="INC_1_Mod" cdc="INC">
       <DA name="q" bType="Quality" fc="ST" qchg="true" />
@@ -603,29 +601,29 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
       <DA name="t" bType="Timestamp" fc="ST" />
     </DOType>
 
-		<DAType id="ScaledValueConfig">
-			<BDA name="scaleFactor" bType="FLOAT32"/>
-			<BDA name="offset" bType="FLOAT32"/>
-		</DAType>
-	<DAType id="9-2LEAV">
-		<BDA name="i" bType="INT32" />
-	</DAType>
-	<DAType id="9-2LEsVCAmp">
-		<BDA name="scaleFactor" bType="FLOAT32">
-			<Val>0.001</Val>
-		</BDA>
-		<BDA name="offset" bType="FLOAT32">
-			<Val>0</Val>
-		</BDA>
-	</DAType>
-	<DAType id="9-2LEsVCVol">
-		<BDA name="scaleFactor" bType="FLOAT32">
-			<Val>0.01</Val>
-		</BDA>
-		<BDA name="offset" bType="FLOAT32">
-			<Val>0</Val>
-		</BDA>
-	</DAType>
+    <DAType id="ScaledValueConfig">
+      <BDA name="scaleFactor" bType="FLOAT32"/>
+      <BDA name="offset" bType="FLOAT32"/>
+    </DAType>
+    <DAType id="9-2LEAV">
+      <BDA name="i" bType="INT32" />
+    </DAType>
+    <DAType id="9-2LEsVCAmp">
+      <BDA name="scaleFactor" bType="FLOAT32">
+        <Val>0.001</Val>
+      </BDA>
+      <BDA name="offset" bType="FLOAT32">
+        <Val>0</Val>
+      </BDA>
+    </DAType>
+    <DAType id="9-2LEsVCVol">
+      <BDA name="scaleFactor" bType="FLOAT32">
+        <Val>0.01</Val>
+      </BDA>
+      <BDA name="offset" bType="FLOAT32">
+        <Val>0</Val>
+      </BDA>
+    </DAType>
 
     <DAType id="AnalogueValue_1">
       <BDA name="f" bType="FLOAT32" />
@@ -651,12 +649,12 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
       <BDA name="Check" bType="Check" />
     </DAType>
     <DAType id="myCancel">
-			<BDA name="ctlVal" bType="BOOLEAN"/>
-			<BDA name="origin" bType="Struct" type="Originator_1"/>
-			<BDA name="ctlNum" bType="INT8U"/>
-			<BDA name="T" bType="Timestamp"/>
-			<BDA name="Test" bType="BOOLEAN"/>
-		</DAType>
+      <BDA name="ctlVal" bType="BOOLEAN"/>
+      <BDA name="origin" bType="Struct" type="Originator_1"/>
+      <BDA name="ctlNum" bType="INT8U"/>
+      <BDA name="T" bType="Timestamp"/>
+      <BDA name="Test" bType="BOOLEAN"/>
+    </DAType>
     <EnumType id="CtlModels">
       <EnumVal ord="0">status-only</EnumVal>
       <EnumVal ord="1">direct-with-normal-security</EnumVal>
