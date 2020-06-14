@@ -26,24 +26,33 @@ Feel free to ask questions and provide feedback using the Github issues. Github 
 
 Create a working folder, e.g. substation;  
   
-`# mkdir ~/substation`  
-`# cd ~/substation`  
+`$ mkdir ~/substation`  
+`$ cd ~/substation`  
   
 Get the necesarry libraries;  
-`git clone https://github.com/mz-automation/libiec61850.git`  
-`git clone https://github.com/robidev/iec61850_inputs.git`  
-`# cd iec61850_inputs`  
+`$ git clone https://github.com/mz-automation/libiec61850.git`  
+`$ git clone https://github.com/robidev/iec61850_inputs.git`  
+`$ cd iec61850_inputs`  
   
 Generate the config files;  
-`# make model`  
+`$ make model`  
   
 Generate the compose file;  
-`# make compose`  
+`$ make compose`  
   
 Run the Docker compose file;  
-`# sudo docker-compose -f substation.yml up`  
+`$ sudo docker-compose -f substation.yml up`  
 
 # Under development
 
-process simulation using pySpice
-iec61850 python based client. This is a client that is configured using an SVG file for the mimics and data-references.
+process simulation using pySpice:
+
+The IEDS support simulated values from a spice-model. 
+Currently amps and voltages can be send from the simulation to the IED, and XSWI/XCBR can influence the simulation creating a closed loop between the SPICE model and the IED functions.
+A final showcase still needs to be implemented showing everything working together in a docker environment
+
+iec61850 python based client: 
+
+This is a client that is configured using an SVG file for the mimics and data-references. 
+This client will provide a graphical interface to visualize the process, browse the model and control the simulation
+This is currently a stand-alone project, but will be integrated into the final docker environment as the frontend to the final showcase
