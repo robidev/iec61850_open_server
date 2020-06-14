@@ -111,7 +111,7 @@ measurantsA = {}
 actuators = {}
 
 scd_schema = xmlschema.XMLSchema("../schema/SCL.xsd")
-scl = scd_schema.to_dict("../simpleIO_inputs.cid")
+scl = scd_schema.to_dict("../open_substation.scd")
 #pprint.pprint(scl)
 #exit(0)
 

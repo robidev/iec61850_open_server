@@ -10,6 +10,7 @@ LN(XCBR1){
 CL(XCBR);
 IN{
 ER(Trip IED2_PTOCGenericIO/PTRC1.Tr.general Tr GOOSE IED2_PTOCGenericIO/LLN0.GoCB);
+ER(Operate IED1_XCBRGenericIO/CSWI1.Pos.opOk Tr Poll IED1_XCBR/);
 }
 }
 LN(CSWI1){

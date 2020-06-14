@@ -169,6 +169,11 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
             </Inputs>
           </LN>
           <LN lnClass="CSWI" lnType="CSWIa" inst="1" prefix="">
+            <DOI name="Pos">
+              <DAI name="ctlModel">
+                <Val>direct-with-enhanced-security</Val>
+              </DAI>
+            </DOI>
             <Inputs>
               <ExtRef intAddr="xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll" />
             </Inputs>
@@ -184,6 +189,11 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
             </Inputs>
           </LN>
           <LN lnClass="CSWI" lnType="CSWIa" inst="2" prefix="">
+            <DOI name="Pos">
+              <DAI name="ctlModel">
+                <Val>direct-with-enhanced-security</Val>
+              </DAI>
+            </DOI>
             <Inputs>
               <ExtRef intAddr="xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XSWI" lnInst="2" doName="Pos" daName="stVal" serviceType="Poll" />
             </Inputs>
