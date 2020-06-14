@@ -24,8 +24,8 @@ void TCTR_updateValue(int sd, char * buffer, void* param)
   int i = 0;
 
   int matchedItems = sscanf( buffer, "s %s %d", ref, &i );
-
   //printf("TCTR buf= %s, val=%i\n",buffer, i);
+
   IedServer_updateInt32AttributeValue(inst->server,inst->da,i);
   InputValueHandleExtensionCallbacks(inst->da_callback); //update the associated callbacks with this Data Element (e.g. MMXU)
 

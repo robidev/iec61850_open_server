@@ -83,37 +83,36 @@ void* SMVP_init(SVPublisher SMVPublisher, SVControlBlock* svcb, IedServer server
     inst->dataSetValues = NULL;
     
     //retrieve dataset for this svcb, and use it to store simulated values
-    //if(IEC61850_server_simulation_type() == SIMULATION_TYPE_REMOTE)
-    {
-        //get domain
-        char objectReference[130];
-        ModelNode_getObjectReference((ModelNode*) svcb->parent, objectReference);
-        char* separator = strchr(objectReference, '/');
-        *separator = 0;
 
-        //form dataset name
-        char* lnName = svcb->parent->name;
-        char* dataSetReference = StringUtils_createString(5, objectReference, "/", lnName, "$", svcb->dataSetName);
+    //get domain
+    char objectReference[130];
+    ModelNode_getObjectReference((ModelNode*) svcb->parent, objectReference);
+    char* separator = strchr(objectReference, '/');
+    *separator = 0;
 
-        /* prepare data set values */
-        inst->dataSetValues = LinkedList_create();
-        inst->da_el = LinkedList_create();//NEW
-        inst->da_el_callback = LinkedList_create();//NEW
+    //form dataset name
+    char* lnName = svcb->parent->name;
+    char* dataSetReference = StringUtils_createString(5, objectReference, "/", lnName, "$", svcb->dataSetName);
 
-        IedModel* model = IedServer_getDataModel(server);
-        DataSet* dataSet = IedModel_lookupDataSet(model, dataSetReference);
-        DataSetEntry* dataSetEntry = dataSet->fcdas;
-        while (dataSetEntry != NULL) {
-            LinkedList_add(inst->dataSetValues, dataSetEntry->value);
+    /* prepare data set values */
+    inst->dataSetValues = LinkedList_create();
+    inst->da_el = LinkedList_create();
+    inst->da_el_callback = LinkedList_create();
 
-            //NEW
-            DataAttribute* da =  IedModel_lookupDataAttributeByMmsValue(model, MmsValue_getElement( MmsValue_getElement(dataSetEntry->value,0), 0) );
-            LinkedList_add(inst->da_el, da );
-            LinkedList_add(inst->da_el_callback, _findAttributeValueEx(da, allInputValues));
+    //read dataset, and register all values for updating
+    IedModel* model = IedServer_getDataModel(server);
+    DataSet* dataSet = IedModel_lookupDataSet(model, dataSetReference);
+    DataSetEntry* dataSetEntry = dataSet->fcdas;
+    while (dataSetEntry != NULL) {
+        LinkedList_add(inst->dataSetValues, dataSetEntry->value);
 
-            dataSetEntry = dataSetEntry->sibling;
-        }
+        DataAttribute* da =  IedModel_lookupDataAttributeByMmsValue(model, MmsValue_getElement( MmsValue_getElement(dataSetEntry->value,0), 0) );
+        LinkedList_add(inst->da_el, da );
+        LinkedList_add(inst->da_el_callback, _findAttributeValueEx(da, allInputValues));
+
+        dataSetEntry = dataSetEntry->sibling;
     }
+
 
     Thread thread = Thread_create((ThreadExecutionFunction)SMV_Thread, inst, true);
     Thread_start(thread);
@@ -144,7 +143,7 @@ void SMV_Thread(SMVP* inst)
         uint64_t nextCycleStart = Hal_getTimeInMs() + 1000;
         while (inst->running) 
         {
-                        /* update measurement values */
+            /* update measurement values */
             int samplePoint = sampleCount % 80;
 
             double angleA = (2 * M_PI / 80) * samplePoint;
@@ -160,20 +159,6 @@ void SMV_Thread(SMVP* inst)
             measurements[5] = (vol * sin(angleB)) * 100;
             measurements[6] = (vol * sin(angleC)) * 100;
             measurements[7] = measurements[4] + measurements[5] + measurements[6];
-
-            //retrieve data from dataset, and update values
-            /*LinkedList ds = inst->dataSetValues;
-            int ds_index = 0;
-            while((ds != NULL)//for each LN with an inputs/extref defined;
-            {
-                if((ds->data != NULL)
-                {
-                    MmsValue* datasetValue = ds->data;
-                    MmsValue_setInt32( MmsValue_getElement( MmsValue_getElement(datasetValue,0), 0) , measurements[ds_index]);
-                    ds_index += 1;
-                }
-                ds = LinkedList_getNext(ds);
-            }*/
 
             LinkedList da_el = inst->da_el;
             LinkedList da_el_callback = inst->da_el_callback;

@@ -341,7 +341,7 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
               <ExtRef intAddr="Vol4" desc="sample_v4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
             </Inputs>
           </LN>
-	        <LN lnType="MMXUa" lnClass="MMXU" inst="2" >
+	  <LN lnType="MMXUa" lnClass="MMXU" inst="2" >
             <Inputs>
               <ExtRef intAddr="Amp1" desc="sample_a1" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
               <ExtRef intAddr="Amp2" desc="sample_a2" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="2" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
