@@ -13,8 +13,8 @@ import numpy
 import pprint
 import matplotlib.pyplot as plt
 import xmlschema
-import lxml.etree as ElementTree
 import socket
+import time
 
 from PySpice.Probe.Plot import plot
 import PySpice.Logging.Logging as Logging
@@ -30,11 +30,6 @@ circuit = """
 .save none       ; ensure only last step is kept each iteration
 .tran 19us 3600s uic; run for an hour max, with 100 samples per cycle (201u stepsize does not distort, 200 does...)
 """
-
-loads = """
-xload           S12/E1/W1/BB1_a S12/E1/W1/BB1_b S12/E1/W1/BB1_c load rload=5500
-"""
-
 
 example = """
 * example substation description
@@ -56,15 +51,13 @@ logger = Logging.setup_logging(logging_level=0)
 measurantsV = {}
 measurantsA = {}
 actuators = {}
+simulation_nodes = {}
 
 scd_schema = xmlschema.XMLSchema("../schema/SCL.xsd")
 scl = scd_schema.to_dict("../open_substation.scd")
-pprint.pprint(scl)
-#xt = ElementTree.parse('../open_substation.scd')
-#pprint.pprint(scd_schema.to_dict(xt))
+#pprint.pprint(scl)
 
 
-exit(1)
 # process LNode in substation section, attach relevant LD/LN data, and initiate a tcp connection to the ied
 # lnode can be attached at each level of the substation
 def LNode(item, levelRef, SubEquipment):
@@ -122,9 +115,10 @@ def LNode(item, levelRef, SubEquipment):
 
 def init_conn(IP, LNref):
   conn = None
+  return None
   try:
     conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    conn.settimeout(5.0)
+    conn.settimeout(1.0)
     #conn.connect(("127.0.0.1", PORT)) 
     conn.connect((IP, PORT))
     conn.sendall(b'i ' + LNref.encode('utf-8') + b'\n')
@@ -212,6 +206,13 @@ def ConductingEquipment(item, levelRef, Voltagelevel):
       spice_model += type + " "
       spice_model += checkoptions(type, Voltagelevel)
       spice_model += "\n"
+
+      if type == "IFL":
+        simulation_nodes[Cond_fullRef] = {
+          "device" : "x" + Cond_fullRef + "_" + type,
+          "type" : type,
+        }
+
   return spice_model
 
 # add spice model options
@@ -288,6 +289,39 @@ def nextStep(ied_conn):
     ied_conn = None
   return -1
 
+
+dont_add_commands = False
+command_que = []
+
+#que_commands("alter @r.xs12_e1_w1_bb1_load.r1[r]=0")
+#que_commands("alter @r.xs12_e1_w1_bb1_load.r1[r]=1000000000")
+# each ConnectivityNode can have a fault/load attached
+# if the substation model in the scl indicates a fault/load element, it can be referenced: "@r.x" + s12_e1_w1_bb1 + "_load.r1[r]"
+
+def que_commands(command):
+  global dont_add_commands
+  global command_que
+  while dont_add_commands == True:
+    time.sleep(0.001)
+  dont_add_commands = True
+
+  command_que.append(command)
+  dont_add_commands = False
+  
+
+def execute_commands(ngspice_shared):
+  global dont_add_commands
+  global command_que
+  while dont_add_commands == True:
+    time.sleep(0.001)
+  dont_add_commands = True
+
+  for key in command_que:
+    print(ngspice_shared.exec_command(command_que[key]))
+
+  command_que.clear()
+  dont_add_commands = False
+
 class MyNgSpiceShared(NgSpiceShared):
     def __init__(self, ngspice_id=0, send_data=False):
         super(MyNgSpiceShared, self).__init__(ngspice_id, send_data)
@@ -347,10 +381,26 @@ if "Substation" in scl:
             if 'ConnectivityNode' in Bay:
               for ConnectivityNode in Bay['ConnectivityNode']:
                 print("  ConnectivityNode:" + Bay_fullRef + "_" + ConnectivityNode["@name"])
-                if "ext:type" in ConnectivityNode:
-                  print("xload")
+                # allow for definition of additional elements in substation section to help the simulation
+                if "Private" in ConnectivityNode:
+                  for Private in ConnectivityNode['Private']:
+                    type = Private['@type']
+                    arguments = Private['$']
 
-circuit += spice + loads + ".end\n"
+                    spice_model = "x" + Bay_fullRef + "_" + ConnectivityNode["@name"] + "_" + type + " "
+                    spice_model += ConnectivityNode["@pathName"] + "_a " 
+                    spice_model += ConnectivityNode["@pathName"] + "_b " 
+                    spice_model += ConnectivityNode["@pathName"] + "_c " 
+                    spice_model += type + " "
+                    spice_model += arguments + "\n"
+                    spice += spice_model
+                    simulation_nodes[ConnectivityNode["@pathName"]] = {
+                      "device" : "x" + Bay_fullRef + "_" + ConnectivityNode["@name"] + "_" + type,
+                      "type" : type,
+                    }
+
+
+circuit += spice + ".end\n"
 
 print("--- model ---")
 print(spice)
@@ -365,7 +415,8 @@ ngspice_shared.step(2)
 arrA = {}
 arrV = {}
 
-# generate list for unique connections
+# generate list for unique connections, as to identify when the command for next step/iteration in the simulation can be given
+# all threats in the simulated IED-process will wait until the next-step command, so that the simulation is synced with the IED's
 nextStep_dict = {}
 
 for key in measurantsA:
@@ -380,6 +431,7 @@ for key in measurantsV:
     if ip not in nextStep_dict:
       nextStep_dict[ip] = measurantsV[key]['Connection']
 
+#print(ngspice_shared.exec_command("print @r.xs12_e1_w1_bb1_load.r1[r]"))
 
 # run the simulation
 for _ in range(200):
@@ -405,6 +457,8 @@ for _ in range(200):
     #print("next step for ip: " + key)
     nextStep(nextStep_dict[key])
     #break # during tests
+
+  execute_commands(ngspice_shared)
   
   #arr1 = numpy.append(arr1, float(analysis['S12/D1/Q1/L0_a'][0]))
   #arr2 = numpy.append(arr2, float(analysis['S12/E1/Q1/L2_b'][0]))
@@ -414,7 +468,7 @@ for _ in range(200):
   #print(analysis.nodes)
   
 
-
+pprint.pprint(simulation_nodes)
 print(ngspice_shared.plot_names)
 
 figure = plt.figure(1, (20, 10))
