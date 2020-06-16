@@ -1,0 +1,12 @@
+.subckt PTR A1 B1 C1 A2 B2 C2 inductor1=8 inductor2=0.5 coupling=1
+* transformer 4:1 turns ratio specified by 8:0.5 inductance ratio (16:1), coupling is ideal (1)
+l1pri A1 i1 {inductor1}
+l2pri B1 i1 {inductor1}
+l3pri C1 i1 {inductor1}
+l1sec A2 i2 {inductor2}
+l2sec B2 i2 {inductor2}
+l3sec C2 i2 {inductor2}
+k1 l1pri l1sec {coupling}
+k2 l2pri l2sec {coupling}
+k3 l3pri l3sec {coupling}
+.ends PTR

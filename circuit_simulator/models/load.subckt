@@ -1,0 +1,6 @@
+.subckt load A1 B1 C1 rload=1000
+* load TODO: add capacitor and inductor, maybe nonlineair load, or inverse (constant power)
+r1 A1 0 {rload}
+r2 B1 0 {rload}
+r3 C1 0 {rload}
+.ends load

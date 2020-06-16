@@ -1,0 +1,5 @@
+.subckt CTR A1 B1 C1 A2 B2 C2
+vctrA A1 A2 dc 0
+vctrB B1 B2 dc 0
+vctrC C1 C2 dc 0
+.ends CTR

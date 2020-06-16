@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<SCL version="2007" revision="A" xmlns="http://www.iec.ch/61850/2003/SCL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL
-schema/SCL.xsd" xmlns:ext="http://www.private.org">
+<SCL version="2007" revision="A" 
+xmlns="http://www.iec.ch/61850/2003/SCL" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
   <Header id="proto" nameStructure="IEDName"/>
   <Substation name="S12" desc="Baden">
     <VoltageLevel name="D1">
@@ -70,7 +72,9 @@ schema/SCL.xsd" xmlns:ext="http://www.private.org">
         <ConnectivityNode name="L3" pathName="S12/E1/Q1/L3"/>
       </Bay>
       <Bay name="W1">
-        <ConnectivityNode name="BB1" pathName="S12/E1/W1/BB1" ext:type="load" ext:rload="5500"/>
+        <ConnectivityNode name="BB1" pathName="S12/E1/W1/BB1">
+          <Private name="r" type="load">rload=5500</Private>
+        </ConnectivityNode>
       </Bay>
     </VoltageLevel>
   </Substation>

@@ -1,0 +1,6 @@
+.subckt VTR A1 B1 C1
+*VTR does not do anything, but is needed for substation netlist consistency
+ivtrA A1 0 dc 0
+ivtrB B1 0 dc 0
+ivtrC C1 0 dc 0
+.ends VTR

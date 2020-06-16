@@ -1,0 +1,9 @@
+.subckt IFL A1 B1 C1 vss=100000 freq=50
+vphaseA A 0 dc 0 ac 1 sin(0 {vss} {freq} 0 0 0)
+vphaseB B 0 dc 0 ac 1 sin(0 {vss} {freq} 0 0 120)
+vphaseC C 0 dc 0 ac 1 sin(0 {vss} {freq} 0 0 240)
+* transmission line
+rline1 A A1 0.01
+rline2 B B1 0.01
+rline3 C C1 0.01
+.ends IFL
