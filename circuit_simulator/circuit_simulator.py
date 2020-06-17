@@ -21,17 +21,7 @@ import PySpice.Logging.Logging as Logging
 from PySpice.Spice.Netlist import Circuit
 from PySpice.Spice.NgSpice.Shared import NgSpiceShared
 
-
-
-circuit = """
-.title substation model
-* substation components
-#.options interp  ; strongly reduces memory requirements
-.save none       ; ensure only last step is kept each iteration
-.tran 19us 3600s uic; run for an hour max, with 100 samples per cycle (201u stepsize does not distort, 200 does...)
-"""
-
-example = """
+example_netlist = """
 * example substation description
 *xIFL            v_220_4/3  v_220_5/1/2  v_220_6  IFL vss=220000
 *xCTR1           v_220_4/3  v_220_5/1/2  v_220_6  v_220_7  v_220_8  v_220_9  CTR
@@ -43,19 +33,6 @@ example = """
 *xload           v_132_10 v_132_11 v_132_12 load rload=5500
 """
 
-
-PORT = 65000
-
-logger = Logging.setup_logging(logging_level=0)
-
-measurantsV = {}
-measurantsA = {}
-actuators = {}
-simulation_nodes = {}
-
-scd_schema = xmlschema.XMLSchema("../schema/SCL.xsd")
-scl = scd_schema.to_dict("../open_substation.scd")
-#pprint.pprint(scl)
 
 
 # process LNode in substation section, attach relevant LD/LN data, and initiate a tcp connection to the ied
@@ -290,14 +267,12 @@ def nextStep(ied_conn):
   return -1
 
 
-dont_add_commands = False
-command_que = []
-
 #que_commands("alter @r.xs12_e1_w1_bb1_load.r1[r]=0")
 #que_commands("alter @r.xs12_e1_w1_bb1_load.r1[r]=1000000000")
 # each ConnectivityNode can have a fault/load attached
 # if the substation model in the scl indicates a fault/load element, it can be referenced: "@r.x" + s12_e1_w1_bb1 + "_load.r1[r]"
 
+# this can be used to alter parts during simulation
 def que_commands(command):
   global dont_add_commands
   global command_que
@@ -309,6 +284,7 @@ def que_commands(command):
   dont_add_commands = False
   
 
+# this is called to alter parts during simulation
 def execute_commands(ngspice_shared):
   global dont_add_commands
   global command_que
@@ -340,10 +316,40 @@ class MyNgSpiceShared(NgSpiceShared):
         return 0
 
 
+#####################################################################
+# Start init of globals
+
+PORT = 65000 #port for connecting the simulation with the IED's 
+
+#list of items that should be measured during simulation
+measurantsV = {}
+measurantsA = {}
+#list of items that can be switched during simulation
+actuators = {}
+
+
+arrA = {} # list of simulated amperes during simulation
+arrV = {} # list of simulated voltages during simulation
+nextStep_dict = {} #list of IED's that need a nextstep signal during simulation
+
+#parameters that can be altered during simulation
+simulation_nodes = {} # 
+dont_add_commands = False #semaphore for commands during simulation
+command_que = [] # list for commands during simulation
+
+
+# start main execution
+logger = Logging.setup_logging(logging_level=0)
+
+scd_schema = xmlschema.XMLSchema("../schema/SCL.xsd")
+scl = scd_schema.to_dict("../open_substation.scd")
+#pprint.pprint(scl)
+
 #generalequipment is ignored, as they are not part of the spice simulation
 #function elements are ignored,as they are not part of the primary process
 spice = ""
 
+#load all subcircuit models in subdir models. by using the name of components in the substation section, they can be correctly matched
 directory = r'./models/'
 for entry in os.scandir(directory):
     if entry.path.endswith(".subckt") and entry.is_file():
@@ -352,7 +358,7 @@ for entry in os.scandir(directory):
         spice += f.read()
         spice += "*\n"
 
-
+#parse the substation section of the scd, and build the netlist using its components
 if "Substation" in scl:
   for substation in scl["Substation"]:
     sub_name = substation["@name"]
@@ -400,25 +406,8 @@ if "Substation" in scl:
                     }
 
 
-circuit += spice + ".end\n"
-
-print("--- model ---")
-print(spice)
-print("---")
-
-
-ngspice_shared = MyNgSpiceShared(send_data=False)
-ngspice_shared.load_circuit(circuit)
-
-ngspice_shared.step(2)
-
-arrA = {}
-arrV = {}
-
 # generate list for unique connections, as to identify when the command for next step/iteration in the simulation can be given
 # all threats in the simulated IED-process will wait until the next-step command, so that the simulation is synced with the IED's
-nextStep_dict = {}
-
 for key in measurantsA:
   if measurantsA[key]['Connection'] != None:
     ip = measurantsA[key]['IP']
@@ -431,43 +420,66 @@ for key in measurantsV:
     if ip not in nextStep_dict:
       nextStep_dict[ip] = measurantsV[key]['Connection']
 
-#print(ngspice_shared.exec_command("print @r.xs12_e1_w1_bb1_load.r1[r]"))
 
+# start simulation
+#build the complete netlist
+
+#general simulation options, these should not be altered during simulation
+title = ".title substation model\n"
+options = "#.options interp  ; strongly reduces memory requirements\n"
+save = ".save none       ; ensure only last step is kept each iteration\n"
+tran = ".tran 19us 3600s uic; run for an hour max, with 100 samples per cycle (201u stepsize does not distort, 200 does...)\n"
+
+
+circuit = title
+circuit += options
+circuit += save
+circuit += tran
+circuit += spice 
+circuit += ".end\n"
+
+
+print("--- model ---")
+print(circuit)
+print("---")
+
+ngspice_shared = MyNgSpiceShared(send_data=False) # create the shared ngspice object, that supports callbacks for interactive voltage-sources
+ngspice_shared.load_circuit(circuit) # load the netlist
+
+ngspice_shared.step(2) #needed to initialise simulation
+
+steps = 10
+steps_range = 200
 # run the simulation
-for _ in range(200):
-  ngspice_shared.step(10)
-  analysis = ngspice_shared.plot(plot_name='tran1', simulation=None).to_analysis()
-  #TODO: send values back to the merging units
+for _ in range(steps_range):
+  ngspice_shared.step(steps) # perform simulation steps
+  analysis = ngspice_shared.plot(plot_name='tran1', simulation=None).to_analysis() # perform an analysis step
+  #send values back to the merging units
   for key in measurantsA:
-    #print(key)
+    # send value to IED
+    updateValue(measurantsA[key], float(analysis[key][0])) 
+    # store data for plot
     if not key in arrA:
       arrA[key] = numpy.array([])
     arrA[key] = numpy.append(arrA[key], float(analysis.branches[key][0]))
-    updateValue(measurantsA[key], float(analysis[key][0]))
 
   for key in measurantsV:
-    #print(key)
+    # send value to IED
+    updateValue(measurantsV[key], float(analysis[key][0])) 
+    # store data for plot
     if not key in arrV:
       arrV[key] = numpy.array([])
     arrV[key] = numpy.append(arrV[key], float(analysis[key][0]))
-    updateValue(measurantsV[key], float(analysis[key][0]))
 
   # sync primary-process simulation with simulated ied's
   for key in nextStep_dict:
-    #print("next step for ip: " + key)
+    logger.debug("next step for ip: " + key)
     nextStep(nextStep_dict[key])
-    #break # during tests
 
   execute_commands(ngspice_shared)
-  
-  #arr1 = numpy.append(arr1, float(analysis['S12/D1/Q1/L0_a'][0]))
-  #arr2 = numpy.append(arr2, float(analysis['S12/E1/Q1/L2_b'][0]))
-  #arr3 = numpy.append(arr3, float(analysis['S12/E1/W1/BB1_a'][0]))
-  #v.xs12_e1_q1_i1_ctr.vctra
-  #v.xs12_d1_q1_i1_ctr.vctra
-  #print(analysis.nodes)
-  
+### Simulation end ###
 
+# output
 pprint.pprint(simulation_nodes)
 print(ngspice_shared.plot_names)
 
