@@ -47,7 +47,7 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
           <Terminal connectivityNode="S12/E1/Q1/L2" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L2"/>
         </ConductingEquipment>
         <ConductingEquipment name="QB1" type="DIS">
-          <LNode lnInst="1" lnClass="XSWI" ldInst="GenericIO" iedName="IED1_XCBR"/>
+          <LNode lnInst="2" lnClass="XSWI" ldInst="GenericIO" iedName="IED1_XCBR"/>
           <Terminal connectivityNode="S12/E1/W1/BB1" substationName="S12" voltageLevelName="E1" bayName="W1" cNodeName="BB1"/>
           <Terminal connectivityNode="S12/E1/Q1/L1" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L1"/>
         </ConductingEquipment>
