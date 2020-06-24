@@ -5,9 +5,29 @@
 </head>
 <body">
 
-<main id='main_content'>
-the webapi for the circuit simulator
-</main>
+    <main id='main_content'>
+        The webapi for the circuit simulator
+        <br><br>
+        <a href="/init?scd=../open_substation.scd" >init?scd=[scd file]</a><br>
+        <a href="/circuit" >get circuit</a><br>
+        <a href="/simulation_nodes" >get simulation_nodes</a><br>
+        <a href="/simulation_node?node=@r.xs12_e1_w1_bb1_load.r1[r]" >get simulation_node?node=[node ref]</a><br>
+        <form id="simulation_node" action="/simulation_node" method="post">post: from[node, value]<br>
+            <input type="text" name="node" value="@r.xs12_e1_w1_bb1_load.r1[r]"><br>
+            <input type="text" name="value" value="2200"><br>
+            <input type="submit" value="submit">
+        </form><br><br>
+        <a href="/simulation_settings" >get simulation_settings</a><br>
+        <form id="simulation_settings" action="/simulation_settings" method="post">post: form[title, options, tran]<br>
+            <input type="text" name="title" value="title substation model\n"><br>
+            <input type="text" name="options" value="#.options interp\n"><br>
+            <input type="text" name="tran" value=".tran 19us 3600s uic\n"><br>
+            <input type="submit" value="submit">
+        </form><br><br>
+        <a href="/run_simulation?steps=200&step=10" >run_simulation?steps=[iterations]&step=[steps per iteration]</a><br>
+        <a href="/plot_simulation?plot=1" >plot_simulation?plot=[1=current, 2=voltage 3=both]</a><br>
+        <a href="/quit" >quit</a><br>
+    </main>
 </body>
 </html>
 

@@ -64,6 +64,7 @@ def simulation_node():
     command = "alter " + node + "=" + value
     #sim.que_commands("alter @r.xs12_e1_w1_bb1_load.r1[r]=0")
     sim.que_commands(command)
+    return {"node" : "post ok"}
   else:
     #sim.que_commands("print @r.xs12_e1_w1_bb1_load.r1[r]")
     url_encoded = request.args.get("node")
@@ -80,9 +81,9 @@ def simulation_settings():
     return { 'settings' : 'none' }
 
   if request.method == 'POST':  #this block is only entered when the form is submitted
-    sim.title = request.form.get('language')
-    sim.options = request.form.get('framework')
-    sim.tran = request.form.get('framework')
+    sim.title = request.form.get('title')
+    sim.options = request.form.get('options')
+    sim.tran = request.form.get('tran')
 
   return { 'title' : sim.title, 'options' : sim.options, 'tran' : sim.tran }
 
@@ -135,4 +136,4 @@ if __name__ == '__main__':
     level=logging.INFO)
 	# note the `logger` from above is now properly configured
   logger.debug("started")
-  app.run()
+  app.run(port=5010)
