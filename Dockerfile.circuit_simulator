@@ -7,15 +7,19 @@ RUN apt-get update && apt-get install -y \
          && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=
 
-COPY ./circuit_simulator /srv/circuit_simulator
+COPY ./third_party/ngspice-30.tar.gz /tmp/
 
-RUN tar -xvzf /srv/circuit_simulator/ngspice-30.tar.gz -C /tmp
+RUN tar -xvzf /tmp/ngspice-30.tar.gz -C /tmp
 
-RUN      cp -f /srv/circuit_simulator/ngspice_config/compile_linux.sh /tmp/ngspice-30/ \
+COPY ./third_party/ngspice_config/compile_linux.sh /tmp/ngspice_config/compile_linux.sh
+
+RUN      cp -f /tmp/ngspice_config/compile_linux.sh /tmp/ngspice-30/ \
          && cd /tmp/ngspice-30 \
          && chmod 700 compile_linux.sh \
          && ./compile_linux.sh 64 \
          && ldconfig
+
+COPY ./circuit_simulator /srv/circuit_simulator
 
 RUN cd /srv/circuit_simulator && pip3 install -r requirements.txt
 
