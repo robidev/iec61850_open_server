@@ -15,6 +15,6 @@ download ngspice-30
 in compile_linux.sh > Replace --with-x by --with-ngshared in line ../configure ... .
 
 chmod 700 compile_linux.sh
-sudo ./compile_linux.sh
+sudo ./compile_linux.sh 64
 sudo ldconfig
 
