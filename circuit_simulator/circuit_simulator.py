@@ -92,7 +92,7 @@ def _init_conn(IP, LNref):
   #  return None
   try:
     conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    conn.settimeout(5.0)
+    conn.settimeout(0.0)
     #conn.connect(("10.0.0.4", PORT)) 
     conn.connect((IP, PORT))
     print("connecting to: %s:%i" % (IP,PORT))
@@ -420,6 +420,17 @@ class circuit_simulator():
     self.arrV = {} # list of simulated voltages during simulation
     self.nextStep_dict = {} #list of IED's that need a nextstep signal during simulation
 
+    if os.path.exists('static/plot.png'):
+      os.remove('static/plot.png') 
+    #general simulation options, these should not be altered during simulation
+    self.title = ".title substation model"
+    self.options = "#.options interp  ; strongly reduces memory requirements"
+    self.save = ".save none       ; ensure only last step is kept each iteration"
+    #values: 19 us, 25 us, 250us
+    self.tran = ".tran 19us 3600s uic; run for an hour max, with 100 samples per cycle (201u stepsize does not distort, 200 does...)"
+
+    self.ngspice_shared = None
+
     self.init_simulator()
 
 
@@ -457,17 +468,11 @@ class circuit_simulator():
     spice += netlist
 
     #build the complete netlist
-    #general simulation options, these should not be altered during simulation
-    self.title = ".title substation model\n"
-    self.options = "#.options interp  ; strongly reduces memory requirements\n"
-    self.save = ".save none       ; ensure only last step is kept each iteration\n"
-    #values: 19 us, 25 us, 250us
-    self.tran = ".tran 19us 3600s uic; run for an hour max, with 100 samples per cycle (201u stepsize does not distort, 200 does...)\n"
 
-    circuit = self.title
-    circuit += self.options
-    circuit += self.save
-    circuit += self.tran
+    circuit = self.title + "\n"
+    circuit += self.options + "\n"
+    circuit += self.save + "\n"
+    circuit += self.tran + "\n"
     circuit += spice 
     circuit += ".end\n"
 
@@ -477,7 +482,12 @@ class circuit_simulator():
     self.circuit = circuit
     self.simulation_nodes = simulation_nodes
 
-    self.ngspice_shared = _sclNgSpiceShared(self.actuators, send_data=False) # create the shared ngspice object, that supports callbacks for interactive voltage-sources(actuators)
+    if self.ngspice_shared != None:
+      self.ngspice_shared.destroy()
+    else:
+      self.ngspice_shared = _sclNgSpiceShared(self.actuators, send_data=False) # create the shared ngspice object, that supports callbacks for interactive voltage-sources(actuators)
+
+
     self.ngspice_shared.load_circuit(self.circuit) # load the netlist
     self.ngspice_shared.step(2) #needed to initialise simulation
 
@@ -538,7 +548,7 @@ class circuit_simulator():
   def plot_simulation(self, sel = 3):
     ### Simulation end ###
     self.logger.info(self.ngspice_shared.plot_names)
-
+    plt.close('all')
     # draw graph of resulting data
     figure = plt.figure(1, (20, 10))
     axe = plt.subplot(111)
@@ -546,6 +556,7 @@ class circuit_simulator():
     plt.xlabel('Time [s]')
     plt.ylabel('Voltage [V]')
     plt.grid()
+    
 
     if sel & 0x01:
       for key in self.arrA:
@@ -557,12 +568,19 @@ class circuit_simulator():
     plt.legend(('1', '2', '3'), loc=(.05,.1))
 
     plt.tight_layout()
-    plt.show()
+
+    if os.path.exists('static/plot.png'):
+      os.remove('static/plot.png') 
+    plt.savefig('static/plot.png')
+    #plt.show()
 
 
   def clear_plot(self):
-    self.arrA = {}
-    self.arrV = {}
+    self.logger.info("clearing plots")
+    self.arrA.clear()
+    self.arrV.clear()
+    if os.path.exists('static/plot.png'):
+      os.remove('static/plot.png') 
 
 
   # this can be used to print part values during simulation

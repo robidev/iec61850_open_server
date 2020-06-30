@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import Flask, render_template, session, request, redirect, url_for, jsonify
+from flask import Flask, render_template, session, request, redirect, url_for, jsonify, send_file
 from flask_cors import CORS
 from urllib.parse import unquote
 
@@ -20,6 +20,7 @@ steps_counter = 0
 
 #webserver
 app = Flask(__name__, template_folder='templates', static_folder='static')
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 CORS(app)
 
 #http calls
@@ -31,15 +32,17 @@ def index():
 @app.route('/init', methods = ['GET'])
 def init():
   global sim
-  if sim != None:
-    return { 'init' : 'done' }
 
   scd = request.args.get("scd")
   if not scd is str:
     scd = "../open_substation.scd"
 
-  sim = circuit_simulator.circuit_simulator(scd,"../schema/SCL.xsd")
+  if sim != None:
+    sim.init_simulator()
+  else:
+    sim = circuit_simulator.circuit_simulator(scd,"../schema/SCL.xsd")
   return { 'init' : 'ok' }
+
 
 @app.route('/circuit', methods = ['GET'])
 def circuit():
@@ -112,6 +115,7 @@ def run_simulation():
     sim.simulation_step(step)
   return { 'run' : 'ok' }
 
+
 @app.route('/play_simulation', methods = ['GET'])
 def play_simulation():
   global sim
@@ -166,7 +170,17 @@ def plot_simulation():
     return { 'plot' : 'error' }
 
   sim.plot_simulation(plot)
-  return { 'plot' : 'ok' }
+  #send_file("plot.png", mimetype='image/png')
+  return  { 'plot' : 'ok' }
+
+
+@app.route('/clear_plot', methods = ['GET'])
+def clear_plot():
+  global sim
+  if sim == None:
+    return { 'plot' : 'none' }
+  sim.clear_plot()
+  return { 'plot' : 'clear' }
 
 
 @app.route('/quit', methods = ['GET'])
