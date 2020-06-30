@@ -56,7 +56,7 @@ void sigint_handler(int signalId)
 void IEC61850_server_simulation_next_step()
 {
 	global_step++;
-	printf("step: %i\n",global_step);
+	//printf("step: %i\n",global_step);
 }
 
 void IEC61850_server_simulation_sync(int local)

@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import xmlschema
 import socket
 import time
+import sys
 
 from PySpice.Probe.Plot import plot
 import PySpice.Logging.Logging as Logging
@@ -87,20 +88,23 @@ def _LNode(item, levelRef, SubEquipment,scl):
 
 def _init_conn(IP, LNref):
   conn = None
-  if IP != "10.0.0.0":
-    return None
+  #if IP != "10.0.0.0":
+  #  return None
   try:
     conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    conn.settimeout(5)
-    #conn.connect(("127.0.0.1", PORT)) 
+    conn.settimeout(5.0)
+    #conn.connect(("10.0.0.4", PORT)) 
     conn.connect((IP, PORT))
+    print("connecting to: %s:%i" % (IP,PORT))
+
     conn.sendall(b'i ' + LNref.encode('utf-8') + b'\n')
     data = conn.recv(1024)
     if data == b'OK\n':
-      logger.info("connectec to: %s:%i" % (IP,PORT))
+      print("connected to: %s:%i" % (IP,PORT))
       return conn
   except:
-    print("ERROR: could not connect: %s:%i" % (IP,PORT))
+    print("ERROR: could not connect: %s:%i, oh no!" % (IP,PORT))
+  #  print("ERROR: except:", sys.exc_info()[0])
   
   conn.close()
   print("not OK")
@@ -337,7 +341,7 @@ def _getValue(ied):
     ied['Connection'].sendall(b'g ' + ied['LNref'].encode('utf-8') )
     data = ied['Connection'].recv(1024)
     if data[-1:] == b'\n':
-      logger.debug("ret: %s: %s" % (ied['LNref'].encode('utf-8') , data[0:-1].decode("utf-8")))
+      #print("ret: %s: %s" % (ied['LNref'].encode('utf-8') , data[0:-1].decode("utf-8")))
       return float(data[0:-1].decode("utf-8"))
   except:
     print("ERROR: exception while requesting value, closing connection")
@@ -393,7 +397,7 @@ class _sclNgSpiceShared(NgSpiceShared):
 class circuit_simulator():
   def __init__(self, scl_file, scl_schema_file, logger = None):
     if logger == None:
-      logger = Logging.setup_logging(logging_level=5)
+      logger = Logging.setup_logging(logging_level=20)
     self.logger = logger
     
     logger.info("init simulation")
@@ -491,6 +495,11 @@ class circuit_simulator():
         if ip not in self.nextStep_dict:
           self.nextStep_dict[ip] = measurantsV[key]['Connection']
 
+    for key in actuators:
+      if actuators[key]['Connection'] != None:
+        ip = actuators[key]['IP']
+        if ip not in self.nextStep_dict:
+          self.nextStep_dict[ip] = actuators[key]['Connection']
 
   def run_simulation(self, steps = 10, steps_range = 200):
     # run the simulation

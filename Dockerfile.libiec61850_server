@@ -12,7 +12,8 @@ RUN git clone https://github.com/mz-automation/libiec61850.git /tmp/libiec61850
 RUN cd /tmp/libiec61850 && make \
         && make examples 
 
-RUN git clone https://github.com/robidev/iec61850_open_server.git /tmp/iec61850_open_server
+#RUN git clone https://github.com/robidev/iec61850_open_server.git /tmp/iec61850_open_server
+COPY . /tmp/iec61850_open_server
 
 RUN cd /tmp/iec61850_open_server && make
 

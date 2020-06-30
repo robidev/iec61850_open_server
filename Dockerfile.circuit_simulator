@@ -28,5 +28,7 @@ COPY open_substation.scd /srv/open_substation.scd
 
 WORKDIR /srv/circuit_simulator
 
+EXPOSE 5010
+
 CMD ["python3","webAPI.py"]
 

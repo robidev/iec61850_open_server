@@ -24,6 +24,7 @@ void MMXU_callback(InputEntry* extRef)
   MMXU* inst = extRef->callBackParam;
   extRef = inst->input->extRefs;//start from the first extref, and check all values, we assume there are 8!
   int i = 0;
+  float a, v;
   while(extRef != NULL )
   {
     if(extRef->value != NULL)
@@ -41,16 +42,17 @@ void MMXU_callback(InputEntry* extRef)
       {
         inst->RMS[i] /= 80;
         inst->RMS[i] = sqrt(inst->RMS[i]);
-
+	
         if(i==3){
-          float a = (inst->RMS[0] + inst->RMS[1] + inst->RMS[2]) / 3;
+          a = (inst->RMS[0] + inst->RMS[1] + inst->RMS[2]) / 3;
           IedServer_updateFloatAttributeValue(inst->server,inst->da_A, a/1000 );
           InputValueHandleExtensionCallbacks(inst->da_A_callback); //update the associated callbacks with this Data Element 
         }
         if(i==7){
-          float v = (inst->RMS[4] + inst->RMS[5] + inst->RMS[6]) / 3;
+          v = (inst->RMS[4] + inst->RMS[5] + inst->RMS[6]) / 3;
           IedServer_updateFloatAttributeValue(inst->server,inst->da_V, v/100 );
           InputValueHandleExtensionCallbacks(inst->da_V_callback); //update the associated callbacks with this Data Element 
+	  printf("mmxu updated: a= %f, v= %f\n",a,v);
         }
         
       }
@@ -79,7 +81,7 @@ void *MMXU_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allI
 
     while(extRef != NULL)
     {
-      if(strcmp(extRef->intAddr,"Vol4") == 0)//find extref for the last SMV, using the intaddr, so that all values are updated
+      if(strcmp(extRef->intAddr,"Vol3") == 0)//find extref for the last SMV, using the intaddr, so that all values are updated
       {
         extRef->callBack = (callBackFunction) MMXU_callback;
         extRef->callBackParam = inst;
@@ -87,6 +89,6 @@ void *MMXU_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allI
       extRef = extRef->sibling;
     }
   }
-
+  printf("mmxu init\n");
   return inst;
 }

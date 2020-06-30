@@ -101,7 +101,7 @@ void PTOC_callback_SMV(InputEntry* extRef)
 
       //check if value is outside allowed band
       //TODO: get values from settings
-      if(MmsValue_toInt64(stVal) > 800000){
+      if(MmsValue_toInt64(stVal) > 800000000){
         printf("PTOC: treshold reached\n");
         MmsValue* tripValue = MmsValue_newBoolean(true);
 
