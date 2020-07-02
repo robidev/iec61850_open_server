@@ -12,60 +12,45 @@ if (typeof jQuery == 'undefined') {
     document.write(unescape("%3Cscript type='text/javascript' src='static/lib/jquery-3.5.1.min.js'%3E%3C/script%3E"));
 }
 </script>
-<script>
-    function onLoad(){
-        $('a').bind('click', function(e) {           
-            var url = $(this).attr('href');
-            $.ajax({
-                type: "get",
-                url: url, 
-                success: function(data){
-                    var c = $('div#container')[0];
-                    var d = JSON.stringify(data)
-                    c.innerHTML= d;  
-                    var timestamp = new Date().getTime();  
-                    var el = document.getElementById("id1");  
-                    var queryString = "?t=" + timestamp;    
-                    el.src = "static/plot.png" + queryString;                     
-                }
-            });
-            e.preventDefault(); // stop the browser from following the link
-        });
-    }
-</script>
+<script type="text/javascript" src="static/simulator.js"></script>
+
 </head>
-<body onload="onLoad()">
+<body>
 
 <main id='main_content'>
     <div class='wrap'>
         <div class='content'>
-            The webapi for the circuit simulator
-            <br><br>
-            <a href="/init?scd=../open_substation.scd" >init?scd=[scd file]</a><br>
-            <a href="/simulation_settings" >get simulation_settings</a><br>
-            <form id="simulation_settings" action="/simulation_settings" method="post">post: form[title, options, tran]<br>
-                <input type="text" name="title" value="title substation model"><br>
-                <input type="text" name="options" value="#.options interp"><br>
-                <input type="text" name="tran" value=".tran 19us 3600s uic"><br>
-                <input type="submit" value="submit">
-            </form><br><br>
-            <a href="/circuit" >get circuit</a><br>
-            <a href="/simulation_nodes" >get simulation_nodes</a><br>
-            <a href="/simulation_node?node=@r.xs12_e1_w1_bb1_load.r1[r]" >get simulation_node?node=[node ref]</a><br>
-            <form id="simulation_node" action="/simulation_node" method="post">post: from[node, value]<br>
+            <h1>Substation circuit simulator</h1>
+            <a href="/init?scd=../open_substation.scd" class="controlBtn" >init</a>
+            <a href="/circuit"  class="controlBtn" disabled>circuit</a>
+            <a href="#" id="enable_settings"  class="controlBtn" disabled>settings</a>
+            <a href="#" id="modify_nodes" class="controlBtn" disabled>modify</a>            
+            <a href="/play_simulation?delay=0.001&step=10" class="controlBtn" disabled>play</a>
+            <a href="/plot_simulation?plot=2" class="controlBtn" disabled>draw</a>
+            <a href="/clear_plot" class="controlBtn" disabled>clear</a>
+            <a href="/quit" class="controlBtn">quit</a>            
+            <br><br><br>
+            <!--<a href="/simulation_settings"  class="controlBtn">settings</a><br>-->
+
+            <form id="simulation_settings" action="/simulation_settings" method="post" style="display:none">Settings<br>
+                <input type="text" id="title" name="title" value="substation" class="controlInput"><br>
+                <input type="text" id="options" name="options" value="#" class="controlInput"><br>
+                <input type="text" id="tran" name="tran" value="" class="controlInput"><br>
+                <input type="submit" value="update"  class="controlBtn">
+            </form><br>
+            <img id="plot" alt=""></img>
+            <!--<a href="/simulation_node?node=@r.xs12_e1_w1_bb1_load.r1[r]" >get simulation_node?node=[node ref]</a><br>-->
+            <form id="simulation_node" action="/simulation_node" method="post" style="display:none">Modify a node<br>
                 <input type="text" name="node" value="@r.xs12_e1_w1_bb1_load.r1[r]"><br>
                 <input type="text" name="value" value="2200"><br>
                 <input type="submit" value="submit">
             </form><br><br>
 
-            <a href="/run_simulation?steps=200&step=10" >run_simulation?steps=[iterations]&step=[steps per iteration]</a><br>
-            <a href="/play_simulation?delay=0.001&step=10" >play_simulation?delay=[delay in ms]&step=[steps per iteration]</a><br>
-            <a href="/plot_simulation?plot=1" >plot_simulation?plot=[1=current, 2=voltage 3=both]</a><br>
-            <a href="/clear_plot" >clear_plot</a><br>
-            <a href="/quit" >quit</a><br>
+            <!--<a href="/run_simulation?steps=200&step=10" >run_simulation?steps=[iterations]&step=[steps per iteration]</a><br>-->
+            <h2>status:</h2>
+            <div id="container" style="font-size: 16px;"></div><br><br>
+            
         </div>
-        <div id="container"></div>
-        <img id="id1"></img>
     </div>
 </main>
 </body>

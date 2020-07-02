@@ -235,6 +235,11 @@ div.tabcontents {
   margin-bottom: 10px;
   font-size: 16px;
   font-weight: bold;
+  -webkit-appearance: button;
+  -moz-appearance: button;
+  appearance: button;
+
+  text-decoration: none;
 }
 
 .controlBtn:hover {

@@ -491,6 +491,26 @@ class circuit_simulator():
     self.ngspice_shared.load_circuit(self.circuit) # load the netlist
     self.ngspice_shared.step(2) #needed to initialise simulation
 
+
+    #print(self.ngspice_shared.exec_command("show v.xs12_d1_q1_external_ifl.vphasea"))
+    #print(self.ngspice_shared.exec_command("show r.xs12_e1_w1_bb1_load.r1"))
+    #print(self.ngspice_shared.exec_command("show r"))
+    #print(self.ngspice_shared.exec_command("show v"))
+    #print(self.ngspice_shared.exec_command("display"))
+    print(self.ngspice_shared.exec_command("print r.xs12_e1_w1_bb1_load.r3[r]"))
+    listing = self.ngspice_shared.exec_command("listing deck expand").splitlines()
+
+    for sn in simulation_nodes:
+      for l in listing:
+        if simulation_nodes[sn]['device'].lower() in l:
+          ref = l.split(' ')[0]
+          if not 'elements' in simulation_nodes[sn]:
+            simulation_nodes[sn]['elements'] = []
+          if ref[0:1] == 'r':
+            simulation_nodes[sn]['elements'].append("@" + ref + "[r]")
+          if ref[0:1] == 'v':
+            simulation_nodes[sn]['elements'].append("@" + ref + "[acmag]")
+
     # generate list for unique connections, as to identify when the command for next step/iteration in the simulation can be given
     # all threats in the simulated IED-process will wait until the next-step command, so that the simulation is synced with the IED's
     for key in measurantsA:
@@ -550,11 +570,11 @@ class circuit_simulator():
     self.logger.info(self.ngspice_shared.plot_names)
     plt.close('all')
     # draw graph of resulting data
-    figure = plt.figure(1, (20, 10))
+    figure = plt.figure(1, (4.5, 2.5))
     axe = plt.subplot(111)
-    plt.title('')
-    plt.xlabel('Time [s]')
-    plt.ylabel('Voltage [V]')
+    #plt.title('')
+    #plt.xlabel('Time [s]')
+    #plt.ylabel('Voltage [V]')
     plt.grid()
     
 
@@ -565,7 +585,7 @@ class circuit_simulator():
       for key in self.arrV:
         plt.plot(self.arrV[key])
 
-    plt.legend(('1', '2', '3'), loc=(.05,.1))
+    #plt.legend(('1', '2', '3'), loc=(.05,.1))
 
     plt.tight_layout()
 
@@ -633,9 +653,9 @@ if __name__=="__main__":
   #load the simulation from scl
   sim = circuit_simulator("../open_substation.scd","../schema/SCL.xsd")
 
-  print("--- model ---")
-  print(sim.circuit)
-  print("---")
+  #print("--- model ---")
+  #print(sim.circuit)
+  #print("---")
 
   pprint.pprint(sim.simulation_nodes)
 
@@ -649,5 +669,5 @@ if __name__=="__main__":
   # if the substation model in the scl indicates a fault/load element, it can be referenced: "@r.x" + s12_e1_w1_bb1 + "_load.r1[r]"
 
   # draw graph of resulting data
-  sim.plot_simulation(1)
+  #sim.plot_simulation(1)
 
