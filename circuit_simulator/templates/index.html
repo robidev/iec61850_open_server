@@ -21,7 +21,7 @@ if (typeof jQuery == 'undefined') {
     <div class='wrap'>
         <div class='content'>
             <h1>Substation circuit simulator</h1>
-            <a href="/init?scd=../open_substation.scd" class="controlBtn" >init</a>
+            <!--<a href="/init?scd=../open_substation.scd" class="controlBtn" >init</a>-->
             <a href="/circuit"  class="controlBtn" disabled>circuit</a>
             <a href="#" id="enable_settings"  class="controlBtn" disabled>settings</a>
             <a href="#" id="modify_nodes" class="controlBtn" disabled>modify</a>            
@@ -41,20 +41,21 @@ if (typeof jQuery == 'undefined') {
             
             <!--<a href="/simulation_node?node=@r.xs12_e1_w1_bb1_load.r1[r]" >get simulation_node?node=[node ref]</a><br>-->
             <form id="simulation_node" action="/simulation_node" method="post" style="display:none">Modify a node<br>
-                <input type="text" name="node" id="node">
-                <select  onchange="this.previousElementSibling.value=this.value; this.previousElementSibling.focus()">
-                    <option value="@r.xs12_e1_w1_bb1_load.r1[r]">
-                    <option value="@r.xs12_e1_w1_bb1_load.r2[r]">
-                </datalist>
+                <div class="dropdown">
+                    <input type="text" name="node" id="node" class="controlInput" value="--select a node--">
+                    <select id="nodes">
+                        <option>--- select a node---</option>
+                    </select>
+                </div>
                 <br>
-                <input type="text" name="value" value="" class="controlInput"><br>
+                <input type="text" id="value" name="value" value="" class="controlInput"><br>
                 <input type="submit" value="modify" class="controlBtn">
             </form><br><br>
 
             <img id="plot" alt=""></img>
             <!--<a href="/run_simulation?steps=200&step=10" >run_simulation?steps=[iterations]&step=[steps per iteration]</a><br>-->
             <h2>status:</h2>
-            <div id="container" style="font-size: 16px;"></div><br><br>
+            <div id="container" style="font-size: 16px; font-weight: bold;"></div><br><br>
             
         </div>
     </div>

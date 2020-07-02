@@ -224,6 +224,40 @@ div.tabcontents {
   width: 100%;
 }
 
+.dropdown {
+  background-color: #000;
+  border: none;
+  outline: none;
+  padding: 7px 8px;
+  transition: 0.3s;
+  color: #FFFFFF;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: normal;
+  position: relative;
+  width: 100%;
+}
+
+
+.dropdown select {
+  color: #fff;
+  background-color: #000;
+  border: none;
+  outline: none;
+  padding: 0px 0px;
+  width: 100%;
+}
+
+.dropdown > * {
+  box-sizing: border-box;
+  height: 25px;
+}
+
+.dropdown input {
+  position: absolute;
+  width: calc(100% - 30px);
+}
+
 .controlBtn {
   background-color:  rgba(255, 0, 255, 0.192);
   border: none;

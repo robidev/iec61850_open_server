@@ -37,11 +37,24 @@ def init():
   if not scd is str:
     scd = "../open_substation.scd"
 
-  if sim != None:
-    sim.init_simulator()
-  else:
+  if sim == None:
     sim = circuit_simulator.circuit_simulator(scd,"../schema/SCL.xsd")
   return { 'init' : 'ok' }
+
+
+@app.route('/reinit', methods = ['GET'])
+def reinit():
+  global sim
+
+  scd = request.args.get("scd")
+  if not scd is str:
+    scd = "../open_substation.scd"
+
+  if sim == None:
+    sim = circuit_simulator.circuit_simulator(scd,"../schema/SCL.xsd")
+  else:
+    sim.init_simulator()
+  return { 'reinit' : 'ok' }
 
 
 @app.route('/circuit', methods = ['GET'])
@@ -57,12 +70,13 @@ def simulation_nodes():
   global sim
   if sim == None:
     return { 'nodes' : 'none' }
-  return json.dumps(sim.simulation_nodes)
+  return sim.simulation_nodes 
 
 
 @app.route('/simulation_node', methods = ['GET','POST'])
 def simulation_node():
   global sim
+  global thread
   if sim == None:
     return { 'node' : 'none' }
 
@@ -72,7 +86,11 @@ def simulation_node():
     #set node value
     command = "alter " + node + "=" + value
     #sim.que_commands("alter @r.xs12_e1_w1_bb1_load.r1[r]=0")
-    sim.que_commands(command)
+    if thread is None:
+      result = sim.ngspice_shared.exec_command(command)
+      logger.debug(result)
+    else:
+      sim.que_commands(command)
     return {"node" : "post ok"}
   else:
     #sim.que_commands("print @r.xs12_e1_w1_bb1_load.r1[r]")
