@@ -38,14 +38,20 @@ if (typeof jQuery == 'undefined') {
                 <input type="text" id="tran" name="tran" value="" class="controlInput"><br>
                 <input type="submit" value="update"  class="controlBtn">
             </form><br>
-            <img id="plot" alt=""></img>
+            
             <!--<a href="/simulation_node?node=@r.xs12_e1_w1_bb1_load.r1[r]" >get simulation_node?node=[node ref]</a><br>-->
             <form id="simulation_node" action="/simulation_node" method="post" style="display:none">Modify a node<br>
-                <input type="text" name="node" value="@r.xs12_e1_w1_bb1_load.r1[r]"><br>
-                <input type="text" name="value" value="2200"><br>
-                <input type="submit" value="submit">
+                <input type="text" name="node" id="node">
+                <select  onchange="this.previousElementSibling.value=this.value; this.previousElementSibling.focus()">
+                    <option value="@r.xs12_e1_w1_bb1_load.r1[r]">
+                    <option value="@r.xs12_e1_w1_bb1_load.r2[r]">
+                </datalist>
+                <br>
+                <input type="text" name="value" value="" class="controlInput"><br>
+                <input type="submit" value="modify" class="controlBtn">
             </form><br><br>
 
+            <img id="plot" alt=""></img>
             <!--<a href="/run_simulation?steps=200&step=10" >run_simulation?steps=[iterations]&step=[steps per iteration]</a><br>-->
             <h2>status:</h2>
             <div id="container" style="font-size: 16px;"></div><br><br>
