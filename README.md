@@ -29,30 +29,38 @@ Create a working folder, e.g. substation;
 `$ mkdir ~/substation`  
 `$ cd ~/substation`  
   
-Get the necesarry libraries;  
-`$ git clone https://github.com/mz-automation/libiec61850.git`  
-`$ git clone https://github.com/robidev/iec61850_inputs.git`  
-`$ cd iec61850_inputs`  
+Get the necesarry projects;  
+`$ git clone https://github.com/robidev/iec61850_open_server.git`  
+`$ git clone https://github.com/robidev/iec61850_open_client.git`  
+
+cd into the server project  
+`$ cd iec61850_open_server`  
   
-Generate the config files;  
+Generate the config files from the scd-file;  
 `$ make model`  
   
-Generate the compose file;  
+Generate the compose file from the scd-file;  
 `$ make compose`  
   
+Build the Docker containers. Note: this uses the relative path, `../iec61850_open_client` so ensure you have this;  
+`$ sudo docker-compose -f substation.yml -f substation.simulator.yml build`  
+
 Run the Docker compose file;  
-`$ sudo docker-compose -f substation.yml up`  
+`$ sudo docker-compose -f substation.yml -f substation.simulator.yml up`  
+
+open the client via the browser at;  
+http://127.0.0.1:5000
 
 # Under development
 
-process simulation using pySpice:
+process simulation using pySpice:  
 
 The IEDS support simulated values from a spice-model. 
-Currently amps and voltages can be send from the simulation to the IED, and XSWI/XCBR can influence the simulation creating a closed loop between the SPICE model and the IED functions.
-A final showcase still needs to be implemented showing everything working together in a docker environment
+Currently amps and voltages can be send from the simulation to the IED, and XSWI/XCBR can influence the simulation creating a closed loop between the SPICE model and the IED functions. 
+A final showcase is implemented that takes the measurements, sends them to the IED's, and has everything interacting. The simulator can be opened from the client. 
 
-iec61850 python based client: 
+iec61850 python based client (iec61850_open_client):  
 
 This is a client that is configured using an SVG file for the mimics and data-references. 
-This client will provide a graphical interface to visualize the process, browse the model and control the simulation
-This is currently a stand-alone project, but will be integrated into the final docker environment as the frontend to the final showcase
+This client will provide a graphical interface to visualize the process, browse the model and control the simulation. 
+This is provided as a stand-alone project, but is used in the docker environment as the frontend to the showcase. 

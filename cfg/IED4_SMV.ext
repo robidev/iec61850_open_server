@@ -1,10 +1,7 @@
-MODEL(IED3_SMV){
+MODEL(IED4_SMV){
 LD(MUnn){
 LN(LLN0){
 CL(LLN0);
-SV(MSVCB01 xxxxMUnn01 PhsMeas1 1 0 80 2 1){
-PS(4 1 16384 010ccd010003)
-}
 }
 LN(TCTR1){
 CL(TCTR);
@@ -33,27 +30,14 @@ CL(TVTR);
 LN(MMXU1){
 CL(MMXU);
 IN{
-ER(sample_a1 IED3_SMVMUnn/TCTR1.Amp.instMag.i Amp1 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_a2 IED3_SMVMUnn/TCTR2.Amp.instMag.i Amp2 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_a3 IED3_SMVMUnn/TCTR3.Amp.instMag.i Amp3 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_a4 IED3_SMVMUnn/TCTR4.Amp.instMag.i Amp4 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_v1 IED3_SMVMUnn/TVTR1.Vol.instMag.i Vol1 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_v2 IED3_SMVMUnn/TVTR2.Vol.instMag.i Vol2 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_v3 IED3_SMVMUnn/TVTR3.Vol.instMag.i Vol3 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_v4 IED3_SMVMUnn/TVTR4.Vol.instMag.i Vol4 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-}
-}
-LN(MMXU2){
-CL(MMXU);
-IN{
-ER(sample_a1 IED3_SMVMUnn/TCTR1.Amp.instMag.i Amp1 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_a2 IED3_SMVMUnn/TCTR2.Amp.instMag.i Amp2 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_a3 IED3_SMVMUnn/TCTR3.Amp.instMag.i Amp3 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_a4 IED3_SMVMUnn/TCTR4.Amp.instMag.i Amp4 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_v1 IED3_SMVMUnn/TVTR1.Vol.instMag.i Vol1 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_v2 IED3_SMVMUnn/TVTR2.Vol.instMag.i Vol2 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_v3 IED3_SMVMUnn/TVTR3.Vol.instMag.i Vol3 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_v4 IED3_SMVMUnn/TVTR4.Vol.instMag.i Vol4 Poll IED3_SMVMUnn/LLN0.MSVCB01);
+ER(sample_a1 IED4_SMVMUnn/TCTR1.Amp.instMag.i Amp1 Poll IED4_SMVMUnn/LLN0.MSVCB01);
+ER(sample_a2 IED4_SMVMUnn/TCTR2.Amp.instMag.i Amp2 Poll IED4_SMVMUnn/LLN0.MSVCB01);
+ER(sample_a3 IED4_SMVMUnn/TCTR3.Amp.instMag.i Amp3 Poll IED4_SMVMUnn/LLN0.MSVCB01);
+ER(sample_a4 IED4_SMVMUnn/TCTR4.Amp.instMag.i Amp4 Poll IED4_SMVMUnn/LLN0.MSVCB01);
+ER(sample_v1 IED4_SMVMUnn/TVTR1.Vol.instMag.i Vol1 Poll IED4_SMVMUnn/LLN0.MSVCB01);
+ER(sample_v2 IED4_SMVMUnn/TVTR2.Vol.instMag.i Vol2 Poll IED4_SMVMUnn/LLN0.MSVCB01);
+ER(sample_v3 IED4_SMVMUnn/TVTR3.Vol.instMag.i Vol3 Poll IED4_SMVMUnn/LLN0.MSVCB01);
+ER(sample_v4 IED4_SMVMUnn/TVTR4.Vol.instMag.i Vol4 Poll IED4_SMVMUnn/LLN0.MSVCB01);
 }
 }
 }

@@ -92,7 +92,7 @@ def _init_conn(IP, LNref):
   #  return None
   try:
     conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    conn.settimeout(0.0)
+    conn.settimeout(1.0)
     #conn.connect(("10.0.0.4", PORT)) 
     conn.connect((IP, PORT))
     print("connecting to: %s:%i" % (IP,PORT))
@@ -104,7 +104,6 @@ def _init_conn(IP, LNref):
       return conn
   except:
     print("ERROR: could not connect: %s:%i, oh no!" % (IP,PORT))
-  #  print("ERROR: except:", sys.exc_info()[0])
   
   conn.close()
   print("not OK")
@@ -491,13 +490,7 @@ class circuit_simulator():
     self.ngspice_shared.load_circuit(self.circuit) # load the netlist
     self.ngspice_shared.step(2) #needed to initialise simulation
 
-
-    #print(self.ngspice_shared.exec_command("show v.xs12_d1_q1_external_ifl.vphasea"))
-    #print(self.ngspice_shared.exec_command("show r.xs12_e1_w1_bb1_load.r1"))
-    #print(self.ngspice_shared.exec_command("show r"))
-    #print(self.ngspice_shared.exec_command("show v"))
-    #print(self.ngspice_shared.exec_command("display"))
-    print(self.ngspice_shared.exec_command("print r.xs12_e1_w1_bb1_load.r3[r]"))
+    #generate dict of alterable elements
     listing = self.ngspice_shared.exec_command("listing deck expand").splitlines()
 
     for sn in simulation_nodes:
@@ -663,6 +656,12 @@ if __name__=="__main__":
   for _ in range(200):
     sim.simulation_step(10)
 
+  #print(self.ngspice_shared.exec_command("show v.xs12_d1_q1_external_ifl.vphasea"))
+  #print(self.ngspice_shared.exec_command("show r.xs12_e1_w1_bb1_load.r1"))
+  #print(self.ngspice_shared.exec_command("show r"))
+  #print(self.ngspice_shared.exec_command("show v"))
+  #print(self.ngspice_shared.exec_command("display"))
+  #print(self.ngspice_shared.exec_command("print r.xs12_e1_w1_bb1_load.r3[r]"))
   #sim.simulation_step(100)
   #sim.que_commands("alter @r.xs12_e1_w1_bb1_load.r1[r]=0")
   # each ConnectivityNode can have a fault/load attached

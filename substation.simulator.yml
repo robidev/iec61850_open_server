@@ -1,0 +1,25 @@
+version: "3.3"
+services:
+  simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile.circuit_simulator
+    hostname: simulator
+    networks:
+      subnetwork1:
+        ipv4_address: 10.0.0.254
+    privileged: true
+    ports:
+      - "5010:5010"
+
+  client:
+    build:
+      context: ../iec61850_open_client
+      dockerfile: Dockerfile.libiec61850_client
+    hostname: client
+    networks:
+      subnetwork1:
+        ipv4_address: 10.0.0.11
+    privileged: true
+    ports:
+      - "5000:5000"

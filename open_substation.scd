@@ -23,16 +23,13 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
           <Terminal connectivityNode="S12/D1/Q1/L1" substationName="S12" voltageLevelName="D1" bayName="Q1" cNodeName="L1"/>
           <Terminal connectivityNode="S12/D1/Q1/L0" substationName="S12" voltageLevelName="D1" bayName="Q1" cNodeName="L0"/>
           <SubEquipment name="R" phase="A">
-            <LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="1"/>
+            <LNode lnClass="TCTR" iedName="IED4_SMV" ldInst="MUnn" lnInst="1"/>
           </SubEquipment>
           <SubEquipment name="S" phase="B">
-            <LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="2"/>
+            <LNode lnClass="TCTR" iedName="IED4_SMV" ldInst="MUnn" lnInst="2"/>
           </SubEquipment>
           <SubEquipment name="T" phase="C">
-            <LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="3"/>
-          </SubEquipment>
-          <SubEquipment name="I0" phase="N">
-            <LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="4"/>
+            <LNode lnClass="TCTR" iedName="IED4_SMV" ldInst="MUnn" lnInst="3"/>
           </SubEquipment>
         </ConductingEquipment>
         <ConnectivityNode name="L1" pathName="S12/D1/Q1/L1"/>
@@ -66,6 +63,15 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
         <ConductingEquipment name="I1" type="CTR">
           <Terminal connectivityNode="S12/E1/Q1/L2" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L2"/>
           <Terminal connectivityNode="S12/E1/Q1/L3" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L3"/>
+          <SubEquipment name="R" phase="A">
+            <LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="1"/>
+          </SubEquipment>
+          <SubEquipment name="S" phase="B">
+            <LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="2"/>
+          </SubEquipment>
+          <SubEquipment name="T" phase="C">
+            <LNode lnClass="TCTR" iedName="IED3_SMV" ldInst="MUnn" lnInst="3"/>
+          </SubEquipment>
         </ConductingEquipment>
         <ConnectivityNode name="L1" pathName="S12/E1/Q1/L1"/>
         <ConnectivityNode name="L2" pathName="S12/E1/Q1/L2"/>
@@ -94,7 +100,7 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
            <Address>
                 <P type="VLAN-ID">1</P>
                 <P type="VLAN-PRIORITY">4</P>
-                <P type="MAC-Address">01-0c-cd-04-00-01</P>
+                <P type="MAC-Address">01-0c-cd-01-00-01</P>
                 <P type="APPID">1000</P>
            </Address>
       </GSE>
@@ -130,7 +136,25 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
           <Address>
             <P type="VLAN-ID">1</P>
             <P type="VLAN-PRIORITY">4</P>
-            <P type="MAC-Address">01-0c-cd-01-00-01</P>
+            <P type="MAC-Address">01-0c-cd-01-00-03</P>
+            <P type="APPID">4000</P>
+          </Address>
+        </SMV>
+      </ConnectedAP>
+      <ConnectedAP iedName="IED4_SMV" apName="accessPoint4">
+        <Address>
+          <P type="IP">10.0.0.5</P>
+          <P type="IP-SUBNET">255.255.255.0</P>
+          <P type="IP-GATEWAY">10.0.0.1</P>
+          <P type="OSI-TSEL">0001</P>
+          <P type="OSI-PSEL">00000001</P>
+          <P type="OSI-SSEL">0001</P>
+        </Address>
+        <SMV ldInst="MUnn" cbName="MSVCB01">
+          <Address>
+            <P type="VLAN-ID">1</P>
+            <P type="VLAN-PRIORITY">4</P>
+            <P type="MAC-Address">01-0c-cd-01-00-04</P>
             <P type="APPID">4000</P>
           </Address>
         </SMV>
@@ -360,6 +384,54 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       </Server>
     </AccessPoint>
   </IED>
+
+  <IED name="IED4_SMV">
+    <AccessPoint name="accessPoint4">
+      <Server>
+        <Authentication />
+        <LDevice inst="MUnn">
+          <LN0 lnType="9-2LELLN0" lnClass="LLN0" inst="">
+            <DataSet name="PhsMeas1">
+
+              <FCDA ldInst="MUnn" lnClass="TCTR" lnInst="1" fc="MX" doName="Amp" />
+              <FCDA ldInst="MUnn" lnClass="TCTR" lnInst="2" fc="MX"	doName="Amp" />
+              <FCDA ldInst="MUnn" lnClass="TCTR" lnInst="3" fc="MX" doName="Amp" />
+              <FCDA ldInst="MUnn" lnClass="TCTR" lnInst="4" fc="MX"	doName="Amp" />
+              <FCDA ldInst="MUnn" lnClass="TVTR" lnInst="1" fc="MX"	doName="Vol" />
+              <FCDA ldInst="MUnn" lnClass="TVTR" lnInst="2" fc="MX"	doName="Vol" />
+              <FCDA ldInst="MUnn" lnClass="TVTR" lnInst="3" fc="MX"	doName="Vol" />
+              <FCDA ldInst="MUnn" lnClass="TVTR" lnInst="4" fc="MX"	doName="Vol" />
+
+            </DataSet>
+          </LN0>
+
+          <LN lnType="9-2LETCTR" lnClass="TCTR" inst="1" />
+          <LN lnType="9-2LETCTR" lnClass="TCTR" inst="2" />
+          <LN lnType="9-2LETCTR" lnClass="TCTR" inst="3" />
+          <LN lnType="9-2LETCTR" lnClass="TCTR" inst="4" />
+
+          <LN lnType="9-2LETVTR" lnClass="TVTR" inst="1" />
+          <LN lnType="9-2LETVTR" lnClass="TVTR" inst="2" />
+          <LN lnType="9-2LETVTR" lnClass="TVTR" inst="3" />
+          <LN lnType="9-2LETVTR" lnClass="TVTR" inst="4" />
+
+          <LN lnType="MMXUa" lnClass="MMXU" inst="1" >
+            <Inputs>
+              <ExtRef intAddr="Amp1" desc="sample_a1" iedName="IED4_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="Amp2" desc="sample_a2" iedName="IED4_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="2" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="Amp3" desc="sample_a3" iedName="IED4_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="3" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="Amp4" desc="sample_a4" iedName="IED4_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="4" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="Vol1" desc="sample_v1" iedName="IED4_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="1" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="Vol2" desc="sample_v2" iedName="IED4_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="2" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="Vol3" desc="sample_v3" iedName="IED4_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="3" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="Vol4" desc="sample_v4" iedName="IED4_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+            </Inputs>
+          </LN>
+        </LDevice>
+      </Server>
+    </AccessPoint>
+  </IED>
+
   <DataTypeTemplates>
 
     <LNodeType id="9-2LELLN0" lnClass="LLN0">

@@ -21,10 +21,10 @@ void CSWI_xcbr_callback(InputEntry* extRef)
 
   if(extRef->value != NULL)
   {
-    char printBuf[1024];
+    //char printBuf[1024];
 
-    MmsValue_printToBuffer(extRef->value, printBuf, 1024);
-    printf("CSWI: Received Breaker position: %s\n", printBuf);
+    //MmsValue_printToBuffer(extRef->value, printBuf, 1024);
+    //printf("CSWI: Received Breaker position: %s\n", printBuf);
   }
 }
 
