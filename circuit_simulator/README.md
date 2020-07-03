@@ -4,6 +4,8 @@ Logicalnode declarations in this SCL section are used to understand how the prim
 This allows actuators and measurements to be connected to the respective logical node in the ieds using a basic TCP protocol. 
 The simulation initiates the connection, and upon failure the data is ignored.  
 
+![Alt text](screenshot.png?raw=true "Screenshot of simulation interface")
+
 The submodels are defined in the models subdirectory. The name should match the conductingequipment name in the substation section of the scd. 
 
 # Docker install:
@@ -28,9 +30,7 @@ http://127.0.0.1:5010
 
 `$ sudo apt install gcc, bison, flex, libtool, autoconf, automake, libreadline-dev`
 
-download ngspice-30 from http://ngspice.sourceforge.net/download.html
-
-`$ pip3 install PySpice`
+download ngspice-30 from http://ngspice.sourceforge.net/download.html and cd into directory
 
 in compile_linux.sh > Replace --with-x by --with-ngshared in line ../configure ... .
 
@@ -38,3 +38,12 @@ in compile_linux.sh > Replace --with-x by --with-ngshared in line ../configure .
 `$ sudo ./compile_linux.sh 64`
 `$ sudo ldconfig`
 
+`$ cd ../circuit_simulator`
+
+`$ pip3 install -r requirements.txt`
+
+`$ python3 webAPI.py`
+
+and browse to
+
+http://127.0.0.1:5010
