@@ -35,7 +35,34 @@ This software is licensed under the Apache 2.0 License where applicable. Please 
 
 Feel free to ask questions and provide feedback using the Github issues. Github issues is also used for backlog items.
 
-# Getting started:
+# Getting started the most easy way:
+
+This will allow you to just run the existing showcase  
+
+Create a working folder, e.g. substation;  
+  
+`$ mkdir ~/substation`  
+`$ cd ~/substation`  
+
+Get the necesarry projects next to each other in the same directory;  
+`$ git clone https://github.com/robidev/iec61850_open_server.git`  
+`$ git clone https://github.com/robidev/iec61850_open_client.git`  
+
+cd into the server project  
+`$ cd iec61850_open_server`  
+
+Build the Docker containers. Note: this uses the relative path, `../iec61850_open_client` so ensure you have this set up correctly like indicated in step 1;  
+`$ sudo docker-compose -f substation.yml -f substation.simulator.yml build`  
+
+Run the Docker compose file;  
+`$ sudo docker-compose -f substation.yml -f substation.simulator.yml up`  
+
+open the client via the browser at;  
+http://127.0.0.1:5000
+
+# Getting started with a modified SCL file:
+
+These steps describe how to generate new configs from a modified SCL file and run them.  
 
 Create a working folder, e.g. substation;  
   
