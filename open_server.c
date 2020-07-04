@@ -214,11 +214,14 @@ int simulation_thread(IedModel* model, IedModel_extensions* model_ex, uint16_t p
 				} 
 				else //process the data
 				{ 
+
 					//process buf
 					switch(buffer[0])
 					{
 						case 'i'://case init: relate sock to an LN inst
 						{
+							if(buffer[valread-1] != '\n')
+								perror("send init NO trailing newline"); 
 							buffer[valread-1] = 0;
 							//find LN, extended LN inst,
 							LogicalNodeClass* ln = getLNClass(model, model_ex, buffer+2); //based on LN in model, find LNinst(parent LN) in extension
@@ -243,6 +246,9 @@ int simulation_thread(IedModel* model, IedModel_extensions* model_ex, uint16_t p
 						case 'g':
 						case 's'://case send set/get to respective ln inst.->set values, get values
 						{
+							if(buffer[valread-1] != '\n')
+								perror("send value NO trailing newline"); 
+							buffer[valread-1] = 0;//make string zero-terminated
 							if(LNi[i] != 0) {
 								simulationFunction call_simulation = ((LNStruct*)LNi[i])->call_simulation;
 								if(call_simulation != NULL)

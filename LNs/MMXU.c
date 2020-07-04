@@ -25,7 +25,8 @@ void MMXU_callbackI(InputEntry* extRef)
   MMXU* inst = extRef->callBackParam;
   extRef = inst->input->extRefs;//start from the first extref, and check all values, we assume there are 8!
   int i = 0;
-  float a, v;
+  float a;
+  int peakval [8] = {0,0,0,0,0,0,0,0};
   while(extRef != NULL )
   {
     if(extRef->value != NULL)
@@ -38,8 +39,20 @@ void MMXU_callbackI(InputEntry* extRef)
 	      }
 	      //calculate RMS value TODO: check correct amount of elements instead of assuming 8, and offload this into a separate thread
 	      //currently, it is called each time a sampled-value is updated which might become slow
-	      float ff = (float)MmsValue_toInt32(extRef->value);
+              peakval[i] = MmsValue_toInt32(extRef->value);
+	      float ff = (float)peakval[i];
 	      inst->RMS[i] += (ff * ff);
+              
+              if(i == 3 ){
+		if( peakval[i] == 0){
+                  peakval[i] = peakval[0] + peakval[1] + peakval[2];
+                  inst->RMS[i] = (float)(peakval[i] * peakval[i]);
+                  //printf("+null: %i\n",peakval[i]);
+		}
+		//else
+		   //printf("_null: %i\n",peakval[i]);
+              }
+	      
 
 	      if( (inst->RMS_samplecountI % 80) == 79)//we calculate the average after 80 samples
 	      {
@@ -48,7 +61,7 @@ void MMXU_callbackI(InputEntry* extRef)
 		
 		if(i==3){
 		  a = (inst->RMS[0] + inst->RMS[1] + inst->RMS[2]) / 3;
-		  IedServer_updateFloatAttributeValue(inst->server,inst->da_A, a/1000 );
+		  IedServer_updateFloatAttributeValue(inst->server,inst->da_A, a );
 		  InputValueHandleExtensionCallbacks(inst->da_A_callback); //update the associated callbacks with this Data Element 
 		  break;
 		}       
@@ -67,7 +80,7 @@ void MMXU_callbackV(InputEntry* extRef)
   MMXU* inst = extRef->callBackParam;
   extRef = inst->input->extRefs;//start from the first extref, and check all values, we assume there are 8!
   int i = 0;
-  float a, v;
+  float v;
   while(extRef != NULL )
   {
     if(extRef->value != NULL)
@@ -90,7 +103,7 @@ void MMXU_callbackV(InputEntry* extRef)
 		
 		if(i==7){
 		  v = (inst->RMS[4] + inst->RMS[5] + inst->RMS[6]) / 3;
-		  IedServer_updateFloatAttributeValue(inst->server,inst->da_V, v/100 );
+		  IedServer_updateFloatAttributeValue(inst->server,inst->da_V, v );
 		  InputValueHandleExtensionCallbacks(inst->da_V_callback); //update the associated callbacks with this Data Element 
 		  //printf("mmxu updated: a= %f, v= %f\n",a,v);
 		}

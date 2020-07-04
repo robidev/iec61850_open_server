@@ -368,18 +368,6 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
               <ExtRef intAddr="Vol4" desc="sample_v4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
             </Inputs>
           </LN>
-          <LN lnType="MMXUa" lnClass="MMXU" inst="2" >
-            <Inputs>
-              <ExtRef intAddr="Amp1" desc="sample_a1" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Amp2" desc="sample_a2" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="2" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Amp3" desc="sample_a3" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="3" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Amp4" desc="sample_a4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="4" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol1" desc="sample_v1" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="1" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol2" desc="sample_v2" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="2" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol3" desc="sample_v3" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="3" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol4" desc="sample_v4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-            </Inputs>
-          </LN>
         </LDevice>
       </Server>
     </AccessPoint>

@@ -16,6 +16,7 @@ import xmlschema
 import socket
 import time
 import sys
+import math
 
 from PySpice.Probe.Plot import plot
 import PySpice.Logging.Logging as Logging
@@ -216,7 +217,9 @@ def _checkoptions(type, Voltagelevel):
   option = ""
   if type == "IFL":
     if "Voltage" in Voltagelevel:
-      option = "vss=" + str(Voltagelevel["Voltage"]['$']) + Voltagelevel["Voltage"]['@multiplier']
+      volt = int(float(Voltagelevel["Voltage"]['$'])*math.sqrt(2))
+      option = "vss=" + str(volt) + Voltagelevel["Voltage"]['@multiplier']
+      #print("++++ IFL:" + option)
   return option
 
 
@@ -314,7 +317,8 @@ def _updateValue(ied, value):
   if ied['Connection'] == None:
     return -1
   try:
-    ied['Connection'].sendall(b's ' + ied['LNref'].encode('utf-8') + b' ' + str(int(value*100)).encode('utf-8') )
+    ied['Connection'].sendall(b's ' + ied['LNref'].encode('utf-8') + b' ' + str(int(value)).encode('utf-8') + b'\n')
+    #print(b"->" + b's ' + ied['LNref'].encode('utf-8') + b' ' + str(int(value*100)).encode('utf-8') )
     data = ied['Connection'].recv(1024)
     if data == b'OK\n':
       return 0
@@ -337,7 +341,7 @@ def _getValue(ied):
     return 1
 
   try:
-    ied['Connection'].sendall(b'g ' + ied['LNref'].encode('utf-8') )
+    ied['Connection'].sendall(b'g ' + ied['LNref'].encode('utf-8') + b'\n')
     data = ied['Connection'].recv(1024)
     if data[-1:] == b'\n':
       #print("ret: %s: %s" % (ied['LNref'].encode('utf-8') , data[0:-1].decode("utf-8")))
