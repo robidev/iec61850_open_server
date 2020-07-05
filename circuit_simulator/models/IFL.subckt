@@ -3,7 +3,7 @@ vphaseA A 0 dc 0 ac 1 sin(0 {vss} {freq} 0 0 0)
 vphaseB B 0 dc 0 ac 1 sin(0 {vss} {freq} 0 0 120)
 vphaseC C 0 dc 0 ac 1 sin(0 {vss} {freq} 0 0 240)
 * transmission line
-rline1 A A1 0.01
-rline2 B B1 0.01
-rline3 C C1 0.01
+r1 A A1 10
+r2 B B1 10
+r3 C C1 10
 .ends IFL

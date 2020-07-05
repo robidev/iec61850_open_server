@@ -3,8 +3,8 @@
 * transformer 5:3 turns ratio specified by 1.38:0.5 inductance ratio (2.778:1), coupling is ideal (1)
 l1pri A1 i1 {inductor1}
 l2pri B1 i1 {inductor1}
-l3pri C1 i1 {inductor1}
-l1sec A2 i2 {inductor2}
+l3pri C1 i1 {inductor1} 
+l1sec A2 i2 {inductor2} 
 l2sec B2 i2 {inductor2}
 l3sec C2 i2 {inductor2}
 k1 l1pri l1sec {coupling}

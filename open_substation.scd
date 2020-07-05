@@ -79,7 +79,7 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       </Bay>
       <Bay name="W1">
         <ConnectivityNode name="BB1" pathName="S12/E1/W1/BB1">
-          <Private type="load">rload=5500</Private>
+          <Private type="load">rload=93</Private>
         </ConnectivityNode>
       </Bay>
     </VoltageLevel>
