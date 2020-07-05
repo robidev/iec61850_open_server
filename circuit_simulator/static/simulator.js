@@ -8,8 +8,16 @@ $(document).ready(function() {
 			$.ajax({
 			type: "get",
 			url: url, 
-			success: function(data){
+			success: function(data, status, xhr){
 				write_status(data);
+				if(xhr.hasOwnProperty('responseJSON') && 'run' in data){
+					if(data['run'] == 'started'){
+						$("#run")[0].innerHTML = "pause";
+					}
+					else{
+						$("#run")[0].innerHTML = "play";
+					}
+				}
 				update_png();
 				update_settings();                   
 			}
@@ -61,7 +69,7 @@ $(document).ready(function() {
 			   {	
 					var c = $('div#container')[0];
 				   	if(data['node'] == "post ok"){
-						$('#simulation_node').hide();
+						//$('#simulation_node').hide();
 				   	}
 				   	write_status(data);
 			   }
@@ -80,7 +88,6 @@ $(document).ready(function() {
 			   {
 					var c = $('div#container')[0];
 					if('title' in data){
-						$('#simulation_settings').hide();
 						data = "post ok"
 					}
 

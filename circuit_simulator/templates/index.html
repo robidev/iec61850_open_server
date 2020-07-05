@@ -25,11 +25,13 @@ if (typeof jQuery == 'undefined') {
             <a href="/circuit"  class="controlBtn" disabled>circuit</a>
             <a href="#" id="enable_settings"  class="controlBtn" disabled>settings</a>
             <a href="#" id="modify_nodes" class="controlBtn" disabled>modify</a>            
-            <a href="/play_simulation?delay=0.001&step=10" class="controlBtn" disabled>play</a>
-            <a href="/plot_simulation?plot=2" class="controlBtn" disabled>draw</a>
+            <a href="/play_simulation?delay=0.001&step=10" id="run" class="controlBtn" disabled>play</a>
             <a href="/clear_plot" class="controlBtn" disabled>clear</a>
-            <a href="/quit" class="controlBtn">quit</a>            
+            <a href="/reinit" class="controlBtn">re-init</a>            
             <br><br><br>
+            <a href="/plot_simulation?plot=1" class="controlBtn" disabled>plot current</a>
+            <a href="/plot_simulation?plot=2" class="controlBtn" disabled>plot voltage</a>
+	    <br><br><br>
             <!--<a href="/simulation_settings"  class="controlBtn">settings</a><br>-->
 
             <form id="simulation_settings" action="/simulation_settings" method="post" style="display:none">Settings<br>
