@@ -355,6 +355,7 @@ def _getValue(ied):
     ied['Connection'] = None
   return 1
 
+
 def _nextStep(ied_conn):
   # send value
   #initiate tcp, if not existing yet, or do this at init, and just get it here
@@ -381,6 +382,10 @@ class _sclNgSpiceShared(NgSpiceShared):
     def __init__(self, actuators, logger = None, ngspice_id=0, send_data=False):
         super(_sclNgSpiceShared, self).__init__(ngspice_id, send_data)
         self.actuators = actuators
+        self.actuatorCache = {}
+        for node in self.actuators:
+          self.actuatorCache[node] = _getValue(self.actuators[node])
+
         if logger != None:
           self._logger = logger
 
@@ -389,7 +394,8 @@ class _sclNgSpiceShared(NgSpiceShared):
         #provide voltage based on switch/cbr position
         if node in self.actuators:
           # get position data from actuators[node], by retrieving the status over tcp(or buffered)
-          if _getValue(self.actuators[node]) > 0:
+          #if _getValue(self.actuators[node]) > 0:
+          if self.actuatorCache[node] > 0:
             voltage[0] = 10 #circuitbreaker is closed
           else:
             voltage[0] = -10 #circuitbreaker is open
@@ -553,6 +559,10 @@ class circuit_simulator():
       if not key in self.arrV:
         self.arrV[key] = numpy.array([])
       self.arrV[key] = numpy.append(self.arrV[key], float(analysis[key][0]))
+
+    for node in self.actuators:
+      # get value from IED
+      self.ngspice_shared.actuatorCache[node] = _getValue(self.actuators[node])
 
     # sync primary-process simulation with simulated ied's
     for key in self.nextStep_dict:
