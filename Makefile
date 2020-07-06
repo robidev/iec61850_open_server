@@ -2,7 +2,7 @@ LIBIEC_HOME=../libiec61850
 
 PROJECT_BINARY_NAME = open_server
 
-PROJECT_ICD_FILE = open_substation.scd
+PROJECT_ICD_FILE = scd/open_substation.scd
 
 PROJECT_SOURCES = input/inputs.c
 PROJECT_SOURCES += model/config_file_parser_extensions.c

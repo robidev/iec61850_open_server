@@ -5,6 +5,8 @@ services:
       context: .
       dockerfile: Dockerfile.circuit_simulator
     hostname: simulator
+    volumes:
+      - ./scd:/srv/scd
     networks:
       subnetwork1:
         ipv4_address: 10.0.0.254

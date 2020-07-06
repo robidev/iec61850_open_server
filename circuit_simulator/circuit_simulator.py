@@ -658,7 +658,7 @@ if __name__=="__main__":
   # start main execution
   
   #load the simulation from scl
-  sim = circuit_simulator("../open_substation.scd","../schema/SCL.xsd")
+  sim = circuit_simulator("../scd/open_substation.scd","../schema/SCL.xsd")
 
   #print("--- model ---")
   #print(sim.circuit)

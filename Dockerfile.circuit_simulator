@@ -25,7 +25,7 @@ RUN cd /srv/circuit_simulator && pip3 install -r requirements.txt
 
 COPY ./circuit_simulator /srv/circuit_simulator
 COPY ./schema /srv/schema
-COPY open_substation.scd /srv/open_substation.scd
+#COPY open_substation.scd /SCD/open_substation.scd
 
 WORKDIR /srv/circuit_simulator
 

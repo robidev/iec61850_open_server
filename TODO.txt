@@ -1,0 +1,14 @@
+DONE:fix transformer-value
+DONE:simulation: ensure data from external supply is cached/decoupled, to improve performance
+DONE:docker:     make SCD also load via volume instead of copy
+
+server:     define PTOC (400a instant, 200a 90ms-200ms, )
+server:     Fix issue with CSWI and PTRC
+server:     implement CILO
+server:     implement fault recorder
+
+client:     reporting instead of polling
+client:     polling-update-time
+client:     read URCB/BRCB
+client:     file services?
+

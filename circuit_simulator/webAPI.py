@@ -35,7 +35,7 @@ def init():
 
   scd = request.args.get("scd")
   if not scd is str:
-    scd = "../open_substation.scd"
+    scd = "../scd/open_substation.scd"
 
   if sim == None:
     sim = circuit_simulator.circuit_simulator(scd,"../schema/SCL.xsd")
@@ -48,7 +48,7 @@ def reinit():
 
   scd = request.args.get("scd")
   if not scd is str:
-    scd = "../open_substation.scd"
+    scd = "../scd/open_substation.scd"
 
   if sim == None:
     sim = circuit_simulator.circuit_simulator(scd,"../schema/SCL.xsd")
