@@ -37,7 +37,10 @@ Feel free to ask questions and provide feedback using the Github issues. Github 
 
 # Getting started the most easy way:
 
-This will allow you to just run the existing showcase  
+This will allow you to just run the existing showcase.
+
+Make sure you have installed the nessecary dependancies (Git and Docker-compose):  
+`$ sudo apt install git docker-compose` 
 
 Create a working folder, e.g. substation;  
   
@@ -57,12 +60,19 @@ Build the Docker containers. Note: this uses the relative path, `../iec61850_ope
 Run the Docker compose file;  
 `$ sudo docker-compose -f substation.yml -f substation.simulator.yml up`  
 
+To stop the Docker compose file;
+`$ sudo docker-compose -f substation.yml -f substation.simulator.yml down`  
+Other methodes to stop the docker-compose file to lead to issues at a restart.
+
 open the client via the browser at;  
 http://127.0.0.1:5000
 
 # Getting started with a modified SCL file:
 
 These steps describe how to generate new configs from a modified SCL file and run them.  
+
+Make sure you have installed the nessecary dependancies (Git,Java and Docker-compose):  
+`$ sudo apt install git default-jre docker-compose` 
 
 Create a working folder, e.g. substation;  
   
@@ -71,7 +81,8 @@ Create a working folder, e.g. substation;
   
 Get the necesarry projects;  
 `$ git clone https://github.com/robidev/iec61850_open_server.git`  
-`$ git clone https://github.com/robidev/iec61850_open_client.git`  
+`$ git clone https://github.com/robidev/iec61850_open_client.git`
+`$ git clone https://github.com/mz-automation/libiec61850.git`  
 
 cd into the server project  
 `$ cd iec61850_open_server`  
