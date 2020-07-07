@@ -8,9 +8,9 @@ DONE:server:     Fix issue with CSWI and PTRC
 server:     implement CILO
 server:     implement fault recorder
 
+DONE:client:     read URCB/BRCB
 client:     reporting instead of polling
 client:     polling-update-time
-client:     read URCB/BRCB
 client:     file services?
 
 BUG: most LN's assume a type of extref in the callback. include more error checking on this, as its not enforced by the SCL or by the loading mechanism
