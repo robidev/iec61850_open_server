@@ -60,6 +60,10 @@ Build the Docker containers. Note: this uses the relative path, `../iec61850_ope
 Run the Docker compose file;  
 `$ sudo docker-compose -f substation.yml -f substation.simulator.yml up`  
 
+To stop the Docker compose file;
+`$ sudo docker-compose -f substation.yml -f substation.simulator.yml down`  
+Other methodes to stop the docker-compose file to lead to issues at a restart.
+
 open the client via the browser at;  
 http://127.0.0.1:5000
 
