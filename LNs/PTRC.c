@@ -16,7 +16,7 @@ void PTRC_input_callback(InputEntry* extRef)
 
   if(extRef->value != NULL)
   {
-    printf("PTRC: trip received\n");
+    //printf("PTRC: trip received\n");
     MmsValue* tripValue = MmsValue_newBoolean(true);
     IedServer_updateAttributeValue(inst->server,inst->Tr_general,tripValue);
     InputValueHandleExtensionCallbacks(inst->Tr_general_callback); //update the associated callbacks with this Data Element

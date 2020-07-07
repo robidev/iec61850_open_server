@@ -55,18 +55,19 @@ void XCBR_close(XCBR * inst)
 //callback for open/close signal from GOOSE-> will trigger process simulator threat
 void XCBR_callback(InputEntry* extRef )
 {
+  XCBR * inst = extRef->callBackParam;
   //only one type of extref is expected: ctlVal
   printf("XCBR: input signal received\n");
   bool state = MmsValue_getBoolean(extRef->value);
-  if(state == true)
+  if(state == true && inst->conducting == true)
   {
-    //printf("open\n");
-    XCBR_open(extRef->callBackParam);
+    printf("open\n");
+    XCBR_open(inst);
   }
   else
   {
-    //printf("close\n");
-    XCBR_close(extRef->callBackParam);
+    printf("close\n");
+    XCBR_close(inst);
   }
 }
 

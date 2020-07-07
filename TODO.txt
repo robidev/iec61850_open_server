@@ -1,8 +1,9 @@
 DONE:fix transformer-value
 DONE:simulation: ensure data from external supply is cached/decoupled, to improve performance
 DONE:docker:     make SCD also load via volume instead of copy
+DONE:server:     define PTOC 500a instant (TODO: 200a 90ms-200ms, )
 
-server:     define PTOC (400a instant, 200a 90ms-200ms, )
+BUG:server:     get PTOC value from settings in SCD, goose is not send/received/parsed correctly
 server:     Fix issue with CSWI and PTRC
 server:     implement CILO
 server:     implement fault recorder
@@ -11,4 +12,7 @@ client:     reporting instead of polling
 client:     polling-update-time
 client:     read URCB/BRCB
 client:     file services?
+
+BUG: most LN's assume a type of extref in the callback. include more error checking on this, as its not enforced by the SCL or by the loading mechanism
+BUG: deallocation is not done nicely
 

@@ -88,38 +88,41 @@ void PTOC_callback_SMV(InputEntry* extRef)
 {
   PTOC* inst = extRef->callBackParam;
   extRef = inst->input->extRefs;//start from the first extref, and check all values
-  
+  int i = 0;
   while(extRef != NULL )
   {
     if(strcmp(extRef->intAddr,"xcbr_stval") != 0 && extRef->value != NULL)//perform for all items except xcbr_stval (meaning: all SMV)
-    { //TODO: make this more specific
-
-      MmsValue * stVal = MmsValue_getElement(extRef->value,0);
-      uint8_t tempBuf[20];
-      Conversions_msTimeToGeneralizedTime2(MmsValue_getUtcTimeInMs(MmsValue_getElement(extRef->value,2)), tempBuf);
-      //printf("val :%lld, q: %08X, time: %s\n", (long long) MmsValue_toInt64(stVal), MmsValue_toUint32(MmsValue_getElement(extRef->value,1)), tempBuf);
-
-      //check if value is outside allowed band
-      //TODO: get values from settings
-      if(MmsValue_toInt64(stVal) > 800000000){
-        printf("PTOC: treshold reached\n");
-        MmsValue* tripValue = MmsValue_newBoolean(true);
-
-        IedServer_updateAttributeValue(inst->server,inst->Op_general,tripValue);
-        InputValueHandleExtensionCallbacks(inst->Op_general_callback); //update the associated callbacks with this Data Element
-
-        MmsValue_delete(tripValue);
-        //if so send to internal PTRC
-      }
-      else
+    {
+      if(i < 4)//only trigger on amps. TODO: ensure it only triggers on Amps lnrefs, instead of relying on the order in the SCD file
       {
-        //printf("PTOC: treshold NOT reached\n");
-        MmsValue* tripValue = MmsValue_newBoolean(false);
-        IedServer_updateAttributeValue(inst->server,inst->Op_general,tripValue);
-        MmsValue_delete(tripValue);
-        //if so send to internal PTRC
+	      MmsValue * stVal = MmsValue_getElement(extRef->value,0);
+	      uint8_t tempBuf[20];
+	      Conversions_msTimeToGeneralizedTime2(MmsValue_getUtcTimeInMs(MmsValue_getElement(extRef->value,2)), tempBuf);
+	      //printf("val :%lld, q: %08X, time: %s\n", (long long) MmsValue_toInt64(stVal), MmsValue_toUint32(MmsValue_getElement(extRef->value,1)), tempBuf);
+
+	      //check if value is outside allowed band
+	      //TODO: get values from settings
+	      if(MmsValue_toInt64(stVal) > 500 || MmsValue_toInt64(stVal) < -500){
+		printf("PTOC: treshold reached\n");
+		MmsValue* tripValue = MmsValue_newBoolean(true);
+
+		IedServer_updateAttributeValue(inst->server,inst->Op_general,tripValue);
+		InputValueHandleExtensionCallbacks(inst->Op_general_callback); //update the associated callbacks with this Data Element
+
+		MmsValue_delete(tripValue);
+		//if so send to internal PTRC
+	      }
+	      else
+	      {
+		//printf("PTOC: treshold NOT reached\n");
+		MmsValue* tripValue = MmsValue_newBoolean(false);
+		IedServer_updateAttributeValue(inst->server,inst->Op_general,tripValue);
+		InputValueHandleExtensionCallbacks(inst->Op_general_callback); //update the associated callbacks with this Data Element
+		MmsValue_delete(tripValue);
+		//if so send to internal PTRC
+	      }
       }
-      
+      i++;
     }
     extRef = extRef->sibling;
   }
@@ -139,7 +142,7 @@ void PTOC_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allIn
 
     while(extRef != NULL)
     {
-      if(strcmp(extRef->intAddr,"Vol4") == 0)//find extref for the last SMV, using the intaddr, so that all values are updated
+      if(strcmp(extRef->intAddr,"Amp3") == 0)//find extref for the last SMV, using the intaddr, so that all values are updated
       {
         extRef->callBack = (callBackFunction) PTOC_callback_SMV;
         extRef->callBackParam = inst;
