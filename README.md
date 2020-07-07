@@ -39,7 +39,7 @@ Feel free to ask questions and provide feedback using the Github issues. Github 
 
 This will allow you to just run the existing showcase.
 
-Make sure you have installed the nessecary dependancies (Git,Java and Docker-compose):
+Make sure you have installed the nessecary dependancies (Git and Docker-compose):  
 `$ sudo apt install git docker-compose` 
 
 Create a working folder, e.g. substation;  
@@ -70,6 +70,9 @@ http://127.0.0.1:5000
 # Getting started with a modified SCL file:
 
 These steps describe how to generate new configs from a modified SCL file and run them.  
+
+Make sure you have installed the nessecary dependancies (Git,Java and Docker-compose):  
+`$ sudo apt install git default-jre docker-compose` 
 
 Create a working folder, e.g. substation;  
   
