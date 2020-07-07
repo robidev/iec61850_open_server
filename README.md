@@ -60,9 +60,9 @@ Build the Docker containers. Note: this uses the relative path, `../iec61850_ope
 Run the Docker compose file;  
 `$ sudo docker-compose -f substation.yml -f substation.simulator.yml up`  
 
-To stop the Docker compose file;
+To stop the Docker compose file;  
 `$ sudo docker-compose -f substation.yml -f substation.simulator.yml down`  
-Other methodes to stop the docker-compose file to lead to issues at a restart.
+Other methodes to stop the docker-compose file to lead to issues at a restart.  
 
 open the client via the browser at;  
 http://127.0.0.1:5000
@@ -81,7 +81,7 @@ Create a working folder, e.g. substation;
   
 Get the necesarry projects;  
 `$ git clone https://github.com/robidev/iec61850_open_server.git`  
-`$ git clone https://github.com/robidev/iec61850_open_client.git`
+`$ git clone https://github.com/robidev/iec61850_open_client.git`  
 `$ git clone https://github.com/mz-automation/libiec61850.git`  
 
 cd into the server project  
