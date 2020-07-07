@@ -29,7 +29,13 @@
 			"functional": "c",
 			"iec61850_model.h": "c",
 			"unordered_map": "c",
-			"cmath": "c"
+			"cmath": "c",
+			"optional": "c",
+			"system_error": "c",
+			"array": "c",
+			"tuple": "c",
+			"type_traits": "c",
+			"utility": "c"
 		}
 	}
 }

@@ -52,20 +52,37 @@ void XCBR_close(XCBR * inst)
   inst->conducting = true;
 }
 
-//callback for open/close signal from GOOSE-> will trigger process simulator threat
-void XCBR_callback(InputEntry* extRef )
+//callback for trip signal -> will trigger process simulator threat
+void XCBR_callback_Tr(InputEntry* extRef )
 {
   XCBR * inst = extRef->callBackParam;
   //only one type of extref is expected: ctlVal
-  printf("XCBR: input signal received\n");
   bool state = MmsValue_getBoolean(extRef->value);
-  if(state == true && inst->conducting == true)
+
+  if(state == true)// && inst->conducting == true)
   {
+    printf("XCBR: input signal received: true\n");
+    printf("open\n");
+    XCBR_open(inst);
+  }
+}
+
+//callback for operate signal -> will trigger process simulator threat
+void XCBR_callback_Op(InputEntry* extRef )
+{
+  XCBR * inst = extRef->callBackParam;
+  //only one type of extref is expected: ctlVal
+  bool state = MmsValue_getBoolean(extRef->value);
+
+  if(state == true)// && inst->conducting == true)
+  {
+    printf("XCBR: input signal received: true\n");
     printf("open\n");
     XCBR_open(inst);
   }
   else
   {
+    printf("XCBR: input signal received: false\n");
     printf("close\n");
     XCBR_close(inst);
   }
@@ -92,8 +109,14 @@ void *XCBR_init(IedServer server, LogicalNode* ln, Input* input ,LinkedList allI
     {
       if(strcmp(extref->intAddr,"Tr") == 0)
       {
-        //register callbacks for GOOSE-subscription
-        extref->callBack = (callBackFunction) XCBR_callback;
+        //register callbacks for poll and GOOSE-subscription
+        extref->callBack = (callBackFunction) XCBR_callback_Tr;
+        extref->callBackParam = inst;//pass instance in param
+      }
+      if(strcmp(extref->intAddr,"Op") == 0)
+      {
+        //register callbacks for poll and GOOSE-subscription
+        extref->callBack = (callBackFunction) XCBR_callback_Op;
         extref->callBackParam = inst;//pass instance in param
       }
 

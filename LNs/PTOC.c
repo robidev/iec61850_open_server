@@ -12,6 +12,8 @@ typedef struct sPTOC
   DataAttribute* Op_general;
   void* Op_general_callback;
   Input* input;
+  int tripTimer;
+  bool trip;
 } PTOC;
 
 void
@@ -103,35 +105,45 @@ void PTOC_callback_SMV(InputEntry* extRef)
 	      //check if value is outside allowed band
 	      //TODO: get values from settings
 	      if(MmsValue_toInt64(stVal) > 500 || MmsValue_toInt64(stVal) < -500){
-		printf("PTOC: treshold reached\n");
-		MmsValue* tripValue = MmsValue_newBoolean(true);
+          printf("PTOC: treshold reached\n");
+          MmsValue* tripValue = MmsValue_newBoolean(true);
 
-		IedServer_updateAttributeValue(inst->server,inst->Op_general,tripValue);
-		InputValueHandleExtensionCallbacks(inst->Op_general_callback); //update the associated callbacks with this Data Element
+          IedServer_updateAttributeValue(inst->server,inst->Op_general,tripValue);
+          InputValueHandleExtensionCallbacks(inst->Op_general_callback); //update the associated callbacks with this Data Element
 
-		MmsValue_delete(tripValue);
-		//if so send to internal PTRC
-	      }
-	      else
-	      {
-		//printf("PTOC: treshold NOT reached\n");
-		MmsValue* tripValue = MmsValue_newBoolean(false);
-		IedServer_updateAttributeValue(inst->server,inst->Op_general,tripValue);
-		InputValueHandleExtensionCallbacks(inst->Op_general_callback); //update the associated callbacks with this Data Element
-		MmsValue_delete(tripValue);
-		//if so send to internal PTRC
-	      }
+          MmsValue_delete(tripValue);
+          inst->tripTimer = 0;
+          inst->trip = true;
+          //if so send to internal PTRC
+	      }    
       }
       i++;
     }
     extRef = extRef->sibling;
   }
+
+  if(inst->tripTimer > 200 && inst->trip == true)
+  {
+    //printf("PTOC: treshold NOT reached\n");
+    MmsValue* tripValue = MmsValue_newBoolean(false);
+
+    IedServer_updateAttributeValue(inst->server,inst->Op_general,tripValue);
+    InputValueHandleExtensionCallbacks(inst->Op_general_callback); //update the associated callbacks with this Data Element
+
+    MmsValue_delete(tripValue);
+    //if so send to internal PTRC
+    inst->tripTimer = 0;
+    inst->trip = false;
+  }
+  inst->tripTimer++;
 }
 
 void PTOC_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allInputValues)
 {
   PTOC* inst = (PTOC *) malloc(sizeof(PTOC));//create new instance with MALLOC
   inst->server = server;
+  inst->tripTimer = 0;
+  inst->trip = false;
   inst->Op_general = (DataAttribute*) ModelNode_getChild((ModelNode*) ln, "Op.general");//the node to operate on
   inst->Op_general_callback = _findAttributeValueEx(inst->Op_general, allInputValues);
   inst->input = input;

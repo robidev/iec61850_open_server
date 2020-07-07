@@ -7,20 +7,35 @@ typedef struct sPTRC
   IedServer server;
   DataAttribute* Tr_general;
   void * Tr_general_callback;
+  bool tripstate;
 } PTRC;
 
 //receive trip command from input LN's
 void PTRC_input_callback(InputEntry* extRef)
 {
   PTRC* inst = extRef->callBackParam;
-
+  
   if(extRef->value != NULL)
   {
-    //printf("PTRC: trip received\n");
-    MmsValue* tripValue = MmsValue_newBoolean(true);
-    IedServer_updateAttributeValue(inst->server,inst->Tr_general,tripValue);
-    InputValueHandleExtensionCallbacks(inst->Tr_general_callback); //update the associated callbacks with this Data Element
-    MmsValue_delete(tripValue);
+    bool state = MmsValue_getBoolean(extRef->value);
+    if( state == true)//inst->tripstate == false &&
+    {
+      printf("PTRC: trip from PTOC\n");
+      MmsValue* tripValue = MmsValue_newBoolean(true);
+      IedServer_updateAttributeValue(inst->server,inst->Tr_general,tripValue);
+      InputValueHandleExtensionCallbacks(inst->Tr_general_callback); //update the associated callbacks with this Data Element
+      MmsValue_delete(tripValue);
+      inst->tripstate == true;
+    }
+    else//if(inst->tripstate == true && state == false)
+    {
+      printf("PTRC: trip cleared from PTOC\n");
+      MmsValue* tripValue = MmsValue_newBoolean(false);
+      IedServer_updateAttributeValue(inst->server,inst->Tr_general,tripValue);
+      InputValueHandleExtensionCallbacks(inst->Tr_general_callback); //update the associated callbacks with this Data Element
+      MmsValue_delete(tripValue);
+      inst->tripstate == false;
+    }
   }
 }
 
@@ -42,6 +57,7 @@ void PTRC_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allIn
 {
   PTRC* inst = (PTRC *) malloc(sizeof(PTRC));//create new instance with MALLOC
   inst->server = server;
+  inst->tripstate = false;
   inst->Tr_general = (DataAttribute*) ModelNode_getChild((ModelNode*) ln, "Tr.general");//the node to operate on, to which the XCBR is subscribed
   inst->Tr_general_callback = _findAttributeValueEx(inst->Tr_general, allInputValues);
  

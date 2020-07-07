@@ -42,5 +42,24 @@
                 }
             ]
         }
+        {
+            "name": "(gdb) Launch IED2",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/open_server",
+            "args": ["lo","8102","cfg/IED2_PTOC.cfg","cfg/IED2_PTOC.ext"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
     ]
 }
