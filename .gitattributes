@@ -1,0 +1,3 @@
+#correct misidentified SLC file
+scd/*.scd linguist-language=XML
+
