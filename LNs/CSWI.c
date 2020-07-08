@@ -129,7 +129,7 @@ static ControlHandlerResult controlHandlerForBinaryOutput(ControlAction action, 
     if(inst->timeout < 1000)//TODO: check for elapsed time instead of iterations
     {
       Thread_sleep(10);
-      printf("CSWI: waiting on status-change of pysical equipment...\n");
+      //printf("CSWI: waiting on status-change of pysical equipment...\n");
       return CONTROL_RESULT_WAITING;
     }
     inst->timeout = 0;
