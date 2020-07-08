@@ -228,6 +228,13 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
             </DOI>
             <Inputs>
               <ExtRef intAddr="xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XSWI" lnInst="2" doName="Pos" daName="stVal" serviceType="Poll" />
+              <ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll" />
+              <ExtRef intAddr="EnaCls" desc="interlock_close" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll" />
+            </Inputs>
+          </LN>
+          <LN lnClass="CILO" lnType="CILO1" inst="1" prefix="">
+            <Inputs>
+              <ExtRef intAddr="stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll" />
             </Inputs>
           </LN>
         </LDevice>
@@ -448,6 +455,15 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       <DO name="PhyNam" type="DPL_1_PhyNam" />
       <DO name="PhyHealth" type="INS_1_Beh" />
       <DO name="Proxy" type="SPS_1_Proxy" />
+    </LNodeType>
+
+    <LNodeType id="CILO1" lnClass="CILO">
+      <DO name="Mod" type="INC_1_Mod" />
+      <DO name="Beh" type="INS_1_Beh" />
+      <DO name="Health" type="INS_1_Beh" />
+      <DO name="NamPlt" type="LPL_1_NamPlt" />
+      <DO name="EnaOpn" type="SPS_1_Proxy" />
+      <DO name="EnaCls" type="SPS_1_Proxy" />
     </LNodeType>
 
     <LNodeType id="PTRC1" lnClass="PTRC">

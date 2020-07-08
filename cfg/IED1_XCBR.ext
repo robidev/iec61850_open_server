@@ -29,6 +29,14 @@ LN(CSWI2){
 CL(CSWI);
 IN{
 ER(xcbr_status IED1_XCBRGenericIO/XSWI2.Pos.stVal xcbr_stval Poll IED1_XCBR/);
+ER(interlock_open IED1_XCBRGenericIO/CILO1.EnaOpn.stVal EnaOpn Poll IED1_XCBR/);
+ER(interlock_close IED1_XCBRGenericIO/CILO1.EnaCls.stVal EnaCls Poll IED1_XCBR/);
+}
+}
+LN(CILO1){
+CL(CILO);
+IN{
+ER(xcbr_status IED1_XCBRGenericIO/XCBR1.Pos.stVal stval Poll IED1_XCBR/);
 }
 }
 }

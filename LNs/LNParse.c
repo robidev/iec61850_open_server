@@ -65,14 +65,14 @@ void attachLogicalNodes(IedServer server, IedModel_extensions* model, LinkedList
     {
       CSWI_init(server, lnClass->parent, input, allInputValues);
     }
+    else if(strcmp(lnClass->lnClass,"CILO") == 0)
+    {
+      CILO_init(server, lnClass->parent, input, allInputValues);
+    }
     //stubs
     else if(strcmp(lnClass->lnClass,"RADR") == 0)
     {
       RADR_init(input);
-    }
-    else if(strcmp(lnClass->lnClass,"CILO") == 0)
-    {
-      CILO_init(input);
     }
     else
     {

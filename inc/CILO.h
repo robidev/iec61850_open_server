@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-void CILO_init(Input* input);
+void CILO_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allInputValues);
 
 #ifdef __cplusplus
 }

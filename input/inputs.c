@@ -249,6 +249,12 @@ LinkedList subscribeToLocalDAInputs(IedModel_extensions* self, IedModel* model, 
         char buf1 [130];
         StringUtils_copyStringToBuffer(extRef->Ref, buf1);
         separator = strchr(buf1, '/');
+        if(separator == NULL)
+        {
+          printf("ERROR: could not find IED name in %s\n", buf1);
+          extRef = extRef->sibling;
+          continue;
+        }
         *separator = 0;
         
         if(strcmp_p(buf1, iedNameString) == 0)// IED is our own IED, link the mmsValue
