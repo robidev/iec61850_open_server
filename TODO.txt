@@ -35,4 +35,9 @@ KNOWN BUGS:
 BUG: most LN's assume a type of extref in the callback. include more error checking on this, as its not enforced by the SCL or by the loading mechanism
 BUG: deallocation is not done nicely
 BUG: scl items cannot contain spaces, not even desc. elements!
+BUG: stack: lastapplerror is always set to unknown instead depending on the operation in the cmdterm
+	#define CONTROL_ERROR_NO_ERROR 0
+	#define CONTROL_ERROR_UNKOWN 1
+	#define CONTROL_ERROR_TIMEOUT_TEST 2
+	#define CONTROL_ERROR_OPERATOR_TEST 3
 

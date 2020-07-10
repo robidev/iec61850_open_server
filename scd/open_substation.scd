@@ -203,7 +203,7 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
           <LN lnClass="CSWI" lnType="CSWIa" inst="1" prefix="">
             <DOI name="Pos">
               <DAI name="ctlModel">
-                <Val>direct-with-enhanced-security</Val>
+                <Val>sbo-with-enhanced-security</Val>
               </DAI>
             </DOI>
             <Inputs>
@@ -223,7 +223,7 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
           <LN lnClass="CSWI" lnType="CSWIa" inst="2" prefix="">
             <DOI name="Pos">
               <DAI name="ctlModel">
-                <Val>direct-with-enhanced-security</Val>
+                <Val>sbo-with-enhanced-security</Val>
               </DAI>
             </DOI>
             <Inputs>

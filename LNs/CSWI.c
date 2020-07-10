@@ -115,6 +115,7 @@ static ControlHandlerResult controlHandlerForBinaryOutput(ControlAction action, 
     if((state == 1 && inst->currentValue == DBPOS_OFF) || (state == 0 && inst->currentValue == DBPOS_ON))
     {
       inst->timeout = 0;
+      ControlAction_setAddCause(action, ADD_CAUSE_POSITION_REACHED);
       return CONTROL_RESULT_OK;
     }
     if(inst->currentValue == DBPOS_BAD_STATE)// if desired state is not reached in time;
