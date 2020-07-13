@@ -10,17 +10,18 @@ DONE:client:     reporting instead of polling
 
 server:     implement PDIF ->measure I(*U)-I(*U) > treshold
 server:     implement PDIS ->measure (U*I) > treshold
-server:     implement RREC
-server:     implement RDRE/RDRS
-server:     implement quality+timestamp
 server:     implement opOpn/opCls support in xcbr/xswi/cswi
+server:     implement RREC; recloser function
+server:     implement RDRE/RDRS; implement fault recorder(comtrade file generation)
+server:     implement quality+timestamp for most nodes
 server:     improve settings-usage in various models(ptoc, ptrc, cswi)
-server:     implement fault recorder(comtrade file generation)
 server:     check for 'assumptions' in various LN implementations
 server:     feature: implement other CTL models (enum, int, single-point)
 server:     feature: python based LN implementation
 server:     feature: file-transfer services
 server:     feature: mod/beh handling(LLN0, LN)
+server:     profiling certain functions
+server:     detect missed packets(sqnum)
 
 client:     polling-update-time
 client:     feature: file services?

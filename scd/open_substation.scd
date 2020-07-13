@@ -187,7 +187,7 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
               <FCDA ldInst="GenericIO" lnClass="XCBR" fc="ST" lnInst="1" doName="Pos" daName="stVal" />
             </DataSet>
             <ReportControl name="EventsRCB" confRev="1" datSet="Events" rptID="Events1" buffered="true" intgPd="1000" bufTime="50">
-              <TrgOps period="true" dchg="True"/>
+              <TrgOps period="true" dchg="true"/>
               <OptFields seqNum="true" timeStamp="true" dataSet="true" reasonCode="true" configRef="true" />
               <RptEnabled max="1" />
             </ReportControl>
