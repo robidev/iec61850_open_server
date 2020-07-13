@@ -6,10 +6,13 @@ DONE:server:     get PTOC value from settings in SCD, goose is not send/received
 DONE:server:     Fix issue with CSWI and PTRC
 DONE:client:     read URCB/BRCB
 DONE:server:     implement CILO
+DONE:client:     reporting instead of polling
 
 server:     implement PDIF ->measure I(*U)-I(*U) > treshold
 server:     implement PDIS ->measure (U*I) > treshold
 server:     implement RREC
+server:     implement RDRE/RDRS
+server:     implement quality+timestamp
 server:     implement opOpn/opCls support in xcbr/xswi/cswi
 server:     improve settings-usage in various models(ptoc, ptrc, cswi)
 server:     implement fault recorder(comtrade file generation)
@@ -19,10 +22,13 @@ server:     feature: python based LN implementation
 server:     feature: file-transfer services
 server:     feature: mod/beh handling(LLN0, LN)
 
-client:     reporting instead of polling
 client:     polling-update-time
 client:     feature: file services?
 client:     cmdterm logging+addcause
+client:     read/write DO instead of DA
+client:     handle quality/timestamp
+client:     manual add IED
+client:     online/offline indication of IED's
 client:     feature: generate SVG from SCD(start on top from IFL, and process elements, working downward based on connections, use templates for mimics, measurement, animation. resolve address+lnref
 
 
@@ -33,7 +39,7 @@ scada:      implement SCADA system (scrollable-map[logic, GIS,], event/alarm-vie
 
 KNOWN BUGS:
 BUG: most LN's assume a type of extref in the callback. include more error checking on this, as its not enforced by the SCL or by the loading mechanism
-BUG: deallocation is not done nicely
+BUG: deallocation of mem. is not done nicely
 BUG: scl items cannot contain spaces, not even desc. elements!
 BUG: stack: lastapplerror is always set to unknown instead depending on the operation in the cmdterm
 	#define CONTROL_ERROR_NO_ERROR 0
