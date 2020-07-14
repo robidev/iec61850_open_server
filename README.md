@@ -28,6 +28,18 @@ This is provided as a stand-alone project, but is used in the docker environment
 # The frontend
 ![Alt text](screenshot.png?raw=true "Screenshot of the frontend")
 
+# Usage
+When you follow the guide below; "Getting started the most easy way" you are presented with the IEC61850 client in your browser, with the instantiated IED's. The IED's are instantiated by 
+the scd file in [a relative link](scd/open_substation.scd)  
+In the default state the circuit-breaker and switch are conducting, the 2 merging units are publishing(one for each side of the transformer), and the PTOC is checking if current is too high.
+However, you can see in the HMI that current and voltage are 0. This is because the simulation is not running yet.  
+To start the simulation, press the 'open simulation tab', wait for the initialisation to finish, and press "play". After a few seconds you should see nominal values in the HMI.  
+You can manually open/close the circuit breaker and disconnector. However, the disconnector is protected by interlocking, and cannot open/close if the circuitbreaker is closed.  
+Press the play/pause button in the simualtion tab to pause the simulation. You can also modify simulation values by pressing 'modify' in the simulation tab, and choose the elements
+in the simulation you wish to modify value of. This way you can change the feed-in voltage per phase, and modify the load per-phase.  
+If you want to manually modify a setting in an IED, you can click it's IP in the bottom field of the main client window. This will cause the IED field to display the IED's datamodel.
+You can click the data-element you wish to modify, and a write dialog will be displayed.  
+
 # License
 This software is licensed under the Apache 2.0 License where applicable. Please note that the libiec61850 is licensed differently (GPLv3), and this license will prevail for components that use this library. 
 
