@@ -48,6 +48,11 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
           <Terminal connectivityNode="S12/E1/W1/BB1" substationName="S12" voltageLevelName="E1" bayName="W1" cNodeName="BB1"/>
           <Terminal connectivityNode="S12/E1/Q1/L1" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L1"/>
         </ConductingEquipment>
+        <ConductingEquipment name="QB2" type="DIS">
+          <LNode lnInst="3" lnClass="XSWI" ldInst="GenericIO" iedName="IED1_XCBR"/>
+          <Terminal connectivityNode="S12/E1/W1/BB1" substationName="S12" voltageLevelName="E1" bayName="W1" cNodeName="BB1"/>
+          <Terminal connectivityNode="S12/E1/Q1/GND" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="GND"/>
+        </ConductingEquipment>
         <ConductingEquipment name="U1" type="VTR">
           <Terminal connectivityNode="S12/E1/Q1/L2" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L2"/>
           <SubEquipment name="A" phase="A">
@@ -76,6 +81,9 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
         <ConnectivityNode name="L1" pathName="S12/E1/Q1/L1"/>
         <ConnectivityNode name="L2" pathName="S12/E1/Q1/L2"/>
         <ConnectivityNode name="L3" pathName="S12/E1/Q1/L3"/>
+        <ConnectivityNode name="GND" pathName="S12/E1/Q1/GND">
+          <Private type="load">rload=1000000</Private>
+        </ConnectivityNode>
       </Bay>
       <Bay name="W1">
         <ConnectivityNode name="BB1" pathName="S12/E1/W1/BB1">
@@ -195,6 +203,11 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
           </LN0>
           <LN lnClass="LPHD" lnType="LPHD1" inst="1" prefix="" />
           <LN lnClass="XCBR" lnType="XCBR1" inst="1" prefix="">
+            <DOI name="Pos">
+              <DAI name="stVal">
+                <Val>on</Val>
+              </DAI>
+            </DOI>
             <Inputs>
               <ExtRef intAddr="Tr" desc="Trip" iedName="IED2_PTOC" ldInst="GenericIO" lnClass="PTRC" lnInst="1" doName="Tr" daName="general" serviceType="GOOSE" srcLDInst="GenericIO" srcLNClass="LLN0" srcCBName="GoCB" />
               <ExtRef intAddr="Op" desc="Operate" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="CSWI" lnInst="1" doName="Pos" daName="opOk" serviceType="Poll" />
@@ -214,6 +227,11 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
             <DOI name="SwTyp">
               <DAI name="stVal">
                 <Val>Disconnector</Val>
+              </DAI>
+            </DOI>
+            <DOI name="Pos">
+              <DAI name="stVal">
+                <Val>on</Val>
               </DAI>
             </DOI>
             <Inputs>
@@ -237,6 +255,40 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
               <ExtRef intAddr="stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll" />
             </Inputs>
           </LN>
+
+          <LN lnClass="XSWI" lnType="XSWI1" inst="3" prefix="">
+            <DOI name="SwTyp">
+              <DAI name="stVal">
+                <Val>Disconnector</Val>
+              </DAI>
+            </DOI>
+            <DOI name="Pos">
+              <DAI name="stVal">
+                <Val>off</Val>
+              </DAI>
+            </DOI>
+            <Inputs>
+              <ExtRef intAddr="Tr" desc="Operate" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="CSWI" lnInst="3" doName="Pos" daName="opOk" serviceType="Poll" />
+            </Inputs>
+          </LN>
+          <LN lnClass="CILO" lnType="CILO1" inst="2" prefix="">
+            <Inputs>
+              <ExtRef intAddr="stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XSWI" lnInst="2" doName="Pos" daName="stVal" serviceType="Poll" />
+            </Inputs>
+          </LN>
+          <LN lnClass="CSWI" lnType="CSWIa" inst="3" prefix="">
+            <DOI name="Pos">
+              <DAI name="ctlModel">
+                <Val>sbo-with-enhanced-security</Val>
+              </DAI>
+            </DOI>
+            <Inputs>
+              <ExtRef intAddr="xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XSWI" lnInst="3" doName="Pos" daName="stVal" serviceType="Poll" />
+              <ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="CILO" lnInst="2" doName="EnaOpn" daName="stVal" serviceType="Poll" />
+              <ExtRef intAddr="EnaCls" desc="interlock_close" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="CILO" lnInst="2" doName="EnaCls" daName="stVal" serviceType="Poll" />
+            </Inputs>
+          </LN>
+
         </LDevice>
       </Server>
     </AccessPoint>

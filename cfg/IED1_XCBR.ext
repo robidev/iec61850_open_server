@@ -39,6 +39,26 @@ IN{
 ER(xcbr_status IED1_XCBRGenericIO/XCBR1.Pos.stVal stval Poll IED1_XCBR/);
 }
 }
+LN(XSWI3){
+CL(XSWI);
+IN{
+ER(Operate IED1_XCBRGenericIO/CSWI3.Pos.opOk Tr Poll IED1_XCBR/);
+}
+}
+LN(CILO2){
+CL(CILO);
+IN{
+ER(xcbr_status IED1_XCBRGenericIO/XSWI2.Pos.stVal stval Poll IED1_XCBR/);
+}
+}
+LN(CSWI3){
+CL(CSWI);
+IN{
+ER(xcbr_status IED1_XCBRGenericIO/XSWI3.Pos.stVal xcbr_stval Poll IED1_XCBR/);
+ER(interlock_open IED1_XCBRGenericIO/CILO2.EnaOpn.stVal EnaOpn Poll IED1_XCBR/);
+ER(interlock_close IED1_XCBRGenericIO/CILO2.EnaCls.stVal EnaCls Poll IED1_XCBR/);
+}
+}
 }
 SD(IED1_XCBRGenericIO/XCBR1.Pos.stVal Events 4096 010ccd010001 IED1_XCBRGenericIO/LLN0$GO$gcbEvents events);
 SD(IED2_PTOCGenericIO/GGIO1.SPCSO1.stVal Events 4098 010ccd010002 IED2_PTOCGenericIO/LLN0$GO$gcbEvents events);
