@@ -32,6 +32,12 @@ This is provided as a stand-alone project, but is used in the docker environment
 When you follow the guide below; "Getting started the most easy way" you are presented with the IEC61850 client in your browser, with the instantiated IED's. The IED's are instantiated by 
 the scd file in [scd/open_substation.scd](scd/open_substation.scd)  
 
+You can click the circuit-breaker square(CBR), or the disconnector square(DIS) to open a dialog for operating the element. As it is currently configured as SBO with enhanced security,
+you will need to press, select, and then operate. The value in the dialog is prepared to be the opposite of te current value, but can be changed by hand. A succesfull select/operate will
+provide feedback in green. If there is an error, it will be shown in red. For example, you will get an error if you try to open the disconnector under load. 
+This is because the disconnector will not open or close, if the circuit breaker is engaged due to interlocking(CILO logical node). To operate the disconnector, you should first open the 
+circuit breaker.  
+
 In the default state the circuit-breaker and switch are conducting, the 2 merging units are publishing(one for each side of the transformer), and the PTOC is checking if current is too high.
 However, you can see in the HMI that current and voltage are 0. This is because the simulation is not running yet.  
 To start the simulation, press the 'open simulation tab', wait for the initialisation to finish, and press "play". After a few seconds you should see nominal values in the HMI.  
