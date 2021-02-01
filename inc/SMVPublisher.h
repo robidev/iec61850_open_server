@@ -3,7 +3,7 @@
 
 #include "iec61850_model_extensions.h"
 #include "inputs_api.h"
-#include "sv_publisher.h"
+#include <libiec61850/sv_publisher.h>
 
 #ifdef __cplusplus
 extern "C" {

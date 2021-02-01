@@ -26,14 +26,14 @@
 
 
 #include "libiec61850_platform_includes.h"
-#include "iec61850_server.h"
-#include "iec61850_common.h"
-#include "iec61850_model.h"
+#include <libiec61850/iec61850_server.h>
+#include <libiec61850/iec61850_common.h>
+#include <libiec61850/iec61850_model.h>
 
 #include "iec61850_model_extensions.h"
 
-#include "goose_receiver.h"
-#include "sv_subscriber.h"
+#include <libiec61850/goose_receiver.h>
+#include <libiec61850/sv_subscriber.h>
 
 #ifdef __cplusplus
 extern "C" {

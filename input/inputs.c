@@ -21,11 +21,11 @@
  *  See COPYING file for the complete license text.
  */
 
-#include "iec61850_server.h"
+#include <libiec61850/iec61850_server.h>
 #include "libiec61850_platform_includes.h"
 #include "inputs_api.h"
-#include "goose_subscriber.h"
-
+#include <libiec61850/goose_subscriber.h>
+#include "lib_memory.h"
 
 int strcmp_p(const char* str1, const char* str2);
 

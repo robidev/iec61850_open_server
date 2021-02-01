@@ -21,9 +21,9 @@
  *  See COPYING file for the complete license text.
  */
 
-#include "iec61850_server.h"
-#include "iec61850_dynamic_model.h"
-#include "iec61850_config_file_parser.h"
+#include <libiec61850/iec61850_server.h>
+#include <libiec61850/iec61850_dynamic_model.h>
+#include <libiec61850/iec61850_config_file_parser.h>
 
 #include "iec61850_model_extensions.h"
 #include "iec61850_dynamic_model_extensions.h"

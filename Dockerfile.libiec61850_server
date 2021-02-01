@@ -3,22 +3,27 @@ FROM debian:stable-20210111-slim
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
               git \
-              build-essential \            
+              build-essential \   
+              cmake \         
          && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=
 
 RUN git clone -b v1.4 https://github.com/mz-automation/libiec61850.git /tmp/libiec61850
 
-RUN cd /tmp/libiec61850 && make \
-        && make examples 
+RUN cd /tmp/libiec61850 && cmake . \
+        && make \
+        && make install
 
 #RUN git clone -b v1.4 https://github.com/robidev/iec61850_open_server.git /tmp/iec61850_open_server
 COPY . /tmp/iec61850_open_server
 
-RUN cd /tmp/iec61850_open_server && make
+RUN cd /tmp/iec61850_open_server && cmake . \
+       && make
 
 WORKDIR /srv
 RUN cd /tmp/iec61850_open_server && cp open_server /srv/libiec61850_server
+
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 
 CMD ["./libiec61850_server","eth0"]
 

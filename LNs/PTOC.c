@@ -1,6 +1,6 @@
 #include "iec61850_model_extensions.h"
 #include "inputs_api.h"
-#include "hal_thread.h"
+#include <libiec61850/hal_thread.h>
 //#include "../static_model.h"
 #include "PTOC.h"
 

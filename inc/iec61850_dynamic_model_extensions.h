@@ -24,9 +24,9 @@
 #ifndef DYNAMIC_MODEL_EXTENSIONS_H_
 #define DYNAMIC_MODEL_EXTENSIONS_H_
 
-#include "iec61850_model.h"
+#include <libiec61850/iec61850_model.h>
 #include "iec61850_model_extensions.h"
-#include "iec61850_cdc.h"
+#include <libiec61850/iec61850_cdc.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,12 +1,12 @@
-#include "iec61850_server.h"
+#include <libiec61850/iec61850_server.h>
 #include "SMVPublisher.h"
 
-#include "iec61850_model.h"
+#include <libiec61850/iec61850_model.h>
 #include "iec61850_model_extensions.h"
 #include "inputs_api.h"
 #include "simulation_config.h"
 
-#include "hal_thread.h"
+#include <libiec61850/hal_thread.h>
 #include <math.h>
 
 

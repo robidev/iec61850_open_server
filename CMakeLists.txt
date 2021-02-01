@@ -20,24 +20,6 @@ test_big_endian(PLATFORM_IS_BIGENDIAN)
 
 include_directories(
     ./inc
-    ../libiec61850/src
-    ../libiec61850/hal/inc
-    ../libiec61850/config
-    ../libiec61850/src/common/inc
-    ../libiec61850/src/goose
-    ../libiec61850/src/sampled_values
-    ../libiec61850/src/hal/inc
-    ../libiec61850//src/iec61850/inc
-    ../libiec61850/src/iec61850/inc_private
-    ../libiec61850/src/mms/inc
-    ../libiec61850/src/mms/inc_private
-    ../libiec61850/src/mms/iso_mms/asn1c
-    ../libiec61850/src/logging
-)
-
-link_directories(
-   ../libiec61850/src
-   ../libiec61850/hal
 )
 
 set(open_server_SRCS

@@ -24,10 +24,10 @@
 #include "iec61850_model_extensions.h"
 #include "iec61850_dynamic_model_extensions.h"
 
-#include "iec61850_server.h"
+#include <libiec61850/iec61850_server.h>
 #include "libiec61850_platform_includes.h"
 #include "stack_config.h"
-
+#include "lib_memory.h"
 
 IedModel_extensions*
 IedModel_extensions_create()

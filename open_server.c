@@ -10,10 +10,10 @@
 #include "iec61850_dynamic_model_extensions.h"
 #include "iec61850_config_file_parser_extensions.h"
 #include "LNParse.h"
-#include "sv_publisher.h"
+#include <libiec61850/sv_publisher.h>
 
-#include "iec61850_server.h"
-#include "hal_thread.h" /* for Thread_sleep() */
+#include <libiec61850/iec61850_server.h>
+#include <libiec61850/hal_thread.h> /* for Thread_sleep() */
 #include "simulation_config.h"
 
 #include <signal.h>
@@ -30,7 +30,7 @@
 #include <netinet/in.h> 
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros 
 
-#include "hal_socket.h"
+#include <libiec61850/hal_socket.h>
 
 #define PORT 65000
 #define SOCKETS 65
@@ -331,7 +331,7 @@ int main(int argc, char** argv) {
 	iedServer = IedServer_create(iedModel_local);
 
 	GooseReceiver GSEreceiver = GooseReceiver_create();
-    SVReceiver SMVreceiver = SVReceiver_create();
+	SVReceiver SMVreceiver = SVReceiver_create();
 
 	/* set GOOSE interface for all GOOSE publishers (GCBs) */
 	IedServer_setGooseInterfaceId(iedServer, ethernetIfcID);

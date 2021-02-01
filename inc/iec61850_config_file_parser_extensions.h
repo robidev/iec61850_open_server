@@ -24,7 +24,7 @@
 #ifndef CONFIG_FILE_PARSER_EXTENSIONS_H_
 #define CONFIG_FILE_PARSER_EXTENSIONS_H_
 
-#include "iec61850_model.h"
+#include <libiec61850/iec61850_model.h>
 #include "iec61850_model_extensions.h"
 
 #ifdef __cplusplus

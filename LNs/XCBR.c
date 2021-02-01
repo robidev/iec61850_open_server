@@ -1,7 +1,7 @@
 #include "iec61850_model_extensions.h"
-#include "iec61850_server.h"
+#include <libiec61850/iec61850_server.h>
 #include "inputs_api.h"
-#include "hal_thread.h"
+#include <libiec61850/hal_thread.h>
 #include "simulation_config.h"
 #include <sys/socket.h> 
 #include "XCBR.h"

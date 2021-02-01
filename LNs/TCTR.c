@@ -2,8 +2,8 @@
 #include "inputs_api.h"
 #include "TCTR.h"
 
-#include "iec61850_server.h"
-#include "hal_thread.h"
+#include <libiec61850/iec61850_server.h>
+#include <libiec61850/hal_thread.h>
 #include <sys/socket.h> 
 
 typedef void (*simulationFunction) (int sd, char * buffer, void* param);

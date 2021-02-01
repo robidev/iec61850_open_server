@@ -24,8 +24,8 @@
 #ifndef MODEL_EXTENSIONS_H_
 #define MODEL_EXTENSIONS_H_
 
-#include "iec61850_common.h"
-#include "iec61850_model.h"
+#include <libiec61850/iec61850_common.h>
+#include <libiec61850/iec61850_model.h>
 
 #ifdef __cplusplus
 extern "C" {
