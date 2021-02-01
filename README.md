@@ -100,7 +100,7 @@ Create a working folder, e.g. substation;
 `$ mkdir ~/substation`  
 `$ cd ~/substation`  
   
-Get the necesarry projects;  
+Get the necessary projects;  
 `$ git clone https://github.com/robidev/iec61850_open_server.git`  
 `$ git clone https://github.com/robidev/iec61850_open_client.git`  
 `$ git clone https://github.com/mz-automation/libiec61850.git`  
@@ -108,11 +108,11 @@ Get the necesarry projects;
 cd into the server project  
 `$ cd iec61850_open_server`  
   
-Generate the config files from the scd-file;  
-`$ make model`  
+Generate the config files from the scd-file;  (you need libiec61850 for this located in the parent directory)
+`$ ./make_model.sh`  
   
 Generate the compose file from the scd-file;  
-`$ make compose`  
+`$ ./make_compose.sh`  
   
 Build the Docker containers. Note: this uses the relative path, `../iec61850_open_client` so ensure you have this;  
 `$ sudo docker-compose -f substation.yml -f substation.simulator.yml build`  
