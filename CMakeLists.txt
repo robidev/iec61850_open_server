@@ -7,7 +7,10 @@ if(DEFINED ENV{TOOLCHAIN})
     set(CMAKE_AR	"$ENV{TOOLCHAIN}ar" CACHE FILEPATH "CW archiver" FORCE)
 endif()
 
+SET(CMAKE_INSTALL_PREFIX /opt)
+
 project(iec61850_open_server)
+
 ENABLE_TESTING()
 
 # feature checks
@@ -55,3 +58,43 @@ target_link_libraries(open_server
     pthread
     m
 )
+
+# NOTE: this project uses a dual license scheme, as libiec61850 is covered by GPL 3.0
+# this means that any software that incorporates this library should adhere to GPL 3.0 as well
+# however, the circuit-simulator does not use libiec61850, and therefore this is apache licensed
+# the circuit-simulator should normally be run on a separate, non-realtime test machine, and is 
+# therefore ommitted from the install script
+install ( TARGETS open_server DESTINATION ${CMAKE_PROJECT_NAME} )
+
+install ( FILES Dockerfile.libiec61850_server DESTINATION ${CMAKE_PROJECT_NAME} )
+
+install ( FILES make_model.sh DESTINATION ${CMAKE_PROJECT_NAME} 
+    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_EXECUTE WORLD_READ
+)
+install ( FILES make_compose.sh DESTINATION ${CMAKE_PROJECT_NAME} 
+    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ WORLD_EXECUTE WORLD_READ
+)
+install ( FILES README.md DESTINATION ${CMAKE_PROJECT_NAME} )
+
+install ( FILES COPYING DESTINATION ${CMAKE_PROJECT_NAME} )
+
+install ( FILES model_input_generator/genconfig.jar
+    DESTINATION ${CMAKE_PROJECT_NAME}/model_input_generator 
+    PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ GROUP_WRITE WORLD_READ 
+)
+install ( FILES model_input_generator/genconfig_input.jar 
+    DESTINATION ${CMAKE_PROJECT_NAME}/model_input_generator
+    PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ GROUP_WRITE WORLD_READ 
+)
+install ( FILES model_input_generator/gendocker.jar
+    DESTINATION ${CMAKE_PROJECT_NAME}/model_input_generator
+    PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ GROUP_WRITE WORLD_READ 
+)
+
+install ( DIRECTORY cfg DESTINATION ${CMAKE_PROJECT_NAME} )
+install ( DIRECTORY scd DESTINATION ${CMAKE_PROJECT_NAME} ) 
+install ( DIRECTORY schema DESTINATION ${CMAKE_PROJECT_NAME} ) 
+
+
+
+
