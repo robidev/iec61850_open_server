@@ -7,8 +7,6 @@ if(DEFINED ENV{TOOLCHAIN})
     set(CMAKE_AR	"$ENV{TOOLCHAIN}ar" CACHE FILEPATH "CW archiver" FORCE)
 endif()
 
-SET(CMAKE_INSTALL_PREFIX /opt)
-
 project(iec61850_open_server)
 
 ENABLE_TESTING()
