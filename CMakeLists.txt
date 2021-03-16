@@ -7,7 +7,7 @@ if(DEFINED ENV{TOOLCHAIN})
     set(CMAKE_AR	"$ENV{TOOLCHAIN}ar" CACHE FILEPATH "CW archiver" FORCE)
 endif()
 
-project(iec61850_open_server)
+project(iec61850_open_server-dpdk)
 
 ENABLE_TESTING()
 
@@ -65,10 +65,10 @@ SET(DPDK_LIBS
 	rte_pmd_ena  rte_pmd_nfp      rte_stack          rte_bus_vdev  rte_bus_pci        rte_pci              rte_cryptodev
 )
 
-add_executable(open_server
+add_executable(open_server-dpdk
   ${open_server_SRCS}
 )
-target_link_libraries (open_server
+target_link_libraries (open_server-dpdk
   -Wl,--whole-archive -Wl,--start-group ${DPDK_LIBS} -Wl,--end-group pthread -Wl,--no-whole-archive dl rt m numa iec61850-dpdk hal-dpdk
 )
 
@@ -78,7 +78,7 @@ target_link_libraries (open_server
 # however, the circuit-simulator does not use libiec61850, and therefore this is apache licensed
 # the circuit-simulator should normally be run on a separate, non-realtime test machine, and is 
 # therefore ommitted from the install script
-install ( TARGETS open_server DESTINATION ${CMAKE_PROJECT_NAME} COMPONENT Applications)
+install ( TARGETS open_server-dpdk DESTINATION ${CMAKE_PROJECT_NAME} COMPONENT Applications)
 
 install ( FILES Dockerfile.libiec61850_server DESTINATION ${CMAKE_PROJECT_NAME} COMPONENT Data)
 
@@ -115,8 +115,8 @@ install ( DIRECTORY scd DESTINATION ${CMAKE_PROJECT_NAME} COMPONENT Data )
 install ( DIRECTORY schema DESTINATION ${CMAKE_PROJECT_NAME} COMPONENT Data ) 
 
 
-set(CPACK_PACKAGE_DESCRIPTION "IEC 61850 open server")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "IEC 61850 open server")
+set(CPACK_PACKAGE_DESCRIPTION "IEC 61850 open server dpdk")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "IEC 61850 open server dpdk")
 set(CPACK_PACKAGE_VENDOR "https://github.com/robidev")
 set(CPACK_PACKAGE_CONTACT "robin.dev@gmail.com")
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
