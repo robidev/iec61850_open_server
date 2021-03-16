@@ -16,7 +16,7 @@ set(PROJECT_VERSION_MINOR "9")
 set(PROJECT_VERSION_PATCH "0")
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 
-
+  
 # feature checks
 include(CheckLibraryExists)
 check_library_exists(rt clock_gettime "time.h" CONFIG_SYSTEM_HAS_CLOCK_GETTIME)
@@ -25,9 +25,16 @@ check_library_exists(rt clock_gettime "time.h" CONFIG_SYSTEM_HAS_CLOCK_GETTIME)
 include (TestBigEndian)
 test_big_endian(PLATFORM_IS_BIGENDIAN)
 
+#include_directories(${CMAKE_SOURCE_DIR}/../libiec61850/build)
+#link_directories(../libiec61850/build/hal)
+#link_directories(../libiec61850/build/src)
+
 include_directories(
     ./inc
 )
+
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-stack-protector -Wall -Wextra -Wno-unused-parameter -g -O3 -std=gnu11 -mavx2")
+SET(CMAKE_EXE_LINKER_FLAGS "-static")   
 
 set(open_server_SRCS
    input/inputs.c
@@ -50,18 +57,21 @@ set(open_server_SRCS
    open_server.c
 )
 
+SET(DPDK_LIBS
+	rte_net      rte_ethdev       rte_distributor 	 rte_mbuf      rte_pmd_bond       rte_kni              rte_pmd_ring     
+	rte_acl      rte_eal          rte_kvargs   	 rte_mempool   rte_mempool_ring	  rte_pmd_e1000        rte_pmd_virtio   rte_ring
+	rte_cfgfile  rte_hash         rte_lpm      	 rte_meter     rte_pmd_i40e   	  rte_sched        rte_timer
+	rte_cmdline  rte_ip_frag      rte_pipeline 	 rte_pmd_ixgbe rte_mempool_stack  rte_table        rte_pmd_bnxt
+	rte_pmd_ena  rte_pmd_nfp      rte_stack          rte_bus_vdev  rte_bus_pci        rte_pci              rte_cryptodev
+)
+
 add_executable(open_server
   ${open_server_SRCS}
 )
-
-target_link_libraries(open_server
-    libiec61850.so
-    libiec61850.a
-    libhal.a
-    libhal-shared.a
-    pthread
-    m
+target_link_libraries (open_server
+  -Wl,--whole-archive -Wl,--start-group ${DPDK_LIBS} -Wl,--end-group pthread -Wl,--no-whole-archive dl rt m numa iec61850-dpdk hal-dpdk
 )
+
 
 # NOTE: this project uses a dual license scheme, as libiec61850 is covered by GPL 3.0
 # this means that any software that incorporates this library should adhere to GPL 3.0 as well
