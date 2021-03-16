@@ -51,8 +51,10 @@ struct sInputValue {
 
   int index;                    // index of value in the dataset, if remote value
   DataAttribute* DA;            // data-attribute-reference if local value is referenced by extref
+  int32_t RefCount;		// Refcount of packet
 
   InputValue* sibling;          // additional extref that are related (same DA or same dataset)
+
 };
 
 
