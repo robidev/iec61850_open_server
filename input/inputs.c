@@ -60,6 +60,7 @@ InputValue* create_InputValue(int index, DataAttribute* da, Input* input, InputE
 
   self->DA = da;
   self->index = index;
+  self->RefCount = -1;
 
   self->sibling = NULL;
   return self;
@@ -303,6 +304,19 @@ void subscriber_callback_inputs_GOOSE(GooseSubscriber subscriber, void* paramete
   InputValue* inputVal = (InputValue*)parameter;
   if(inputVal != NULL && inputVal->extRef != NULL)  //iterate trough list of value-indexes that need to be copied, and
   {
+    if(inputVal->RefCount == -1) // RefCount unintialized
+    {
+      inputVal->RefCount = (int32_t)GooseSubscriber_getStNum(subscriber);
+    }
+    else
+    {
+      int32_t cnt = (int32_t)GooseSubscriber_getStNum(subscriber);
+      if(cnt != (inputVal->RefCount + 1) && cnt != 0)
+      {
+        printf("WARNING: GOOSE RefCount(stNum) is %i, expected: %i", cnt, inputVal->RefCount + 1);
+      }
+      inputVal->RefCount = cnt; //always assing to latest refcnt
+    }
     MmsValue* values = GooseSubscriber_getDataSetValues(subscriber);
     if(MmsValue_getType(values) == MMS_STRUCTURE || MmsValue_getType(values) == MMS_ARRAY)
     {
@@ -354,9 +368,24 @@ void subscriber_callback_inputs_GOOSE(GooseSubscriber subscriber, void* paramete
 void subscriber_callback_inputs_SMV(SVSubscriber subscriber, void* parameter, SVSubscriber_ASDU asdu)
 {
   uint64_t tm = SVSubscriber_ASDU_getRefrTmAsMs(asdu);//Hal_getTimeInMs();
+
   InputValue* inputVal = (InputValue*)parameter;
   if(inputVal != NULL && inputVal->extRef != NULL)  //iterate trough list of value-indexes that need to be copied, and
   {
+    if(inputVal->RefCount == -1) // RefCount unintialized
+    {
+      inputVal->RefCount = (int32_t)SVSubscriber_ASDU_getSmpCnt(asdu);
+    }
+    else
+    {
+      int32_t cnt = (int32_t)SVSubscriber_ASDU_getSmpCnt(asdu);
+      if(cnt != (inputVal->RefCount + 1) && cnt != 0)
+      {
+        printf("WARNING: SMV RefCount(SmpCnt) is %i, expected: %i", cnt, inputVal->RefCount + 1);
+      }
+      inputVal->RefCount = cnt; //always assing to latest refcnt
+    }
+
     int size = SVSubscriber_ASDU_getDataSize(asdu);
     if(size > 63)//set to fixed size of 9-2LE
     {
