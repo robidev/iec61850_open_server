@@ -311,9 +311,9 @@ void subscriber_callback_inputs_GOOSE(GooseSubscriber subscriber, void* paramete
     else
     {
       int32_t cnt = (int32_t)GooseSubscriber_getStNum(subscriber);
-      if(cnt != (inputVal->RefCount + 1) && cnt != 0)
+      if(cnt != (inputVal->RefCount + 1) && cnt != 1)
       {
-        printf("WARNING: GOOSE RefCount(stNum) is %i, expected: %i", cnt, inputVal->RefCount + 1);
+        printf("WARNING: GOOSE RefCount(stNum) is %i, expected: %i\n", cnt, inputVal->RefCount + 1);
       }
       inputVal->RefCount = cnt; //always assing to latest refcnt
     }
@@ -381,7 +381,7 @@ void subscriber_callback_inputs_SMV(SVSubscriber subscriber, void* parameter, SV
       int32_t cnt = (int32_t)SVSubscriber_ASDU_getSmpCnt(asdu);
       if(cnt != (inputVal->RefCount + 1) && cnt != 0)
       {
-        printf("WARNING: SMV RefCount(SmpCnt) is %i, expected: %i", cnt, inputVal->RefCount + 1);
+        printf("WARNING: SMV RefCount(SmpCnt) is %i, expected: %i\n", cnt, inputVal->RefCount + 1);
       }
       inputVal->RefCount = cnt; //always assing to latest refcnt
     }
