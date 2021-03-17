@@ -306,11 +306,11 @@ void subscriber_callback_inputs_GOOSE(GooseSubscriber subscriber, void* paramete
   {
     if(inputVal->RefCount == -1) // RefCount unintialized
     {
-      inputVal->RefCount = (int32_t)GooseSubscriber_getStNum(subscriber);
+      inputVal->RefCount = (int32_t)GooseSubscriber_getSqNum(subscriber);
     }
     else
     {
-      int32_t cnt = (int32_t)GooseSubscriber_getStNum(subscriber);
+      int32_t cnt = (int32_t)GooseSubscriber_getSqNum(subscriber);
       if(cnt != (inputVal->RefCount + 1) && cnt != 1)
       {
         printf("WARNING: GOOSE RefCount(stNum) is %i, expected: %i\n", cnt, inputVal->RefCount + 1);
