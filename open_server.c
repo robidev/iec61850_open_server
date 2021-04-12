@@ -350,7 +350,7 @@ int main(int argc, char** argv) {
 	temp->next = subscribeToLocalDAInputs(iedExtendedModel_local, iedModel_local,iedServer);
 
 	//start subscribers
-    GooseReceiver_start(GSEreceiver);
+    //GooseReceiver_start(GSEreceiver);
     SVReceiver_start(SMVreceiver);
 
     if (GooseReceiver_isRunning(GSEreceiver) || SVReceiver_isRunning(SMVreceiver)) 
