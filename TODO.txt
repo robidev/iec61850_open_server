@@ -26,16 +26,11 @@ server:     detect missed packets(sqnum)
 client:     polling-update-time
 client:     feature: file services?
 client:     cmdterm logging+addcause
-client:     read/write DO instead of DA
+client:     read/write DO instead of only DA
 client:     handle quality/timestamp
 client:     manual add IED
 client:     online/offline indication of IED's
 client:     feature: generate SVG from SCD(start on top from IFL, and process elements, working downward based on connections, use templates for mimics, measurement, animation. resolve address+lnref
-
-
---future projects--
-proxy:      implement 104-slave <-> IEC61850-client proxy (csv with IOA - LNode, type:int/float/bool/enum/string/bool-control/enum-control/...)
-scada:      implement SCADA system (scrollable-map[logic, GIS,], event/alarm-view, historian, RTDB, object/asset/drawing DB, 104-master)
 
 
 KNOWN BUGS:
