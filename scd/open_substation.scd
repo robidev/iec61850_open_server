@@ -14,7 +14,7 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
           <Terminal connectivityNode="S12/E1/Q1/L3" substationName="S12" voltageLevelName="E1" bayName="Q1" cNodeName="L3"/>
         </TransformerWinding>
       </PowerTransformer>
-      <Voltage multiplier="k" unit="V">220</Voltage>
+      <Voltage multiplier="k" unit="V">50</Voltage>
       <Bay name="Q1">
         <ConductingEquipment name="external" type="IFL">
           <Terminal connectivityNode="S12/D1/Q1/L0" substationName="S12" voltageLevelName="D1" bayName="Q1" cNodeName="L0"/>
@@ -36,7 +36,7 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       </Bay>
     </VoltageLevel>
     <VoltageLevel name="E1">
-      <Voltage multiplier="k" unit="V">132</Voltage>
+      <Voltage multiplier="k" unit="V">30</Voltage>
       <Bay name="Q1">
         <ConductingEquipment name="QA1" type="CBR">
           <LNode lnInst="1" lnClass="XCBR" ldInst="GenericIO" iedName="IED1_XCBR"/>
