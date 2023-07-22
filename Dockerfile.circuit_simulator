@@ -21,7 +21,7 @@ RUN      cp -f /tmp/ngspice_config/compile_linux.sh /tmp/ngspice-30/ \
 
 COPY ./circuit_simulator/requirements.txt /srv/circuit_simulator/requirements.txt
 
-RUN cd /srv/circuit_simulator && pip3 install -r requirements.txt
+RUN cd /srv/circuit_simulator && pip3 install --break-system-packages -r requirements.txt
 
 COPY ./circuit_simulator /srv/circuit_simulator
 COPY ./schema /srv/schema
