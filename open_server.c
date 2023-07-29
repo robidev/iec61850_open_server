@@ -61,7 +61,7 @@ void IEC61850_server_simulation_next_step()
 
 void IEC61850_server_simulation_sync(int local)
 {
-    while(local == global_step)
+    while(local >= global_step)
 		Thread_sleep(1);
 }
 

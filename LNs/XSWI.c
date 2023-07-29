@@ -70,7 +70,15 @@ void *XSWI_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allI
   inst->Pos_t = (DataAttribute*) ModelNode_getChild((ModelNode*) ln, "Pos.t");//the node to operate on when a operate is triggered
   inst->Pos_stVal_callback = _findAttributeValueEx(inst->Pos_stVal, allInputValues);//find node that this element was subscribed to, so that it will be called during an update
 
-  inst->conducting = true;
+  //inst->conducting = true;
+  
+  Dbpos stval =  Dbpos_fromMmsValue(IedServer_getAttributeValue(server, inst->Pos_stVal));
+  if(stval == DBPOS_ON)
+    inst->conducting = true;
+  else
+    inst->conducting = false;  
+
+
   inst->call_simulation = XSWI_updateValue;
 
 
@@ -112,12 +120,21 @@ void XSWI_change_switch(XSWI * inst, Dbpos value)
 //threath for process-simulation: open/close switch
 void XSWI_simulate_switch(Input* input)
 {
-  int state = 3;//default state is closed
+  int state;
   int step = 0;
   XSWI* inst = input->extRefs->callBackParam;//take the initial callback, as they all contain the same object instance
 
-  inst->conducting = true;//initial state
-  XSWI_change_switch(inst,DBPOS_ON);//initial state
+  //inst->conducting = true;//initial state
+  //XSWI_change_switch(inst,DBPOS_ON);//initial state
+  if(inst->conducting){
+    XSWI_change_switch(inst,DBPOS_ON);//initial state
+    state = 3;
+  }
+  else{
+    XSWI_change_switch(inst,DBPOS_OFF);//initial state
+    state = 1;
+  }
+  printf("XSWI: initialised in state: %i (0=opening, 1=opened, 2=closing, 3=closed)\n", state);
 
   while(1)
   {
