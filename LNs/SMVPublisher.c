@@ -4,11 +4,12 @@
 #include <libiec61850/iec61850_model.h>
 #include "iec61850_model_extensions.h"
 #include "inputs_api.h"
-#include "simulation_config.h"
+#include "timestep_config.h"
 
 #include <libiec61850/hal_thread.h>
 #include <math.h>
 
+typedef void (*SampleCallback)(int,void *);
 
 typedef struct sSMVP {
     int svcbEnabled;
@@ -16,15 +17,29 @@ typedef struct sSMVP {
     SVPublisher svPublisher;
     bool running;
 
-    void * simulationHandler;
     LinkedList dataSetValues;
 
     IedServer server;
     LinkedList  da_el;
     LinkedList  da_el_callback;
+    SampleCallback getSample;
+    void * getSampleParameter;
 } SMVP;
 
 void SMV_Thread(SMVP* inst);
+
+int setSampleCallback(void* instance, void * callback, void * parameter)
+{
+    SMVP * inst = (SMVP*)instance;
+    if(inst == NULL || inst->getSample != NULL)
+    {
+        printf("ERROR: could not assign callback");
+        return 1;
+    }
+    inst->getSampleParameter = parameter;
+    inst->getSample = callback;
+    return 0;
+}
 
 void sVCBEventHandler (SVControlBlock* svcb, int event, void* parameter)
 {
@@ -37,19 +52,18 @@ void sVCBEventHandler (SVControlBlock* svcb, int event, void* parameter)
 
 void* SMVP_init(SVPublisher SMVPublisher, SVControlBlock* svcb, IedServer server, LinkedList allInputValues)
 {
+    if (SMVPublisher == NULL) {
+        printf("ERROR: could not create sampled value publisher, are you running as root?\n");
+        return NULL;
+    }
+
     SMVP* inst = (SMVP *) malloc(sizeof(SMVP));
     inst->running = false;
 
     inst->server = server;
+    inst->getSample = NULL;
+
     inst->svPublisher = SMVPublisher;
-
-    if (inst->svPublisher == NULL) {
-        printf("ERROR: could not create sampled value publisher");
-        return NULL;
-    }
-    
-
-    //SVControlBlock* svcb = IedModel_getSVControlBlock(model, logicalNode, svcbName);//todo merge with calling func.
 
     //TODO check if dataSet-arg is at the right pos.
     inst->asdu = SVPublisher_addASDU(inst->svPublisher, svcb->dataSetName, NULL, 1);
@@ -96,8 +110,8 @@ void* SMVP_init(SVPublisher SMVPublisher, SVControlBlock* svcb, IedServer server
 
     /* prepare data set values */
     inst->dataSetValues = LinkedList_create();
-    inst->da_el = LinkedList_create();
-    inst->da_el_callback = LinkedList_create();
+    inst->da_el = LinkedList_create();//unused atm
+    inst->da_el_callback = LinkedList_create(); //unused atm
 
     //read dataset, and register all values for updating
     IedModel* model = IedServer_getDataModel(server);
@@ -107,16 +121,13 @@ void* SMVP_init(SVPublisher SMVPublisher, SVControlBlock* svcb, IedServer server
         LinkedList_add(inst->dataSetValues, dataSetEntry->value);
 
         DataAttribute* da =  IedModel_lookupDataAttributeByMmsValue(model, MmsValue_getElement( MmsValue_getElement(dataSetEntry->value,0), 0) );
-        LinkedList_add(inst->da_el, da );
-        LinkedList_add(inst->da_el_callback, _findAttributeValueEx(da, allInputValues));
-
+        LinkedList_add(inst->da_el, da ); //unused atm
+        LinkedList_add(inst->da_el_callback, _findAttributeValueEx(da, allInputValues)); //unused atm
         dataSetEntry = dataSetEntry->sibling;
     }
 
-
     Thread thread = Thread_create((ThreadExecutionFunction)SMV_Thread, inst, true);
     Thread_start(thread);
-
     return inst;  
 }
 
@@ -128,144 +139,61 @@ void SMVP_destroy(SMVP* inst)
 void SMV_Thread(SMVP* inst)
 {
     inst->running = true;
-    int measurements[8];
 
-    if(IEC61850_server_simulation_type() == SIMULATION_TYPE_LOCAL)
+    int sampleCount = 0;
+    uint64_t nextCycleStart = Hal_getTimeInMs() + 1000;
+
+    int step = 0;
+
+    while (inst->running) 
     {
-        Quality q = QUALITY_VALIDITY_GOOD;
+        if(inst->getSample != NULL)
+            inst->getSample(sampleCount,inst->getSampleParameter); //update samples
 
-        int vol = (int) (6350.f * sqrt(2));//RMS to peak
-        int amp = (int) (10.f * sqrt(2));//RMS to peak
-        float phaseAngle = 0.f;
-
-        int sampleCount = 0;
-
-        uint64_t nextCycleStart = Hal_getTimeInMs() + 1000;
-        while (inst->running) 
-        {
-            /* update measurement values */
-            int samplePoint = sampleCount % 80;
-
-            double angleA = (2 * M_PI / 80) * samplePoint;
-            double angleB = (2 * M_PI / 80) * samplePoint - ( 2 * M_PI / 3);
-            double angleC = (2 * M_PI / 80) * samplePoint - ( 4 * M_PI / 3);
-
-            measurements[0] = (amp * sin(angleA - phaseAngle)) * 1000;
-            measurements[1] = (amp * sin(angleB - phaseAngle)) * 1000;
-            measurements[2] = (amp * sin(angleC - phaseAngle)) * 1000;
-            measurements[3] = measurements[0] + measurements[1] + measurements[2];
-
-            measurements[4] = (vol * sin(angleA)) * 100;
-            measurements[5] = (vol * sin(angleB)) * 100;
-            measurements[6] = (vol * sin(angleC)) * 100;
-            measurements[7] = measurements[4] + measurements[5] + measurements[6];
-
-            LinkedList da_el = inst->da_el;
-            LinkedList da_el_callback = inst->da_el_callback;
-            int ds_index = 0;
-            while(da_el != NULL)//for each LN with an inputs/extref defined;
+        int samplePoint = sampleCount % 80;
+        if (inst->svcbEnabled) {
+            
+            //retrieve data from dataset
+            LinkedList ds = inst->dataSetValues;
+            int index = 0;
+            while(ds != NULL)//for each LN with an inputs/extref defined;
             {
-                if(da_el->data != NULL)
+                if(ds->data != NULL)
                 {
-                    IedServer_updateInt32AttributeValue(inst->server,da_el->data,measurements[ds_index]);
-                    InputValueHandleExtensionCallbacks(da_el_callback->data); //update the associated input-extref items for this Data Element
-                    ds_index += 1;
+                    MmsValue* datasetValue = ds->data;
+
+                    SVPublisher_ASDU_setINT32(inst->asdu, index, MmsValue_toInt32( MmsValue_getElement( MmsValue_getElement(datasetValue,0), 0) ) );
+                    SVPublisher_ASDU_setQuality(inst->asdu, index + 4, MmsValue_toUint32( MmsValue_getElement(datasetValue,1) ));
+                    index += 8;
                 }
-                da_el = LinkedList_getNext(da_el);
-                da_el_callback = LinkedList_getNext(da_el_callback);
-            }
-            
-            
-            if (inst->svcbEnabled) {
-                //update all ASDU values
-                int asdu_index = 0;
-                while(asdu_index < (ds_index*8)){
-                    SVPublisher_ASDU_setINT32(inst->asdu, asdu_index, measurements[asdu_index / 8]);
-                    SVPublisher_ASDU_setQuality(inst->asdu, asdu_index + 4, q);
-                    asdu_index += 8;
-                }
-
-                SVPublisher_ASDU_setRefrTm(inst->asdu, Hal_getTimeInMs());
-
-                SVPublisher_ASDU_setSmpCnt(inst->asdu, (uint16_t) sampleCount);
-
-                SVPublisher_publish(inst->svPublisher);
+                ds = LinkedList_getNext(ds);
             }
 
-            sampleCount = ((sampleCount + 1) % 4000);
+            SVPublisher_ASDU_setRefrTm(inst->asdu, Hal_getTimeInMs());
 
-            if ((sampleCount % 400) == 0) {
+            SVPublisher_ASDU_setSmpCnt(inst->asdu, (uint16_t) sampleCount);
+
+            SVPublisher_publish(inst->svPublisher);
+        }
+
+        sampleCount = ((sampleCount + 1) % 4000);
+
+        if(IEC61850_server_timestep_type() == TIMESTEP_TYPE_REMOTE) //if external source dictates jiffies
+        {
+            IEC61850_server_timestep_sync(step++);
+        }
+        else //if internal time dictates jiffies
+        {
+            if ((sampleCount % 400) == 0) { // check each 400 samples
                 uint64_t timeval = Hal_getTimeInMs();
-
-                while (timeval < nextCycleStart + 100) {
+                while (timeval < nextCycleStart + 100) { // wait until 100 milliseconds have elapsed 
+                                                         // (i.e. when 400 samples should have been send)
                     Thread_sleep(1);
-
                     timeval = Hal_getTimeInMs();
                 }
-
-                nextCycleStart = nextCycleStart + 100;
+                nextCycleStart = nextCycleStart + 100; // set timer for nex 100 milliseconds
             }
         }
     }
-    else // if(IEC61850_server_simulation_type() == SIMULATION_TYPE_NONE || IEC61850_server_simulation_type() == SIMULATION_TYPE_REMOTE)
-    {
-        int sampleCount = 0;
-        //Quality q = QUALITY_VALIDITY_GOOD;
-        uint64_t nextCycleStart = Hal_getTimeInMs() + 1000;
 
-        int step = 0;
-
-        while (inst->running) 
-        {
-            int samplePoint = sampleCount % 80;
-            if (inst->svcbEnabled) {
-                
-                //retrieve data from dataset
-                LinkedList ds = inst->dataSetValues;
-                int index = 0;
-                while(ds != NULL)//for each LN with an inputs/extref defined;
-                {
-                    if(ds->data != NULL)
-                    {
-                        MmsValue* datasetValue = ds->data;
-                        //char buf[255];
-                        //MmsValue_printToBuffer(datasetValue,buf,255);
-                        //printf("data: %s\n",buf);
-
-                        SVPublisher_ASDU_setINT32(inst->asdu, index, MmsValue_toInt32( MmsValue_getElement( MmsValue_getElement(datasetValue,0), 0) ) );
-                        SVPublisher_ASDU_setQuality(inst->asdu, index + 4, MmsValue_toUint32( MmsValue_getElement(datasetValue,1) ));
-                        index += 8;
-                    }
-                    ds = LinkedList_getNext(ds);
-                }
-
-                SVPublisher_ASDU_setRefrTm(inst->asdu, Hal_getTimeInMs());
-
-                SVPublisher_ASDU_setSmpCnt(inst->asdu, (uint16_t) sampleCount);
-
-                SVPublisher_publish(inst->svPublisher);
-            }
-
-            sampleCount = ((sampleCount + 1) % 4000);
-
-            if(IEC61850_server_simulation_type() == SIMULATION_TYPE_REMOTE)
-            {
-                IEC61850_server_simulation_sync(step++);
-            }
-            else
-            {
-                if ((sampleCount % 400) == 0) {
-                    uint64_t timeval = Hal_getTimeInMs();
-
-                    while (timeval < nextCycleStart + 100) {
-                        Thread_sleep(1);
-
-                        timeval = Hal_getTimeInMs();
-                    }
-
-                    nextCycleStart = nextCycleStart + 100;
-                }
-            }
-        }
-    }
 }

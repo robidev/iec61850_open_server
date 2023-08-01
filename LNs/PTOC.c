@@ -156,12 +156,12 @@ void PTOC_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allIn
     {
       if(strcmp(extRef->intAddr,"Amp3") == 0)//find extref for the last SMV, using the intaddr, so that all values are updated
       {
-        extRef->callBack = (callBackFunction) PTOC_callback_SMV;
+        extRef->callBack = (callBackFunction) PTOC_callback_SMV; // TODO: replace smv with samples
         extRef->callBackParam = inst;
       }
       if(strcmp(extRef->intAddr,"xcbr_stval") == 0)
       {
-        extRef->callBack = (callBackFunction) PTOC_callback_GOOSE;
+        extRef->callBack = (callBackFunction) PTOC_callback_GOOSE; //TODO: replace GOOSE with status
         extRef->callBackParam = inst;
       }
       extRef = extRef->sibling;

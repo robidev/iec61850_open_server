@@ -383,7 +383,7 @@ public class StaticModelGenerator_input {
                             for (GSEControl gseControlBlock : gseControlBlocks) {
                                 if(datasetName_.equals(gseControlBlock.getDataSet()))
                                 {
-                                    PhyComAddress gseAddress = connectedAP_local.lookupGSEAddress(logicalDevice.getInst(), gseControlBlock.getName());
+                                    PhyComAddress gseAddress = connectedAP_local.lookupGSE(logicalDevice.getInst(), gseControlBlock.getName()).getAddress();
                                     if (gseAddress != null) {
                                         AppID = "" + gseAddress.getAppId();
 

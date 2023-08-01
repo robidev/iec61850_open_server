@@ -46,9 +46,10 @@ IedModel_extensions_create(void);
 LIB61850_API LogicalNodeClass*
 LogicalNodeClass_create(LogicalNode* parent, IedModel_extensions* model, char * lnClass );
 
-
+/* DEPRECATED 
 LIB61850_API void
 LogicalNode_addSVControlBlock(LogicalNode* self, SVControlBlock* vcb);
+*/
 
 /**
  * \brief create a new input

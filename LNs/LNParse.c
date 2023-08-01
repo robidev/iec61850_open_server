@@ -83,17 +83,35 @@ void attachLogicalNodes(IedServer server, IedModel_extensions* model, LinkedList
   
 }
 
-void attachSMV(IedServer server, IedModel* model, char* ethernetIfcID, LinkedList allInputValues) //allInputValues is needed for callbacks when a local value is updated
+SMVcB * attachSMV(IedServer server, IedModel* model, char* ethernetIfcID, LinkedList allInputValues) //allInputValues is needed for callbacks when a local value is updated
 {
+  SMVcB *head = NULL;
+  SMVcB *last = NULL;
+
   SVControlBlock* svCBs = model->svCBs;
   while(svCBs != NULL)
   {
     	//smv publisher
 	  SVPublisher SMVPublisher = SVPublisher_create((CommParameters *)svCBs->dstAddress, ethernetIfcID);
-    SMVP_init(SMVPublisher, svCBs, server, allInputValues);
-
+    void * inst = SMVP_init(SMVPublisher, svCBs, server, allInputValues);
+    if(inst != NULL)
+    {
+      SMVcB* ref = (SMVcB *) malloc(sizeof(SMVcB));
+      ref->instance = inst;
+      ref->svCBs = svCBs;
+      ref->sibling = NULL;
+      if(head == NULL){
+        head = ref;
+        last = ref;
+      }
+      else{
+        last->sibling = ref;
+        last = ref;
+      }
+    }
     svCBs = svCBs->sibling;
   }
+  return head;
 }
 
 LogicalNodeClass* getLNClass(IedModel* model, IedModel_extensions* model_ex, const char * objectReference)
@@ -112,6 +130,29 @@ LogicalNodeClass* getLNClass(IedModel* model, IedModel_extensions* model_ex, con
       return lnClass;
     }
     lnClass = lnClass->sibling;
+  }
+  return NULL;
+}
+
+SMVcB* getSMVInstance(IedModel* model, IedModel_extensions* model_ex, const char * objectReference)
+{
+   SVControlBlock* svCBs = model->svCBs;
+  while(svCBs != NULL)
+  {
+    if(strcmp(svCBs->name, objectReference) == 0)
+    {
+      SMVcB * entry = model_ex->SMVControlInstances;
+      while(entry)
+      {
+        if(entry->svCBs == svCBs)
+        {
+          return entry;
+        }
+        entry = entry->sibling;
+      }
+      return NULL;
+    }
+    svCBs = svCBs->sibling;
   }
   return NULL;
 }

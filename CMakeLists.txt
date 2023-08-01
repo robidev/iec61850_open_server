@@ -16,6 +16,7 @@ set(PROJECT_VERSION_MINOR "9")
 set(PROJECT_VERSION_PATCH "0")
 set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 
+set(CMAKE_EXECUTABLE_ENABLE_EXPORTS, TRUE)
 
 # feature checks
 include(CheckLibraryExists)
@@ -24,6 +25,11 @@ check_library_exists(rt clock_gettime "time.h" CONFIG_SYSTEM_HAS_CLOCK_GETTIME)
 # check if we are on a little or a big endian
 include (TestBigEndian)
 test_big_endian(PLATFORM_IS_BIGENDIAN)
+
+option(DEBUG "Enable debugging" OFF)
+#option(DEBUG "Enable debugging" ON)
+option(BUILD_PLUGINS "Build the plugins" ON)
+
 
 include_directories(
     ./inc
@@ -50,6 +56,14 @@ set(open_server_SRCS
    open_server.c
 )
 
+if(DEBUG)
+  set(CMAKE_BUILD_TYPE Debug)
+endif(DEBUG)
+
+if(BUILD_PLUGINS)
+    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/plugin_src)
+endif(BUILD_PLUGINS)
+
 add_executable(open_server
   ${open_server_SRCS}
 )
@@ -60,6 +74,7 @@ target_link_libraries(open_server
     libhal.a
     libhal-shared.a
     pthread
+    dl
     m
 )
 

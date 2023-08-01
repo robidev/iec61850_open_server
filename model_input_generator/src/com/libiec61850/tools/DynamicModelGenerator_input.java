@@ -111,6 +111,7 @@ public class DynamicModelGenerator_input {
         for (Inputs inputs : logicalNode.getInputs())
             exportInputs(output, inputs, logicalNode);//should be only one
 
+        /* DEPRECATED
         for (SampledValueControl svCB : logicalNode.getSampledValueControlBlocks()) {
             String svString = "";
             
@@ -160,6 +161,7 @@ public class DynamicModelGenerator_input {
                 output.println("PS(0,0,0,000000000000);");  
              output.println("}"); 
         }
+        */
 
     }
 
@@ -256,7 +258,7 @@ public class DynamicModelGenerator_input {
                             for (GSEControl gseControlBlock : gseControlBlocks) {
                                 if(datasetName_.equals(gseControlBlock.getDataSet()))
                                 {
-                                    PhyComAddress gseAddress = connectedAP_local.lookupGSEAddress(logicalDevice.getInst(), gseControlBlock.getName());
+                                    PhyComAddress gseAddress = connectedAP_local.lookupGSE(logicalDevice.getInst(), gseControlBlock.getName()).getAddress();
                                     if (gseAddress != null) {
                                         AppID = "" + gseAddress.getAppId();
 

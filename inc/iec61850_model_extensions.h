@@ -46,6 +46,7 @@ extern "C" {
  */
 typedef struct sIedModel_extensions IedModel_extensions;
 typedef struct sLogicalNodeClass LogicalNodeClass;
+typedef struct sSMVcB SMVcB;
 typedef struct sInput Input;
 typedef struct sSubscriberEntry SubscriberEntry;
 typedef void (*callBackFunction) (void* param);
@@ -56,6 +57,7 @@ struct sIedModel_extensions {
     Input* inputs;                      // describes the input elements in the datamodel
     SubscriberEntry* subRefs;           // describes the dataset-references that can be subscribed to from other IED's
     LogicalNodeClass* logicalNodes;     // describes the class of each LN, so that functions can be attached
+    SMVcB* SMVControlInstances;
 };
 
 // struct that describes extref elements from the SCL file, as defined in the standard
@@ -100,6 +102,11 @@ struct sLogicalNodeClass {
   LogicalNodeClass* sibling;
 };
 
+struct sSMVcB {
+    SVControlBlock* svCBs;
+    void* instance;
+    SMVcB* sibling;
+};
 
 #ifdef __cplusplus
 }

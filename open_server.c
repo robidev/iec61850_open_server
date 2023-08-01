@@ -14,7 +14,7 @@
 
 #include <libiec61850/iec61850_server.h>
 #include <libiec61850/hal_thread.h> /* for Thread_sleep() */
-#include "simulation_config.h"
+
 
 #include <signal.h>
 #include <stdlib.h>
@@ -30,42 +30,33 @@
 #include <netinet/in.h> 
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros 
 
+#include <dirent.h>
+#include <sys/stat.h>
+#include <dlfcn.h>
+
 #include <libiec61850/hal_socket.h>
+#include "timestep_config.h"
 
-#define PORT 65000
-#define SOCKETS 65
-
+static int global_step = 0;
+static int global_timestep_type = TIMESTEP_TYPE_LOCAL; //TIMESTEP_TYPE_REMOTE
 static int running = 0;
 static IedServer iedServer = NULL;
-static int global_step = 0;
-static int global_simulation_type = SIMULATION_TYPE_LOCAL;
 
+typedef int (*lib_init_func)(IedModel* model, IedModel_extensions* model_ex);
 
-typedef void (*simulationFunction) (int sd, char * buffer, void* param);
-typedef struct sLNStruct 
-{
-	simulationFunction call_simulation;
-} LNStruct;
-
-
-void sigint_handler(int signalId)
-{
-	running = 0;
-}
-
-void IEC61850_server_simulation_next_step()
+void IEC61850_server_timestep_next_step()
 {
 	global_step++;
 	//printf("step: %i\n",global_step);
 }
 
-void IEC61850_server_simulation_sync(int local)
+void IEC61850_server_timestep_sync(int local)
 {
     while(local >= global_step)
 		Thread_sleep(1);
 }
 
-int IEC61850_server_simulation_async(int local)
+int IEC61850_server_timestep_async(int local)
 {
     if(local == global_step)
 	{
@@ -79,199 +70,20 @@ int IEC61850_server_simulation_async(int local)
 	
 }
 
-int IEC61850_server_simulation_type()
+int IEC61850_server_timestep_type()
 { 
-	return global_simulation_type; 
+	return global_timestep_type; 
 }
 
-int simulation_thread(IedModel* model, IedModel_extensions* model_ex, uint16_t port) 
-{ 
-	int opt = 1; 
-	int master_socket;
-	int addrlen;
-	int new_socket;
-	int client_socket[SOCKETS];
-	int max_clients = SOCKETS;
-	void * LNi[SOCKETS];
-	int activity;
-	int i;
-	int valread;
-	int sd; 
-	int max_sd; 
-	struct sockaddr_in address; 
+void sigint_handler(int signalId)
+{
+	running = 0;
+}
 
-	char * message = "init\n";
-		
-	char buffer[1025]; //data buffer of 1K 
-		
-	//set of socket descriptors 
-	fd_set readfds; 
-
-	
-	for (i = 0; i < max_clients; i++) { //initialise all client_socket[] to 0
-		client_socket[i] = 0; 
-		LNi[i] = 0;
-	} 
-		
-	//create a master socket 
-	if( (master_socket = socket(AF_INET , SOCK_STREAM , 0)) == 0) { 
-		perror("socket failed"); 
-		return -1;
-	} 
-	
-	//set master socket to allow multiple connections , 
-	if( setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0 ) { 
-		perror("setsockopt"); 
-		return -1; 
-	} 
-	
-	//type of socket created 
-	address.sin_family = AF_INET; 
-	address.sin_addr.s_addr = INADDR_ANY; 
-	address.sin_port = htons( port ); 
-		
-	//bind the socket to localhost port 8888 
-	if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0) { 
-		perror("bind failed"); 
-		return -1;  
-	} 
-		
-	//try to specify maximum of 3 pending connections for the master socket 
-	if (listen(master_socket, 3) < 0) { 
-		perror("listen"); 
-		return -1;
-	} 
-	addrlen = sizeof(address); 
-		
-	running = 1;
-
-	signal(SIGINT, sigint_handler);
-
-	while(running) 
-	{ 
-		Thread_sleep(1);
-		//clear the socket set 
-		FD_ZERO(&readfds); 
-	
-		//add master socket to set 
-		FD_SET(master_socket, &readfds); 
-		max_sd = master_socket; 
-			
-		//add child sockets to set 
-		for ( i = 0 ; i < max_clients ; i++) { 
-			sd = client_socket[i]; //socket descriptor 
-			
-			if(sd > 0) //if valid socket descriptor then add to read list 
-				FD_SET( sd , &readfds); 
-				
-			//highest file descriptor number, need it for the select function 
-			if(sd > max_sd) 
-				max_sd = sd; 
-		} 
-		struct timeval y = {0,0};
-
-		//wait for an activity on one of the sockets , timeout is NULL , so wait indefinitely 
-		activity = select( max_sd + 1 , &readfds , NULL , NULL , &y); 
-	
-		if ((activity < 0) && (errno!=EINTR)) { 
-			printf("select error"); 
-		} 
-			
-		//If something happened on the master socket , then its an incoming connection 
-		if (FD_ISSET(master_socket, &readfds)) 
-		{ 
-			if ((new_socket = accept(master_socket, 
-					(struct sockaddr *)&address, (socklen_t*)&addrlen))<0) 
-			{ 
-				perror("accept"); 
-				return -1;
-			} 
-
-			//add new socket to array of sockets 
-			for (i = 0; i < max_clients; i++) { 
-				if( client_socket[i] == 0 ) { //if position is empty 
-					client_socket[i] = new_socket; 
-					printf("new conn, sock:%i\n", i);
-					break; 
-				} 
-			} 
-		} 
-		//else its some IO operation on some other socket 
-		for (i = 0; i < max_clients; i++) 
-		{ 
-			sd = client_socket[i]; 
-				
-			if (FD_ISSET( sd , &readfds)) 
-			{ 
-				//Check if it was for closing , and also read the incoming message 
-				if ((valread = read( sd , buffer, 1024)) == 0) 
-				{  
-					printf("Client disconnected\n"); 		
-					//Close the socket and mark as 0 in list for reuse 
-					close( sd ); 
-					client_socket[i] = 0; 
-					LNi[i] = 0;
-				} 
-				else //process the data
-				{ 
-
-					//process buf
-					switch(buffer[0])
-					{
-						case 'i'://case init: relate sock to an LN inst
-						{
-							if(buffer[valread-1] != '\n')
-								perror("send init NO trailing newline"); 
-							buffer[valread-1] = 0;
-							//find LN, extended LN inst,
-							LogicalNodeClass* ln = getLNClass(model, model_ex, buffer+2); //based on LN in model, find LNinst(parent LN) in extension
-							if(ln != NULL){
-								void * inst = ln->instance;
-								//register simulation get/set calls
-								LNi[i] = inst;
-
-								if( send(sd, "OK\n", 3, 0) != 3 ) { 
-									perror("send init OK"); 
-								} 
-							}
-							else {
-								if( send(sd, "NOK\n", 4, 0) != 4 ) { 
-									perror("send init NOK"); 
-								} 
-							}
-
-
-							break;
-						}
-						case 'g':
-						case 's'://case send set/get to respective ln inst.->set values, get values
-						{
-							if(buffer[valread-1] != '\n')
-								perror("send value NO trailing newline"); 
-							buffer[valread-1] = 0;//make string zero-terminated
-							if(LNi[i] != 0) {
-								simulationFunction call_simulation = ((LNStruct*)LNi[i])->call_simulation;
-								if(call_simulation != NULL)
-									call_simulation(sd, buffer, LNi[i]); // process_command
-							}
-							break;
-						}
-						case 'n'://case next=perform next simulation step
-						{
-							IEC61850_server_simulation_next_step();
-							if( send(sd, "OK\n", 3, 0) != 3 ) { 
-								perror("send next step"); 
-							} 
-							break;
-						}
-					}
-				} 
-			} 
-		} 
-	} 
-		
-	return 0; 
-} 
+int open_server_running()
+{
+	return running;
+}
 
 
 int main(int argc, char** argv) {
@@ -280,7 +92,6 @@ int main(int argc, char** argv) {
 	IedModel_extensions* iedExtendedModel_local = NULL;//&iedExtendedModel;
 
 	int port = 102;
-	uint16_t sim_port = PORT;
 	char* ethernetIfcID = "lo";
 
 	if (argc > 1) {
@@ -288,12 +99,10 @@ int main(int argc, char** argv) {
 
 		printf("Using interface: %s\n", ethernetIfcID);
 	}
-
 	if(argc > 2 )
 	{
 		port = atoi(argv[2]);
 	}
-
 	if(argc > 3 )
 	{
 		iedModel_local = ConfigFileParser_createModelFromConfigFileEx(argv[3]);
@@ -305,18 +114,12 @@ int main(int argc, char** argv) {
 			exit(-1);
 		}
 	}
-	if(argc > 5 )
+	if(argc > 5)
 	{
-		if(argv[5][0] == 'N')
-			global_simulation_type = SIMULATION_TYPE_NONE;
 		if(argv[5][0] == 'L')
-			global_simulation_type = SIMULATION_TYPE_LOCAL;
+			global_timestep_type = TIMESTEP_TYPE_LOCAL;
 		if(argv[5][0] == 'R')
-			global_simulation_type = SIMULATION_TYPE_REMOTE;
-	}
-	if(argc > 6 )
-	{
-		sim_port = atoi(argv[6]);
+			global_timestep_type = TIMESTEP_TYPE_REMOTE;
 	}
 	else
 	{
@@ -364,15 +167,16 @@ int main(int argc, char** argv) {
 
 	/* MMS server will be instructed to start listening to client connections. */
 	IedServer_start(iedServer, port);
+	running = 1;
 
 	if (!IedServer_isRunning(iedServer)) {
 		printf("Starting server failed! Exit.\n");
 		IedServer_destroy(iedServer);
 		exit(-1);
 	}
-	
+
 	//call initializers for sampled value control blocks and start publishing
-	attachSMV(iedServer, iedModel_local, ethernetIfcID, allInputValues);
+	iedExtendedModel_local->SMVControlInstances = attachSMV(iedServer, iedModel_local, ethernetIfcID, allInputValues);
 
 	//call all initializers for logical nodes in the model
 	attachLogicalNodes(iedServer, iedExtendedModel_local, allInputValues);
@@ -380,17 +184,60 @@ int main(int argc, char** argv) {
 	/* Start GOOSE publishing */
 	IedServer_enableGoosePublishing(iedServer);
 
-	if(global_simulation_type == SIMULATION_TYPE_REMOTE) {
-		simulation_thread(iedModel_local, iedExtendedModel_local, sim_port);
-	}
-	else {
-		running = 1;
-		signal(SIGINT, sigint_handler);
-		while (running) {
-			Thread_sleep(1000);
+	/* PLUGIN SYSTEM */
+	// load all .so in plugin folder, and call init
+	// plugins are allowed to call exported functions from main executable
+
+	DIR *d;
+	struct dirent *dir;
+	d = opendir("./plugin");
+	if (d) {
+		while ((dir = readdir(d)) != NULL) {
+			void * so_handle = NULL;
+			lib_init_func  init_func = NULL;
+
+			size_t namelen = strlen(dir->d_name);
+
+			if(dir->d_type != DT_REG || // only regular files
+				strcmp(".",dir->d_name) == 0 || strcmp("..",dir->d_name) == 0 || // ignore . and ..
+				namelen < 4 || //ensure namelength is large enough to be calles ?.so
+				strcmp(".so",dir->d_name + namelen-3) != 0) // check if name ends with .so
+			{
+				continue;
+			}
+			printf("loading plugin: %s\n", dir->d_name);
+
+			char * fullname = malloc(namelen + 10);
+			strcpy(fullname,"./plugin/");
+			strncat(fullname,dir->d_name,namelen + 10);
+			so_handle = dlopen(fullname, RTLD_NOW | RTLD_GLOBAL);
+			free(fullname);
+
+			if (so_handle == NULL)
+			{
+				printf("ERROR: Unable to open lib: %s\n", dlerror());
+				continue;
+			}
+			init_func = dlsym(so_handle, "init");
+
+			if (init_func == NULL) {
+				printf("ERROR: Unable to get symbol\n");
+				continue;
+			}
+			if(init_func(iedModel_local,iedExtendedModel_local) != 0)
+			{
+				printf("ERROR: could not succesfully run init of plugin: %s", dir->d_name);
+			}
+
 		}
+		closedir(d);
 	}
 
+	signal(SIGINT, sigint_handler);
+	while (running) {
+		Thread_sleep(1000);
+		fflush(stdout);//ensure logging is flushed every second
+	}
 
 	/* stop MMS server - close TCP server socket and all client sockets */
 	IedServer_stop(iedServer);

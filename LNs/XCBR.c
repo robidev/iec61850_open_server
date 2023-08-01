@@ -2,17 +2,16 @@
 #include <libiec61850/iec61850_server.h>
 #include "inputs_api.h"
 #include <libiec61850/hal_thread.h>
-#include "simulation_config.h"
 #include <sys/socket.h>
 #include "XCBR.h"
+#include "timestep_config.h"
 
 // process simulator
 void XCBR_simulate_switch(Input *input);
-typedef void (*simulationFunction)(int sd, char *buffer, void *param);
+typedef void (*processFunction)(int sd, char *buffer, void *param);
 
 typedef struct sXCBR
 {
-  simulationFunction call_simulation; // as long as we place the function on top, it can be recast into a generic struct(TODO: make this nicer)
   IedServer server;
   DataAttribute *Pos_stVal;
   DataAttribute *Pos_t;
@@ -20,26 +19,6 @@ typedef struct sXCBR
   bool conducting;
 } XCBR;
 
-void XCBR_updateValue(int sd, char *buffer, void *param)
-{
-  // printf("XCBR buf= %s\n",buffer);
-
-  XCBR *inst = (XCBR *)param;
-  if (inst->conducting)
-  {
-    if (send(sd, "10.0\n", 5, 0) != 5)
-    {
-      perror("send");
-    }
-  }
-  else
-  {
-    if (send(sd, "-10.0\n", 6, 0) != 6)
-    {
-      perror("send");
-    }
-  }
-}
 
 // open the circuit breaker(i.e. make it isolating)
 void XCBR_open(XCBR *inst)
@@ -104,7 +83,7 @@ void *XCBR_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
     inst->conducting = true;
   else
     inst->conducting = false;
-  inst->call_simulation = XCBR_updateValue;
+
 
   if (input != NULL)
   {
@@ -208,9 +187,9 @@ void XCBR_simulate_switch(Input *input)
       break;
     }
     }
-    if (IEC61850_server_simulation_type() == SIMULATION_TYPE_REMOTE)
+    if (IEC61850_server_timestep_type() == TIMESTEP_TYPE_REMOTE)
     {
-      IEC61850_server_simulation_sync(step++);
+      IEC61850_server_timestep_sync(step++);
     }
     else
     {

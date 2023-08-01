@@ -43,6 +43,7 @@ IedModel_extensions_create()
     return self;
 }
 
+/* DEPRECATED 
 static void
 IedModel_addSVControlBlock(IedModel* self, SVControlBlock* vcb)
 {
@@ -58,6 +59,7 @@ IedModel_addSVControlBlock(IedModel* self, SVControlBlock* vcb)
     }
 }
 
+
 void
 LogicalNode_addSVControlBlock(LogicalNode* self, SVControlBlock* vcb)
 {
@@ -65,6 +67,7 @@ LogicalNode_addSVControlBlock(LogicalNode* self, SVControlBlock* vcb)
 
     IedModel_addSVControlBlock(model, vcb);
 }
+*/
 
 static void
 IedModel_addInput(IedModel_extensions* self, Input* input)

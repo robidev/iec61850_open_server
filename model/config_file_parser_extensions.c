@@ -246,7 +246,8 @@ ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle,IedModel
                         terminateString(nameString, ')');
                         LogicalNodeClass_create(currentLN, model,nameString);
                     }
-                    else if (StringUtils_startsWith((char*) lineBuffer, "SV")) {
+                    //DEPRECATED, is now in libiec61850
+                    /*else if (StringUtils_startsWith((char*) lineBuffer, "SV")) {
                         uint32_t confRev = 0;
                         uint8_t smpMod = 0;
                         uint32_t smpRate = 0;
@@ -268,7 +269,7 @@ ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle,IedModel
                         if (currentLN != NULL)
                             LogicalNode_addSVControlBlock(currentLN, currentSvCB);
                         indendation = 4;            
-                    }
+                    }*/
                     else {
                         if (DEBUG_IED_SERVER)
                             printf("IED_SERVER: Unknown identifier (%s)\n", lineBuffer);
@@ -285,7 +286,7 @@ ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle,IedModel
                         terminateString(srcRef, ')');
 
                         InputEntry_create(currentInput, nameString,nameString2,nameString3, serviceType, srcRef);
-                    }
+                    }/*DEPRECATED
                     else if (StringUtils_startsWith((char*) lineBuffer, "PS")) {
                         uint32_t vlanPrio;
                         uint32_t vlanId;
@@ -307,7 +308,7 @@ ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle,IedModel
                                 PhyComAddress_create((uint8_t) vlanPrio, (uint16_t) vlanId, (uint16_t) appId,
                                         (uint8_t*) nameString2);
                         SVControlBlock_addPhyComAddress(currentSvCB, dstAddress);
-                    }
+                    }*/
                     else
                         goto exit_error;
                 }

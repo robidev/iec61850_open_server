@@ -8,20 +8,19 @@ RUN apt-get update && apt-get install -y \
          && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=
 
-RUN git clone -b v1.4 https://github.com/mz-automation/libiec61850.git /tmp/libiec61850
+RUN git clone -b v1.5 https://github.com/mz-automation/libiec61850.git /tmp/libiec61850
 
 RUN cd /tmp/libiec61850 && cmake . \
         && make \
         && make install
 
-#RUN git clone -b v1.4 https://github.com/robidev/iec61850_open_server.git /tmp/iec61850_open_server
 COPY . /tmp/iec61850_open_server
 
 RUN cd /tmp/iec61850_open_server && cmake . \
        && make
 
 WORKDIR /srv
-RUN cd /tmp/iec61850_open_server && cp open_server /srv/libiec61850_server
+RUN cd /tmp/iec61850_open_server && cp open_server /srv/libiec61850_server && cp -R plugin /srv/plugin
 
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 

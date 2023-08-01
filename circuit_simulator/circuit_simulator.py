@@ -103,8 +103,8 @@ def _init_conn(IP, LNref):
     if data == b'OK\n':
       print("connected to: %s:%i" % (IP,PORT))
       return conn
-  except:
-    print("ERROR: could not connect: %s:%i, oh no!" % (IP,PORT))
+  except Exception as ex:
+    print("ERROR: could not connect: %s:%i, oh no! Exception: %s" % (IP,PORT, str(ex)))
   
   conn.close()
   print("not OK")

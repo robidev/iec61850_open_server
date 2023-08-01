@@ -67,7 +67,7 @@ public class DockerComposeGenerator {
       return cidr;
     }
 
-    public DockerComposeGenerator(InputStream stream, String icdFile, PrintStream output, String simulation, String sim_port) 
+    public DockerComposeGenerator(InputStream stream, String icdFile, PrintStream output, String simulation) 
     		throws SclParserException {
         SclParser sclParser = new SclParser(stream);
 
@@ -88,7 +88,7 @@ public class DockerComposeGenerator {
           output.println("    hostname: " + ied.getName() );
 
           //add the model config
-          output.println("    command: \"/srv/libiec61850_server eth0 102 /cfg/" + ied.getName() + ".cfg /cfg/" + ied.getName() + ".ext " + simulation + " " + sim_port + "\"" );
+          output.println("    command: \"/srv/libiec61850_server eth0 102 /cfg/" + ied.getName() + ".cfg /cfg/" + ied.getName() + ".ext " + simulation + "\"" );
           
           //add a volume to host the configuration files
           output.println("    volumes:");
@@ -164,7 +164,6 @@ public class DockerComposeGenerator {
         }
         
 	String simulation = "R";
-	String sim_port = "65000";
         //String accessPointName = null;
         //String iedName = null;
         
@@ -172,7 +171,7 @@ public class DockerComposeGenerator {
         InputStream stream = new FileInputStream(icdFile);
 
         try {
-			new DockerComposeGenerator(stream, icdFile, outputStream, simulation, sim_port);
+			new DockerComposeGenerator(stream, icdFile, outputStream, simulation);
 		} catch (SclParserException e) {
 			System.err.println("ERROR: " + e.getMessage());
 		}

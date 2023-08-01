@@ -8,7 +8,7 @@
             "name": "(gdb) Launch IED1",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/open_server",
+            "program": "${workspaceFolder}/build/open_server",
             "args": ["lo","7102","cfg/IED1_XCBR.cfg","cfg/IED1_XCBR.ext"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -22,12 +22,12 @@
                     "ignoreFailures": true
                 }
             ]
-        }
+        },
         {
             "name": "(gdb) Launch IED3",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/open_server",
+            "program": "${workspaceFolder}/build/open_server",
             "args": ["lo","9102","cfg/IED3_SMV.cfg","cfg/IED3_SMV.ext"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -41,12 +41,12 @@
                     "ignoreFailures": true
                 }
             ]
-        }
+        },
         {
             "name": "(gdb) Launch IED2",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/open_server",
+            "program": "${workspaceFolder}/build/open_server",
             "args": ["lo","8102","cfg/IED2_PTOC.cfg","cfg/IED2_PTOC.ext"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

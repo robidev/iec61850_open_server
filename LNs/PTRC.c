@@ -20,7 +20,7 @@ void PTRC_input_callback(InputEntry* extRef)
     bool state = MmsValue_getBoolean(extRef->value);
     if( state == true)//inst->tripstate == false &&
     {
-      printf("PTRC: trip from PTOC\n");
+      printf("PTRC: trip from PTOC\n"); //TODO: signal can from other LN then ptoc
       MmsValue* tripValue = MmsValue_newBoolean(true);
       IedServer_updateAttributeValue(inst->server,inst->Tr_general,tripValue);
       InputValueHandleExtensionCallbacks(inst->Tr_general_callback); //update the associated callbacks with this Data Element
@@ -29,7 +29,7 @@ void PTRC_input_callback(InputEntry* extRef)
     }
     else//if(inst->tripstate == true && state == false)
     {
-      printf("PTRC: trip cleared from PTOC\n");
+      printf("PTRC: trip cleared from PTOC\n"); //TODO: signal can from other LN then ptoc
       MmsValue* tripValue = MmsValue_newBoolean(false);
       IedServer_updateAttributeValue(inst->server,inst->Tr_general,tripValue);
       InputValueHandleExtensionCallbacks(inst->Tr_general_callback); //update the associated callbacks with this Data Element
