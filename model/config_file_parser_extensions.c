@@ -36,11 +36,11 @@
 
 static uint8_t lineBuffer[READ_BUFFER_MAX_SIZE];
 
-IedModel_extensions*
-ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle,IedModel* iedModel);
+IedModel_extensions *
+ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle, IedModel *iedModel);
 
 static int
-readLine(FileHandle fileHandle, uint8_t* buffer, int maxSize)
+readLine(FileHandle fileHandle, uint8_t *buffer, int maxSize)
 {
     int bytesRead = 0;
     int bufPos = 0;
@@ -48,12 +48,15 @@ readLine(FileHandle fileHandle, uint8_t* buffer, int maxSize)
     int fileReadResult = 1;
 
     /* eat up leading cr or lf */
-    while (fileReadResult > 0) {
+    while (fileReadResult > 0)
+    {
         fileReadResult = FileSystem_readFile(fileHandle, buffer + bufPos, 1);
 
-        if (fileReadResult == 1) {
+        if (fileReadResult == 1)
+        {
 
-            if (!((buffer[bufPos] == '\n') || (buffer[bufPos] == '\r'))) {
+            if (!((buffer[bufPos] == '\n') || (buffer[bufPos] == '\r')))
+            {
                 bufPos++;
                 bytesRead++;
                 break;
@@ -61,15 +64,19 @@ readLine(FileHandle fileHandle, uint8_t* buffer, int maxSize)
         }
     }
 
-    if (fileReadResult > 0) {
-        while (fileReadResult > 0) {
+    if (fileReadResult > 0)
+    {
+        while (fileReadResult > 0)
+        {
             fileReadResult = FileSystem_readFile(fileHandle, buffer + bufPos, 1);
 
-            if (fileReadResult == 1) {
+            if (fileReadResult == 1)
+            {
 
                 if ((buffer[bufPos] == '\n') || (buffer[bufPos] == '\r'))
                     break;
-                else {
+                else
+                {
                     bufPos++;
                     bytesRead++;
                 }
@@ -77,17 +84,18 @@ readLine(FileHandle fileHandle, uint8_t* buffer, int maxSize)
         }
     }
 
-
     return bytesRead;
 }
 
 static void
-terminateString(char* string, char ch)
+terminateString(char *string, char ch)
 {
     int index = 0;
 
-    while (string[index] != 0) {
-        if (string[index] == ch) {
+    while (string[index] != 0)
+    {
+        if (string[index] == ch)
+        {
             string[index] = 0;
             break;
         }
@@ -96,41 +104,42 @@ terminateString(char* string, char ch)
     }
 }
 
-IedModel_extensions*
-ConfigFileParser_createModelFromConfigFileEx_inputs(const char* filename,IedModel* iedModel)
+IedModel_extensions *
+ConfigFileParser_createModelFromConfigFileEx_inputs(const char *filename, IedModel *iedModel)
 {
-    FileHandle configFile = FileSystem_openFile((char*)filename, false);
+    FileHandle configFile = FileSystem_openFile((char *)filename, false);
 
-    if (configFile == NULL) {
+    if (configFile == NULL)
+    {
         if (DEBUG_IED_SERVER)
             printf("IED_SERVER: Error opening config file!\n");
         return NULL;
     }
 
-    IedModel_extensions* model = ConfigFileParser_createModelFromConfigFile_inputs(configFile, iedModel);
+    IedModel_extensions *model = ConfigFileParser_createModelFromConfigFile_inputs(configFile, iedModel);
 
     FileSystem_closeFile(configFile);
 
     return model;
 }
 
-IedModel_extensions*
-ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle,IedModel* iedModel)
+IedModel_extensions *
+ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle, IedModel *iedModel)
 {
     int bytesRead = 1;
 
     bool stateInModel = false;
     int indendation = 0;
 
-    IedModel* IEDmodel = iedModel;
-    IedModel_extensions* model = NULL;
-    LogicalDevice* currentLD = NULL;
-    LogicalNode* currentLN = NULL;
-    ModelNode* currentModelNode = NULL;
-    DataSet* currentDataSet = NULL;
-    Input* currentInput = NULL;
-    GSEControlBlock* currentGoCB = NULL;
-    SVControlBlock* currentSvCB = NULL;
+    IedModel *IEDmodel = iedModel;
+    IedModel_extensions *model = NULL;
+    LogicalDevice *currentLD = NULL;
+    LogicalNode *currentLN = NULL;
+    ModelNode *currentModelNode = NULL;
+    DataSet *currentDataSet = NULL;
+    Input *currentInput = NULL;
+    GSEControlBlock *currentGoCB = NULL;
+    SVControlBlock *currentSvCB = NULL;
 
     char nameString[130];
     char nameString2[130];
@@ -138,129 +147,145 @@ ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle,IedModel
 
     int currentLine = 0;
 
-    while (bytesRead > 0) {
+    while (bytesRead > 0)
+    {
         bytesRead = readLine(fileHandle, lineBuffer, READ_BUFFER_MAX_SIZE);
 
         currentLine++;
 
-        if (bytesRead > 0) {
+        if (bytesRead > 0)
+        {
             lineBuffer[bytesRead] = 0;
 
-            if (stateInModel) {
+            if (stateInModel)
+            {
 
-                if (StringUtils_startsWith((char*) lineBuffer, "}")) {
-                    if (indendation == 1) {
+                if (StringUtils_startsWith((char *)lineBuffer, "}"))
+                {
+                    if (indendation == 1)
+                    {
                         stateInModel = false;
                         indendation = 0;
                     }
-                    else if (indendation == 2) {
+                    else if (indendation == 2)
+                    {
                         indendation = 1;
                     }
-                    else if (indendation == 3) {
+                    else if (indendation == 3)
+                    {
                         indendation = 2;
                     }
-                    else if (indendation == 4) {
+                    else if (indendation == 4)
+                    {
                         indendation = 3;
                     }
-                    else if (indendation > 4) {
+                    else if (indendation > 4)
+                    {
                         currentModelNode = currentModelNode->parent;
                         indendation--;
                     }
                 }
 
-                else if (indendation == 1) {
-                    if (StringUtils_startsWith((char*) lineBuffer, "LD")) {
+                else if (indendation == 1)
+                {
+                    if (StringUtils_startsWith((char *)lineBuffer, "LD"))
+                    {
                         indendation = 2;
 
-                        if (sscanf((char*) lineBuffer, "LD(%s)", nameString) < 1)
+                        if (sscanf((char *)lineBuffer, "LD(%s)", nameString) < 1)
                             goto exit_error;
 
                         terminateString(nameString, ')');
 
                         // find the LD in the existing model
                         currentLD = IEDmodel->firstChild;
-                        while(currentLD != NULL)
+                        while (currentLD != NULL)
                         {
-                            if(strcmp(currentLD->name,nameString) == 0)
+                            if (strcmp(currentLD->name, nameString) == 0)
                                 break;
-                            currentLD = (LogicalDevice*)currentLD->sibling;
+                            currentLD = (LogicalDevice *)currentLD->sibling;
                         }
-                        //if the LDname cannot be found in the model, create it
-                        if(currentLD == NULL)
+                        // if the LDname cannot be found in the model, create it
+                        if (currentLD == NULL)
                             currentLD = LogicalDevice_create(nameString, IEDmodel);
                     }
-                    else if (StringUtils_startsWith((char*) lineBuffer, "SD")) {
+                    else if (StringUtils_startsWith((char *)lineBuffer, "SD"))
+                    {
                         uint32_t appid = 0;
                         char nameString4[130];
                         char nameString5[130];
                         uint8_t ethAddr[6];
-                        //SD( simpleIOGenericIO/GGIO1$ST$SPCSO1$stVal Events 4096 0x1,0xc,0xcd,0x1,0x0,0x1 gcbEvents events );
-                        int matchedItems = sscanf((char*) lineBuffer, "SD(%s %s %u %s %s %s)",
-                                nameString, nameString2, &appid, nameString3, nameString4, nameString5);
-                        
-                        if (matchedItems < 6) goto exit_error;
+                        // SD( simpleIOGenericIO/GGIO1$ST$SPCSO1$stVal Events 4096 0x1,0xc,0xcd,0x1,0x0,0x1 gcbEvents events );
+                        int matchedItems = sscanf((char *)lineBuffer, "SD(%s %s %u %s %s %s)",
+                                                  nameString, nameString2, &appid, nameString3, nameString4, nameString5);
+
+                        if (matchedItems < 6)
+                            goto exit_error;
                         terminateString(nameString5, ')');
 
                         if (StringUtils_createBufferFromHexString(nameString3, ethAddr) != 6)
                             goto exit_error;
-         
-                        SubscriberEntry_create(model, nameString, nameString2, appid, nameString4, nameString5, ethAddr);
 
+                        SubscriberEntry_create(model, nameString, nameString2, appid, nameString4, nameString5, ethAddr);
                     }
                     else
                         goto exit_error;
                 }
-                else if (indendation == 2) {
-                    if (StringUtils_startsWith((char*) lineBuffer, "LN")) {
+                else if (indendation == 2)
+                {
+                    if (StringUtils_startsWith((char *)lineBuffer, "LN"))
+                    {
                         indendation = 3;
 
-                        if (sscanf((char*) lineBuffer, "LN(%s)", nameString) < 1)
+                        if (sscanf((char *)lineBuffer, "LN(%s)", nameString) < 1)
                             goto exit_error;
 
                         terminateString(nameString, ')');
 
-                        
                         // find the LN in the existing model
-                        currentLN = (LogicalNode*)currentLD->firstChild;
-                        while(currentLN != NULL)
+                        currentLN = (LogicalNode *)currentLD->firstChild;
+                        while (currentLN != NULL)
                         {
-                            if(strcmp(currentLN->name,nameString) == 0)
+                            if (strcmp(currentLN->name, nameString) == 0)
                                 break;
-                            currentLN = (LogicalNode*)currentLN->sibling;
+                            currentLN = (LogicalNode *)currentLN->sibling;
                         }
-                        //if the LNname cannot be found in the model, create it
-                        if(currentLN == NULL)
+                        // if the LNname cannot be found in the model, create it
+                        if (currentLN == NULL)
                             currentLN = LogicalNode_create(nameString, currentLD);
                     }
                     else
                         goto exit_error;
                 }
-                else if (indendation == 3) {
-                    if (StringUtils_startsWith((char*) lineBuffer, "IN")) {
+                else if (indendation == 3)
+                {
+                    if (StringUtils_startsWith((char *)lineBuffer, "IN"))
+                    {
                         indendation = 4;
 
                         currentInput = Input_create(currentLN, model);
                     }
-                    else if (StringUtils_startsWith((char*) lineBuffer, "CL")) {
-                        sscanf((char*) lineBuffer, "CL(%s)", nameString);
+                    else if (StringUtils_startsWith((char *)lineBuffer, "CL"))
+                    {
+                        sscanf((char *)lineBuffer, "CL(%s)", nameString);
                         terminateString(nameString, ')');
-                        LogicalNodeClass_create(currentLN, model,nameString);
+                        LogicalNodeClass_create(currentLN, model, nameString);
                     }
-                    //DEPRECATED, is now in libiec61850
+                    // DEPRECATED, is now in libiec61850
                     /*else if (StringUtils_startsWith((char*) lineBuffer, "SV")) {
                         uint32_t confRev = 0;
                         uint8_t smpMod = 0;
                         uint32_t smpRate = 0;
                         uint8_t optFlds = 0;
                         uint8_t isUnicast = 0;
-                        int matchedItems = sscanf((char*) lineBuffer, "SV(%s %s %s %i %c %i %c %c)", 
-                            nameString, 
-                            nameString2, 
-                            nameString3, 
-                            &confRev, 
-                            &smpMod, 
-                            &smpRate, 
-                            &optFlds, 
+                        int matchedItems = sscanf((char*) lineBuffer, "SV(%s %s %s %i %c %i %c %c)",
+                            nameString,
+                            nameString2,
+                            nameString3,
+                            &confRev,
+                            &smpMod,
+                            &smpRate,
+                            &optFlds,
                             &isUnicast );
 
                         if (matchedItems < 8) goto exit_error;
@@ -268,73 +293,76 @@ ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle,IedModel
                         currentSvCB = SVControlBlock_create(nameString, currentLN, nameString2, nameString3, confRev, smpMod, (uint16_t)smpRate, optFlds, isUnicast);
                         if (currentLN != NULL)
                             LogicalNode_addSVControlBlock(currentLN, currentSvCB);
-                        indendation = 4;            
+                        indendation = 4;
                     }*/
-                    else {
+                    else
+                    {
                         if (DEBUG_IED_SERVER)
                             printf("IED_SERVER: Unknown identifier (%s)\n", lineBuffer);
 
                         goto exit_error;
                     }
-
                 }
-                else if (indendation > 3) {
-                    if (StringUtils_startsWith((char*) lineBuffer, "ER")) {
+                else if (indendation > 3)
+                {
+                    if (StringUtils_startsWith((char *)lineBuffer, "ER"))
+                    {
                         char serviceType[130];
                         char srcRef[130];
-                        sscanf((char*) lineBuffer, "ER(%s %s %s %s %s)", nameString, nameString2, nameString3, serviceType, srcRef );
+                        sscanf((char *)lineBuffer, "ER(%s %s %s %s %s)", nameString, nameString2, nameString3, serviceType, srcRef);
                         terminateString(srcRef, ')');
 
-                        InputEntry_create(currentInput, nameString,nameString2,nameString3, serviceType, srcRef);
-                    }/*DEPRECATED
-                    else if (StringUtils_startsWith((char*) lineBuffer, "PS")) {
-                        uint32_t vlanPrio;
-                        uint32_t vlanId;
-                        uint32_t appId;
+                        InputEntry_create(currentInput, nameString, nameString2, nameString3, serviceType, srcRef);
+                    } /*DEPRECATED
+                     else if (StringUtils_startsWith((char*) lineBuffer, "PS")) {
+                         uint32_t vlanPrio;
+                         uint32_t vlanId;
+                         uint32_t appId;
 
-                        int matchedItems = sscanf((char*) lineBuffer, "PS(%u %u %u %s)", &vlanPrio, &vlanId, &appId, nameString);
+                         int matchedItems = sscanf((char*) lineBuffer, "PS(%u %u %u %s)", &vlanPrio, &vlanId, &appId, nameString);
 
-                        if ((matchedItems != 4) || (currentSvCB == NULL)) goto exit_error;
+                         if ((matchedItems != 4) || (currentSvCB == NULL)) goto exit_error;
 
-                        terminateString(nameString, ')');
+                         terminateString(nameString, ')');
 
-                        if (strlen(nameString) != 12) goto exit_error;
+                         if (strlen(nameString) != 12) goto exit_error;
 
-                        if (StringUtils_createBufferFromHexString(nameString, (uint8_t*) nameString2) != 6)
-                            goto exit_error;
+                         if (StringUtils_createBufferFromHexString(nameString, (uint8_t*) nameString2) != 6)
+                             goto exit_error;
 
 
-                        PhyComAddress* dstAddress =
-                                PhyComAddress_create((uint8_t) vlanPrio, (uint16_t) vlanId, (uint16_t) appId,
-                                        (uint8_t*) nameString2);
-                        SVControlBlock_addPhyComAddress(currentSvCB, dstAddress);
-                    }*/
+                         PhyComAddress* dstAddress =
+                                 PhyComAddress_create((uint8_t) vlanPrio, (uint16_t) vlanId, (uint16_t) appId,
+                                         (uint8_t*) nameString2);
+                         SVControlBlock_addPhyComAddress(currentSvCB, dstAddress);
+                     }*/
                     else
                         goto exit_error;
                 }
-
-
             }
-            else {
-                if (StringUtils_startsWith((char*) lineBuffer, "MODEL{")) {
+            else
+            {
+                if (StringUtils_startsWith((char *)lineBuffer, "MODEL{"))
+                {
 
                     model = IedModel_extensions_create();
-                    if(IEDmodel == NULL)
+                    if (IEDmodel == NULL)
                         IEDmodel = IedModel_create("");
 
                     stateInModel = true;
                     indendation = 1;
                 }
-                else if (StringUtils_startsWith((char*) lineBuffer, "MODEL(")) {
-                    sscanf((char*) lineBuffer, "MODEL(%s)", nameString);
+                else if (StringUtils_startsWith((char *)lineBuffer, "MODEL("))
+                {
+                    sscanf((char *)lineBuffer, "MODEL(%s)", nameString);
                     terminateString(nameString, ')');
                     model = IedModel_extensions_create();
 
-                    if(IEDmodel == NULL) 
+                    if (IEDmodel == NULL)
                         IEDmodel = IedModel_create(nameString);
-                    else if(strcmp(IEDmodel->name,nameString) != 0)
+                    else if (strcmp(IEDmodel->name, nameString) != 0)
                         IEDmodel = IedModel_create(nameString);
-                    
+
                     stateInModel = true;
                     indendation = 1;
                 }
@@ -352,5 +380,3 @@ exit_error:
     IedModel_destroy_inputs(model);
     return NULL;
 }
-
-

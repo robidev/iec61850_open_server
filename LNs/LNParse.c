@@ -14,63 +14,63 @@
 #include "TCTR.h"
 #include "TVTR.h"
 
-void attachLogicalNodes(IedServer server, IedModel_extensions* model, LinkedList allInputValues)
+void attachLogicalNodes(IedServer server, IedModel_extensions *model, LinkedList allInputValues)
 {
-  //iterate over struct that attaches model-instances to LogicalNode Classes
-  LogicalNodeClass* lnClass = model->logicalNodes;
-  while(lnClass != NULL)
+  // iterate over struct that attaches model-instances to LogicalNode Classes
+  LogicalNodeClass *lnClass = model->logicalNodes;
+  while (lnClass != NULL)
   { // call init, to attach input-nodes of this instance to callback-items. store instance in lnClass
-    Input* input = getInput( model, lnClass->parent); 
+    Input *input = getInput(model, lnClass->parent);
 
-    if(strcmp(lnClass->lnClass,"LLN0") == 0)
+    if (strcmp(lnClass->lnClass, "LLN0") == 0)
     {
       printf("Found mandatory Class LLN0\n");
       LLN0_init(server, lnClass->parent);
     }
-    else if(strcmp(lnClass->lnClass,"LPHD") == 0)
+    else if (strcmp(lnClass->lnClass, "LPHD") == 0)
     {
       printf("Found mandatory Class LPHD\n");
     }
-    //simulated
-    else if(strcmp(lnClass->lnClass,"XSWI") == 0)
+    // simulated
+    else if (strcmp(lnClass->lnClass, "XSWI") == 0)
     {
-      lnClass->instance = XSWI_init(server, lnClass->parent, input, allInputValues); 
+      lnClass->instance = XSWI_init(server, lnClass->parent, input, allInputValues);
     }
-    else if(strcmp(lnClass->lnClass,"XCBR") == 0)
+    else if (strcmp(lnClass->lnClass, "XCBR") == 0)
     {
       lnClass->instance = XCBR_init(server, lnClass->parent, input, allInputValues);
     }
-    else if(strcmp(lnClass->lnClass,"TCTR") == 0)
+    else if (strcmp(lnClass->lnClass, "TCTR") == 0)
     {
       lnClass->instance = TCTR_init(server, lnClass->parent, input, allInputValues);
     }
-    else if(strcmp(lnClass->lnClass,"TVTR") == 0)
+    else if (strcmp(lnClass->lnClass, "TVTR") == 0)
     {
       lnClass->instance = TVTR_init(server, lnClass->parent, input, allInputValues);
     }
-    //basic functional
-    else if(strcmp(lnClass->lnClass,"PTRC") == 0)
+    // basic functional
+    else if (strcmp(lnClass->lnClass, "PTRC") == 0)
     {
       PTRC_init(server, lnClass->parent, input, allInputValues);
     }
-    else if(strcmp(lnClass->lnClass,"PTOC") == 0)
+    else if (strcmp(lnClass->lnClass, "PTOC") == 0)
     {
       PTOC_init(server, lnClass->parent, input, allInputValues);
     }
-    else if(strcmp(lnClass->lnClass,"MMXU") == 0)
+    else if (strcmp(lnClass->lnClass, "MMXU") == 0)
     {
       MMXU_init(server, lnClass->parent, input, allInputValues);
     }
-    else if(strcmp(lnClass->lnClass,"CSWI") == 0)
+    else if (strcmp(lnClass->lnClass, "CSWI") == 0)
     {
       CSWI_init(server, lnClass->parent, input, allInputValues);
     }
-    else if(strcmp(lnClass->lnClass,"CILO") == 0)
+    else if (strcmp(lnClass->lnClass, "CILO") == 0)
     {
       CILO_init(server, lnClass->parent, input, allInputValues);
     }
-    //stubs
-    else if(strcmp(lnClass->lnClass,"RADR") == 0)
+    // stubs
+    else if (strcmp(lnClass->lnClass, "RADR") == 0)
     {
       RADR_init(input);
     }
@@ -80,31 +80,32 @@ void attachLogicalNodes(IedServer server, IedModel_extensions* model, LinkedList
     }
     lnClass = lnClass->sibling;
   }
-  
 }
 
-SMVcB * attachSMV(IedServer server, IedModel* model, char* ethernetIfcID, LinkedList allInputValues) //allInputValues is needed for callbacks when a local value is updated
+SMVcB *attachSMV(IedServer server, IedModel *model, char *ethernetIfcID, LinkedList allInputValues) // allInputValues is needed for callbacks when a local value is updated
 {
   SMVcB *head = NULL;
   SMVcB *last = NULL;
 
-  SVControlBlock* svCBs = model->svCBs;
-  while(svCBs != NULL)
+  SVControlBlock *svCBs = model->svCBs;
+  while (svCBs != NULL)
   {
-    	//smv publisher
-	  SVPublisher SMVPublisher = SVPublisher_create((CommParameters *)svCBs->dstAddress, ethernetIfcID);
-    void * inst = SMVP_init(SMVPublisher, svCBs, server, allInputValues);
-    if(inst != NULL)
+    // smv publisher
+    SVPublisher SMVPublisher = SVPublisher_create((CommParameters *)svCBs->dstAddress, ethernetIfcID);
+    void *inst = SMVP_init(SMVPublisher, svCBs, server, allInputValues);
+    if (inst != NULL)
     {
-      SMVcB* ref = (SMVcB *) malloc(sizeof(SMVcB));
+      SMVcB *ref = (SMVcB *)malloc(sizeof(SMVcB));
       ref->instance = inst;
       ref->svCBs = svCBs;
       ref->sibling = NULL;
-      if(head == NULL){
+      if (head == NULL)
+      {
         head = ref;
         last = ref;
       }
-      else{
+      else
+      {
         last->sibling = ref;
         last = ref;
       }
@@ -114,18 +115,19 @@ SMVcB * attachSMV(IedServer server, IedModel* model, char* ethernetIfcID, Linked
   return head;
 }
 
-LogicalNodeClass* getLNClass(IedModel* model, IedModel_extensions* model_ex, const char * objectReference)
+LogicalNodeClass *getLNClass(IedModel *model, IedModel_extensions *model_ex, const char *objectReference)
 {
-  LogicalNode* ln = (LogicalNode*)IedModel_getModelNodeByObjectReference(model, objectReference);
-  if(ln == NULL){
+  LogicalNode *ln = (LogicalNode *)IedModel_getModelNodeByObjectReference(model, objectReference);
+  if (ln == NULL)
+  {
     printf("ERROR: could not find logical node object ref: %s", objectReference);
     return NULL;
   }
-  
-  LogicalNodeClass* lnClass = model_ex->logicalNodes;
-  while(lnClass != NULL)
+
+  LogicalNodeClass *lnClass = model_ex->logicalNodes;
+  while (lnClass != NULL)
   {
-    if(lnClass->parent == ln)
+    if (lnClass->parent == ln)
     {
       return lnClass;
     }
@@ -134,17 +136,17 @@ LogicalNodeClass* getLNClass(IedModel* model, IedModel_extensions* model_ex, con
   return NULL;
 }
 
-SMVcB* getSMVInstance(IedModel* model, IedModel_extensions* model_ex, const char * objectReference)
+SMVcB *getSMVInstance(IedModel *model, IedModel_extensions *model_ex, const char *objectReference)
 {
-   SVControlBlock* svCBs = model->svCBs;
-  while(svCBs != NULL)
+  SVControlBlock *svCBs = model->svCBs;
+  while (svCBs != NULL)
   {
-    if(strcmp(svCBs->name, objectReference) == 0)
+    if (strcmp(svCBs->name, objectReference) == 0)
     {
-      SMVcB * entry = model_ex->SMVControlInstances;
-      while(entry)
+      SMVcB *entry = model_ex->SMVControlInstances;
+      while (entry)
       {
-        if(entry->svCBs == svCBs)
+        if (entry->svCBs == svCBs)
         {
           return entry;
         }

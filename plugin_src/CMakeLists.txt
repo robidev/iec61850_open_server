@@ -3,4 +3,4 @@
 # add_subdirectory(char_lcd)
 # add_subdirectory(gui)
 add_subdirectory(simulation_process)
-add_subdirectory(ctr_simulation)
+add_subdirectory(local_sample_simulation)

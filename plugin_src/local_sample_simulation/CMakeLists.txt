@@ -1,5 +1,5 @@
 
-set(ctr_simulation_SRCS
+set(local_sample_simulation_SRCS
    main.c
 )
 
@@ -7,15 +7,15 @@ include_directories(
     ./inc
 )
 
-add_library(ctr_simulation SHARED
-  ${ctr_simulation_SRCS}
+add_library(local_sample_simulation SHARED
+  ${local_sample_simulation_SRCS}
 )
 
-target_link_libraries(ctr_simulation
+target_link_libraries(local_sample_simulation
     pthread
 )
 
-set_target_properties( ctr_simulation
+set_target_properties( local_sample_simulation
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugin"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/plugin"

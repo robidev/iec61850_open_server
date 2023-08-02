@@ -1,24 +1,10 @@
-#include "iec61850_model_extensions.h"
-#include <libiec61850/iec61850_server.h>
-#include "inputs_api.h"
 #include <libiec61850/hal_thread.h>
-#include <sys/socket.h>
 #include "XCBR.h"
+#include "iec61850_model_extensions.h"
 #include "timestep_config.h"
 
 // process simulator
 void XCBR_simulate_switch(Input *input);
-typedef void (*processFunction)(int sd, char *buffer, void *param);
-
-typedef struct sXCBR
-{
-  IedServer server;
-  DataAttribute *Pos_stVal;
-  DataAttribute *Pos_t;
-  void *Pos_stVal_callback;
-  bool conducting;
-} XCBR;
-
 
 // open the circuit breaker(i.e. make it isolating)
 void XCBR_open(XCBR *inst)
@@ -84,7 +70,6 @@ void *XCBR_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
   else
     inst->conducting = false;
 
-
   if (input != NULL)
   {
     InputEntry *extref = input->extRefs;
@@ -133,14 +118,16 @@ void XCBR_simulate_switch(Input *input)
   int step = 0;
 
   XCBR *inst = input->extRefs->callBackParam; // take the initial callback, as they all contain the same object instance
-  //inst->conducting = true;            // initial state
-  //XCBR_change_switch(inst, DBPOS_ON); // initial state
-  if(inst->conducting){
-    XCBR_change_switch(inst,DBPOS_ON);//initial state
+  // inst->conducting = true;            // initial state
+  // XCBR_change_switch(inst, DBPOS_ON); // initial state
+  if (inst->conducting)
+  {
+    XCBR_change_switch(inst, DBPOS_ON); // initial state
     state = 3;
   }
-  else{
-    XCBR_change_switch(inst,DBPOS_OFF);//initial state
+  else
+  {
+    XCBR_change_switch(inst, DBPOS_OFF); // initial state
     state = 1;
   }
   printf("XCBR: initialised in state: %i (0=opening, 1=opened, 2=closing, 3=closed)\n", state);
