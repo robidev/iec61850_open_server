@@ -213,7 +213,7 @@ int main(int argc, char **argv)
 			}
 			if (init_func(iedModel_local, iedExtendedModel_local) != 0)
 			{
-				printf("ERROR: could not succesfully run init of plugin: %s", dir->d_name);
+				printf("ERROR: could not succesfully run init of plugin: %s\n", dir->d_name);
 			}
 		}
 		closedir(d);
@@ -226,11 +226,6 @@ int main(int argc, char **argv)
 		fflush(stdout); // ensure logging is flushed every second
 	}
 
-	/* stop MMS server - close TCP server socket and all client sockets */
-	IedServer_stop(iedServer);
-
-	/* Cleanup - free all resources */
-	IedServer_destroy(iedServer);
 
 	GooseReceiver_stop(GSEreceiver);
 
@@ -239,4 +234,10 @@ int main(int argc, char **argv)
 	SVReceiver_stop(SMVreceiver);
 	/* Cleanup and free resources */
 	SVReceiver_destroy(SMVreceiver);
+	/* stop MMS server - close TCP server socket and all client sockets */
+	IedServer_stop(iedServer);
+	/* Cleanup - free all resources */
+	IedServer_destroy(iedServer);
+
+
 } /* main() */

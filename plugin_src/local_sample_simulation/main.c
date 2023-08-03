@@ -17,7 +17,16 @@
 static IedModel *model;
 static IedModel_extensions *model_ex;
 
-void SMV_Thread();
+typedef struct sLSMS
+{
+    void *instance;
+    double angle;
+    double magnitude;
+    double freq;
+    void *sibling;
+} LSMS;
+
+void local_SMV_Thread();
 void SMV_Callback(int samplecount, void *parameter);
 
 int init(IedModel *Model, IedModel_extensions *Model_ex)
@@ -32,8 +41,17 @@ int init(IedModel *Model, IedModel_extensions *Model_ex)
 
     fp = fopen("local_sample_simulator.config", "r");
     if (fp == NULL)
+    {
+        printf("ERROR: could not open local_sample_simulator.config\n");
         return 0;
+    }
+    printf("opened local_sample_simulator.config\n");
 
+    int state = 0;
+    uint8_t type = 0;
+    char svcb[130] = "";
+    LSMS *head = NULL;
+    LSMS *tail = NULL;
     // TODO: make this config sensible for mutliple TCTR/TVTR and smvcb
     while ((read = getline(&line, &len, fp)) != -1)
     {
@@ -41,40 +59,91 @@ int init(IedModel *Model, IedModel_extensions *Model_ex)
         if (line == NULL || *line == 0)
             continue;
 
-        char logical_node[130];
-        uint8_t type = 0;
-        char svcb[130];
-        int matchedItems = sscanf(line, "%130s %c %130s", logical_node, &type, svcb);
-        if (matchedItems < 2)
-            continue;
-
-        LogicalNodeClass *ln = getLNClass(model, model_ex, logical_node);
-        if (ln == NULL)
-            continue;
-
-        if (type == 'T' && matchedItems == 2) // use thread
+        switch (state)
         {
-            // use same thread for all TCTR and TVTR
-            //  ...
-            //
-            Thread thread = Thread_create((ThreadExecutionFunction)SMV_Thread, ln->instance, true);
-            Thread_start(thread);
-        }
-        else if (type == 'C' && matchedItems == 3) // use callback
+        case 0:
+            type = *line;
+            state = 1;
+            break;
+        case 1:
         {
-            // use same callback to update all TCTR and TVTR
-            //  ...
-            //
-            SMVcB *smv = getSMVInstance(Model, Model_ex, svcb);
-            setSampleCallback(smv->instance, SMV_Callback, ln->instance);
+            // strncpy(svcb, line, 130);
+            int machtedItems = sscanf(line, "%130s", svcb);
+            if (machtedItems < 1)
+                continue;
+            state = 2;
         }
-        else
-            continue;
+        break;
+        case 2:
+        {
+            char logical_node[130];
+            double angle;
+            double magnitude;
+            double freq;
+            int machtedItems = sscanf(line, "%130s %lf %lf %lf", logical_node, &angle, &magnitude, &freq);
+            if (machtedItems < 4)
+                continue;
+
+            LogicalNodeClass *ln = getLNClass(model, model_ex, logical_node);
+            if (ln == NULL)
+                continue;
+            // make linked list of LSMS, head for first item
+            //  provide head to inst
+            LSMS *inst = (LSMS *)malloc(sizeof(LSMS));
+            inst->instance = ln->instance;
+            inst->angle = angle;
+            inst->magnitude = magnitude;
+            inst->freq = freq;
+            inst->sibling = NULL;
+
+            if (head == NULL)
+            {
+                head = inst;
+                tail = inst;
+            }
+            else
+            {
+                tail->sibling = inst;
+                tail = inst;
+            }
+        }
+        break;
+        }
     }
-
     fclose(fp);
     if (line)
         free(line);
+
+    if (state != 2)
+    {
+        printf("ERROR: could not parse file\n");
+        printf("First line has to be T or C\n");
+        printf("Second line an smvref or 'none' \n");
+        printf("other lines should refer to TCTR or TVTR instances\n");
+        return 1;
+    }
+    printf("file parsed succesfully\n");
+
+    if (type == 'T')
+    {
+        Thread thread = Thread_create((ThreadExecutionFunction)local_SMV_Thread, head, true);
+        Thread_start(thread);
+    }
+    else if (type == 'C')
+    {
+        SMVcB *smv = getSMVInstance(Model, Model_ex, svcb);
+        if (smv == NULL)
+        {
+            printf("ERROR: cannot find SMV instance: %s in model\n", svcb);
+            return 1;
+        }
+        setSampleCallback(smv->instance, SMV_Callback, head);
+    }
+    else
+    {
+        printf("ERROR: unrecognised option. First line has to be T or C\n");
+        return 1;
+    }
 
     printf("local_sample_simulation module initialised\n");
     return 0; // 0 means success
@@ -82,43 +151,32 @@ int init(IedModel *Model, IedModel_extensions *Model_ex)
 
 void SMV_Callback(int sampleCount, void *parameter)
 {
-    printf("smv callback called");
-    int measurements[8];
+    //printf("smv callback called\n");
+    LSMS *item = (LSMS *)parameter;
 
-    int vol = (int)(6350.f * sqrt(2)); // RMS to peak
-    int amp = (int)(10.f * sqrt(2));   // RMS to peak
-    float phaseAngle = 0.f;
+    double samplePoint = sampleCount % 80;
 
-    /* update measurement values */
-    int samplePoint = sampleCount % 80;
+    while (item)
+    {
+        int measurement = 0;
+        if(item->magnitude > 0.1 && item->freq > 0.1)
+        {
+            int amp = (int)(item->magnitude * sqrt(2)); // RMS to peak
+            double angle = ((item->freq / 25) * M_PI / 80) * samplePoint - (item->angle * M_PI / 180.0);
+            measurement = (amp * sin(angle)) * 1000;
+        }
+        // for all refs
+        TCTR *inst = item->instance;
+        IedServer_updateInt32AttributeValue(inst->server, inst->da, measurement);
+        InputValueHandleExtensionCallbacks(inst->da_callback); // update the associated callbacks with this Data Element (e.g. MMXU)
 
-    double angleA = (2 * M_PI / 80) * samplePoint;
-    double angleB = (2 * M_PI / 80) * samplePoint - (2 * M_PI / 3);
-    double angleC = (2 * M_PI / 80) * samplePoint - (4 * M_PI / 3);
-
-    measurements[0] = (amp * sin(angleA - phaseAngle)) * 1000;
-    measurements[1] = (amp * sin(angleB - phaseAngle)) * 1000;
-    measurements[2] = (amp * sin(angleC - phaseAngle)) * 1000;
-    measurements[3] = measurements[0] + measurements[1] + measurements[2]; // should be 0
-
-    measurements[4] = (vol * sin(angleA)) * 100;
-    measurements[5] = (vol * sin(angleB)) * 100;
-    measurements[6] = (vol * sin(angleC)) * 100;
-    measurements[7] = measurements[4] + measurements[5] + measurements[6]; // should be 0
-
-    // for all refs
-    // IedServer_updateInt32AttributeValue(inst->server,inst->da,i);
-    // InputValueHandleExtensionCallbacks(inst->da_callback); //update the associated callbacks with this Data Element (e.g. MMXU)
+        item = item->sibling;
+    }
 }
 
-void SMV_Thread(void *parameter)
+void local_SMV_Thread(void *parameter)
 {
-    int measurements[8];
-
-    int vol = (int)(6350.f * sqrt(2)); // RMS to peak
-    int amp = (int)(10.f * sqrt(2));   // RMS to peak
-    float phaseAngle = 0.f;
-
+    printf("smv thread started\n");
     int sampleCount = 0;
 
     uint64_t nextCycleStart = Hal_getTimeInMs() + 1000;
@@ -127,23 +185,24 @@ void SMV_Thread(void *parameter)
         /* update measurement values */
         int samplePoint = sampleCount % 80;
 
-        double angleA = (2 * M_PI / 80) * samplePoint;
-        double angleB = (2 * M_PI / 80) * samplePoint - (2 * M_PI / 3);
-        double angleC = (2 * M_PI / 80) * samplePoint - (4 * M_PI / 3);
+        LSMS *item = (LSMS *)parameter;
+        while (item)
+        {
+            int measurement = 0;
+            if(item->magnitude > 0.1 && item->freq > 0.1)
+            {
+                int amp = (int)(item->magnitude * sqrt(2)); // RMS to peak
+                double angle = ((item->freq / 25) * M_PI / 80) * samplePoint - (item->angle * M_PI / 180.0);
+                measurement = (amp * sin(angle)) * 1000;
+            }
 
-        measurements[0] = (amp * sin(angleA - phaseAngle)) * 1000;
-        measurements[1] = (amp * sin(angleB - phaseAngle)) * 1000;
-        measurements[2] = (amp * sin(angleC - phaseAngle)) * 1000;
-        measurements[3] = measurements[0] + measurements[1] + measurements[2]; // should be 0
+            // for all refs
+            TCTR *inst = item->instance;
+            IedServer_updateInt32AttributeValue(inst->server, inst->da, measurement);
+            InputValueHandleExtensionCallbacks(inst->da_callback); // update the associated callbacks with this Data Element (e.g. MMXU)
 
-        measurements[4] = (vol * sin(angleA)) * 100;
-        measurements[5] = (vol * sin(angleB)) * 100;
-        measurements[6] = (vol * sin(angleC)) * 100;
-        measurements[7] = measurements[4] + measurements[5] + measurements[6]; // should be 0
-
-        // for all refs
-        // IedServer_updateInt32AttributeValue(inst->server,inst->da,i);
-        // InputValueHandleExtensionCallbacks(inst->da_callback); //update the associated callbacks with this Data Element (e.g. MMXU)
+            item = item->sibling;
+        }
 
         sampleCount = ((sampleCount + 1) % 4000);
 
