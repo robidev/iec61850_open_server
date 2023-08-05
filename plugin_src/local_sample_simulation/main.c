@@ -14,9 +14,6 @@
 #include "TCTR.h"
 #include "TVTR.h"
 
-static IedModel *model;
-static IedModel_extensions *model_ex;
-
 typedef struct sLSMS
 {
     void *instance;
@@ -31,6 +28,8 @@ void SMV_Callback(int samplecount, void *parameter);
 
 int init(IedModel *Model, IedModel_extensions *Model_ex)
 {
+    IedModel *model;
+    IedModel_extensions *model_ex;
     printf("local_sample_simulation module initialising\n");
     model = Model;
     model_ex = Model_ex;
@@ -151,7 +150,7 @@ int init(IedModel *Model, IedModel_extensions *Model_ex)
 
 void SMV_Callback(int sampleCount, void *parameter)
 {
-    //printf("smv callback called\n");
+    // printf("smv callback called\n");
     LSMS *item = (LSMS *)parameter;
 
     double samplePoint = sampleCount % 80;
@@ -159,7 +158,7 @@ void SMV_Callback(int sampleCount, void *parameter)
     while (item)
     {
         int measurement = 0;
-        if(item->magnitude > 0.1 && item->freq > 0.1)
+        if (item->magnitude > 0.1 && item->freq > 0.1)
         {
             int amp = (int)(item->magnitude * sqrt(2)); // RMS to peak
             double angle = ((item->freq / 25) * M_PI / 80) * samplePoint - (item->angle * M_PI / 180.0);
@@ -189,7 +188,7 @@ void local_SMV_Thread(void *parameter)
         while (item)
         {
             int measurement = 0;
-            if(item->magnitude > 0.1 && item->freq > 0.1)
+            if (item->magnitude > 0.1 && item->freq > 0.1)
             {
                 int amp = (int)(item->magnitude * sqrt(2)); // RMS to peak
                 double angle = ((item->freq / 25) * M_PI / 80) * samplePoint - (item->angle * M_PI / 180.0);

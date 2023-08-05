@@ -20,7 +20,7 @@ RUN cd /tmp/iec61850_open_server && cmake . \
        && make
 
 WORKDIR /srv
-RUN cd /tmp/iec61850_open_server && cp open_server /srv/libiec61850_server && cp -R plugin /srv/plugin
+RUN cd /tmp/iec61850_open_server && cp open_server /srv/libiec61850_server && cp -R plugin /srv/plugin && cp *.config /srv/
 
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 

@@ -59,32 +59,12 @@ int init(IedModel *Model, IedModel_extensions *Model_ex)
 	return 0; // 0 means success
 }
 
-void sim_XCBR_updateValue(int sd, char *buffer, void *param)
-{
-	// printf("XCBR buf= %s\n",buffer);
-
-	XCBR *inst = (XCBR *)param;
-	if (inst->conducting)
-	{
-		if (send(sd, "10.0\n", 5, 0) != 5)
-		{
-			perror("send");
-		}
-	}
-	else
-	{
-		if (send(sd, "-10.0\n", 6, 0) != 6)
-		{
-			perror("send");
-		}
-	}
-}
-
-void sim_XSWI_updateValue(int sd, char *buffer, void *param)
+void sim_SWI_updateValue(int sd, char *buffer, void *param)
 {
 	// printf("XSWI buf= %s\n",buffer);
 	XSWI *inst = (XSWI *)param;
-	if (inst->conducting == true)
+	Dbpos stval = Dbpos_fromMmsValue(IedServer_getAttributeValue(inst->server, inst->Pos_stVal));
+	if (stval == DBPOS_ON)
 	{
 		if (send(sd, "10.0\n", 5, 0) != 5)
 		{
@@ -292,11 +272,11 @@ int simulation_thread()
 							// register simulation get/set calls
 							if (strcmp(ln->lnClass, "XCBR") == 0)
 							{
-								callbacks[i] = sim_XCBR_updateValue;
+								callbacks[i] = sim_SWI_updateValue;
 							}
 							else if (strcmp(ln->lnClass, "XSWI") == 0)
 							{
-								callbacks[i] = sim_XSWI_updateValue;
+								callbacks[i] = sim_SWI_updateValue;
 							}
 							else if (strcmp(ln->lnClass, "TCTR") == 0)
 							{

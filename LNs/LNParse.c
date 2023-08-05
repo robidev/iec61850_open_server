@@ -120,7 +120,7 @@ LogicalNodeClass *getLNClass(IedModel *model, IedModel_extensions *model_ex, con
   LogicalNode *ln = (LogicalNode *)IedModel_getModelNodeByObjectReference(model, objectReference);
   if (ln == NULL)
   {
-    printf("ERROR: could not find logical node object ref: %s", objectReference);
+    printf("ERROR: could not find logical node object ref: %s\n", objectReference);
     return NULL;
   }
 
