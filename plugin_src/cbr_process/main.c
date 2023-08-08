@@ -23,27 +23,27 @@ void SWI_callback_from_LN(void *inst, bool state)
     // trigger for servo/relay move
 }
 
-int init(IedModel *Model, IedModel_extensions *Model_ex)
+int init(OpenServerInstance *srv)
 {
     IedModel *model;
     IedModel_extensions *model_ex;
 
-    printf("cbr process module initialising\n");
-    model = Model;
-    model_ex = Model_ex;
+    printf(" cbr process module initialising\n");
+    model = srv->Model;
+    model_ex = srv->Model_ex;
     FILE *fp;
     char *line = NULL;
     size_t len = 0;
     int read;
     char logical_node[130];
 
-    fp = fopen("cbr_process.config", "r");
+    fp = fopen("./plugin/cbr_process.config", "r");
     if (fp == NULL)
     {
-        printf("ERROR: could not open cbr_process.config\n");
+        printf(" ERROR: could not open cbr_process.config\n");
         return 0;
     }
-    printf("opened cbr_process.config\n");
+    printf(" opened cbr_process.config\n");
 
     // get lines with logical nodes, and the speed for open, close, default-pos
     while ((read = getline(&line, &len, fp)) != -1)
@@ -72,14 +72,14 @@ int init(IedModel *Model, IedModel_extensions *Model_ex)
         else
             XSWI_change_switch(item, DBPOS_OFF);
 
-        printf("* logical node: %s initialised with open_time: %d, close_time: %d, default position: %d\n",
+        printf(" logical node: %s initialised with open_time: %d, close_time: %d, default position: %d\n",
                logical_node, open_time, close_time, default_pos);
     }
     // read from process the postion values,
     // translate to 00,01,10
     // call SWI_callback_from_process with updates
 
-    printf("cbr_process module initialised\n");
+    printf(" cbr_process module initialised\n");
     return 0; // 0 means success
 }
 

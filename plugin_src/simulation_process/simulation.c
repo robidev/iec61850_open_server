@@ -40,22 +40,22 @@ typedef struct sLNStruct
 
 int simulation_thread(void);
 
-int init(IedModel *Model, IedModel_extensions *Model_ex)
+int init(OpenServerInstance *srv)
 {
-	printf("simulation module initialising\n");
+	printf(" simulation module initialising\n");
 	port = PORT;
-	model = Model;
-	model_ex = Model_ex;
+	model = srv->Model;
+	model_ex = srv->Model_ex;
 	if (IEC61850_server_timestep_type() == TIMESTEP_TYPE_LOCAL)
 	{
-		printf("ERROR: timestep should be remote for simulation\n");
+		printf(" ERROR: timestep should be remote for simulation\n");
 		return 1;
 	}
 
 	// spawn simulation thread
 	Thread thread = Thread_create((ThreadExecutionFunction)simulation_thread, NULL, true);
 	Thread_start(thread);
-	printf("simulation module initialised\n");
+	printf(" simulation module initialised\n");
 	return 0; // 0 means success
 }
 
@@ -120,7 +120,7 @@ void sim_TVTR_updateValue(int sd, char *buffer, void *param)
 
 int simulation_thread()
 {
-	printf("simulation thread started\n");
+	printf(" simulation thread started\n");
 	int opt = 1;
 	int master_socket;
 	int addrlen;
@@ -153,14 +153,14 @@ int simulation_thread()
 	// create a master socket
 	if ((master_socket = socket(AF_INET, SOCK_STREAM, 0)) == 0)
 	{
-		perror("socket failed");
+		perror(" socket failed");
 		return -1;
 	}
 
 	// set master socket to allow multiple connections ,
 	if (setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0)
 	{
-		perror("setsockopt");
+		perror(" setsockopt");
 		return -1;
 	}
 
@@ -172,14 +172,14 @@ int simulation_thread()
 	// bind the socket to a port
 	if (bind(master_socket, (struct sockaddr *)&address, sizeof(address)) < 0)
 	{
-		perror("bind failed");
+		perror(" bind failed");
 		return -1;
 	}
 
 	// try to specify maximum of 3 pending connections for the master socket
 	if (listen(master_socket, 3) < 0)
 	{
-		perror("listen");
+		perror(" listen");
 		return -1;
 	}
 	addrlen = sizeof(address);
@@ -213,7 +213,7 @@ int simulation_thread()
 
 		if ((activity < 0) && (errno != EINTR))
 		{
-			printf("select error");
+			printf(" select error");
 		}
 
 		// If something happened on the master socket , then its an incoming connection
@@ -222,7 +222,7 @@ int simulation_thread()
 			if ((new_socket = accept(master_socket,
 									 (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0)
 			{
-				perror("accept");
+				perror(" accept");
 				return -1;
 			}
 
@@ -232,7 +232,7 @@ int simulation_thread()
 				if (client_socket[i] == 0)
 				{ // if position is empty
 					client_socket[i] = new_socket;
-					printf("new conn, sock:%i\n", i);
+					printf(" new conn, sock:%i\n", i);
 					break;
 				}
 			}
@@ -247,7 +247,7 @@ int simulation_thread()
 				// Check if it was for closing , and also read the incoming message
 				if ((valread = read(sd, buffer, 1024)) == 0)
 				{
-					printf("Client disconnected\n");
+					printf(" Client disconnected\n");
 					// Close the socket and mark as 0 in list for reuse
 					close(sd);
 					client_socket[i] = 0;
@@ -263,7 +263,7 @@ int simulation_thread()
 					case 'i': // case init: relate sock to an LN inst
 					{
 						if (buffer[valread - 1] != '\n')
-							perror("send init NO trailing newline");
+							perror(" send init NO trailing newline");
 						buffer[valread - 1] = 0;
 						// find LN, extended LN inst,
 						LogicalNodeClass *ln = getLNClass(model, model_ex, buffer + 2); // based on LN in model, find LNinst(parent LN) in extension
@@ -292,14 +292,14 @@ int simulation_thread()
 
 							if (send(sd, "OK\n", 3, 0) != 3)
 							{
-								perror("send init OK");
+								perror(" send init OK");
 							}
 						}
 						else
 						{
 							if (send(sd, "NOK\n", 4, 0) != 4)
 							{
-								perror("send init NOK");
+								perror(" send init NOK");
 							}
 						}
 
@@ -309,7 +309,7 @@ int simulation_thread()
 					case 's': // case send set/get to respective ln inst.->set values, get values
 					{
 						if (buffer[valread - 1] != '\n')
-							perror("send value NO trailing newline");
+							perror(" send value NO trailing newline");
 						buffer[valread - 1] = 0; // make string zero-terminated
 						if (LNi[i] != 0 && callbacks[i] != 0)
 						{
@@ -323,7 +323,7 @@ int simulation_thread()
 						IEC61850_server_timestep_next_step();
 						if (send(sd, "OK\n", 3, 0) != 3)
 						{
-							perror("send next step");
+							perror(" send next step");
 						}
 						break;
 					}
@@ -332,6 +332,6 @@ int simulation_thread()
 			}
 		}
 	}
-	printf("simulation thread stopped\n");
+	printf(" simulation thread stopped\n");
 	return 0;
 }

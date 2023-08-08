@@ -44,13 +44,15 @@ LinkedList subscribeToGOOSEInputs(IedModel_extensions* self, GooseReceiver GSEre
 
 LinkedList subscribeToSMVInputs(IedModel_extensions* self, SVReceiver SMVreceiver);
 
-LinkedList subscribeToLocalDAInputs(IedModel_extensions* self, IedModel* model, IedServer server );
+LinkedList subscribeToLocalDAInputs(IedServer server, IedModel_extensions* self, IedModel* model);
 
 Input* getInput(IedModel_extensions* model, LogicalNode* ln);
 
 void InputValueHandleExtensionCallbacks(void* param);
 
 InputValue* _findAttributeValueEx(DataAttribute* dataAttribute, LinkedList inputvalues);
+
+void AttributeValueHandleExtensionCallbacks(DataAttribute *dataAttribute, LinkedList inputvalues);
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,6 @@
 # add_subdirectory(char_lcd)
 # add_subdirectory(gui)
+add_subdirectory(python)
 add_subdirectory(cbr_process)
 add_subdirectory(cbr_simulation)
 add_subdirectory(simulation_process)

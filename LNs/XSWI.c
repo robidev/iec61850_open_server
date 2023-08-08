@@ -62,7 +62,7 @@ void *XSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
 
 void XSWI_change_switch(XSWI *inst, Dbpos value)
 {
-  printf("*** XSWI_change_switch ***\n");
+  //printf("*** XSWI_change_switch ***\n");
   uint64_t timestamp = Hal_getTimeInMs();
   IedServer_updateDbposValue(inst->server, inst->Pos_stVal, value);
   IedServer_updateUTCTimeAttributeValue(inst->server, inst->Pos_t, timestamp);

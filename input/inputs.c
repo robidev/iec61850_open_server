@@ -5,8 +5,8 @@
 
 #include <libiec61850/iec61850_server.h>
 #include "libiec61850_platform_includes.h"
-#include "inputs_api.h"
 #include <libiec61850/goose_subscriber.h>
+#include "inputs_api.h"
 #include "lib_memory.h"
 
 int strcmp_p(const char *str1, const char *str2);
@@ -206,7 +206,7 @@ LinkedList subscribeToSMVInputs(IedModel_extensions *self, SVReceiver SMVreceive
   return SMVlist;
 }
 
-LinkedList subscribeToLocalDAInputs(IedModel_extensions *self, IedModel *model, IedServer server)
+LinkedList subscribeToLocalDAInputs(IedServer server, IedModel_extensions *self, IedModel *model)
 {
   LinkedList DAlist = LinkedList_create();
 

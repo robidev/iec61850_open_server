@@ -33,27 +33,27 @@ void callback_from_LN(void *inst, bool state)
     Thread_start(thread);
 }
 
-int init(IedModel *Model, IedModel_extensions *Model_ex)
+int init(OpenServerInstance *srv)
 {
     IedModel *model;
     IedModel_extensions *model_ex;
 
-    printf("cbr simulation module initialising\n");
-    model = Model;
-    model_ex = Model_ex;
+    printf(" cbr simulation module initialising\n");
+    model = srv->Model;
+    model_ex = srv->Model_ex;
     FILE *fp;
     char *line = NULL;
     size_t len = 0;
     int read;
     char logical_node[130];
 
-    fp = fopen("cbr_simulator.config", "r");
+    fp = fopen("./plugin/cbr_simulator.config", "r");
     if (fp == NULL)
     {
-        printf("ERROR: could not open cbr_simulator.config\n");
+        printf(" ERROR: could not open cbr_simulator.config\n");
         return 0;
     }
-    printf("opened cbr_simulator.config\n");
+    printf(" opened cbr_simulator.config\n");
 
     // get lines with logical nodes, and the time needed for open, close, default-pos
     while ((read = getline(&line, &len, fp)) != -1)
@@ -82,11 +82,11 @@ int init(IedModel *Model, IedModel_extensions *Model_ex)
         else
             XSWI_change_switch(item, DBPOS_OFF);
 
-        printf("* logical node: %s initialised with open_time: %d, close_time: %d, default position: %d\n",
+        printf(" logical node: %s initialised with open_time: %d, close_time: %d, default position: %d\n",
                logical_node, open_time, close_time, default_pos);
     }
 
-    printf("cbr_simulation module initialised\n");
+    printf(" cbr_simulation module initialised\n");
     return 0; // 0 means success
 }
 
@@ -101,11 +101,11 @@ void simulate_switch_close(void *inst)
 
     if (stval != DBPOS_ON) // position is not closed/on and we issue a command to close
     {
-        printf("SWI: closing\n");
+        printf(" SWI: closing\n");
         XSWI_change_switch(instance, DBPOS_INTERMEDIATE_STATE);
 
         Thread_sleep(conf->close_time);
-        printf("SWI: closed\n");
+        printf(" SWI: closed\n");
         XSWI_change_switch(instance, DBPOS_ON);
     }
     Semaphore_post(instance->sem);
@@ -120,12 +120,12 @@ void simulate_switch_open(void *inst)
 
     if (stval != DBPOS_OFF) // position is not open/off and we issue a command to open
     {
-        printf("SWI: opening\n");
+        printf(" SWI: opening\n");
         XSWI_change_switch(instance, DBPOS_INTERMEDIATE_STATE);
 
         Thread_sleep(conf->open_time);
         XSWI_change_switch(instance, DBPOS_OFF);
-        printf("SWI: opened\n");
+        printf(" SWI: opened\n");
     }
     Semaphore_post(instance->sem);
 }

@@ -27,7 +27,7 @@
 static int global_step = 0;
 static int global_timestep_type = TIMESTEP_TYPE_LOCAL; // TIMESTEP_TYPE_REMOTE
 static int running = 0;
-static IedServer iedServer = NULL;
+
 
 void IEC61850_server_timestep_next_step()
 {
@@ -71,9 +71,14 @@ int open_server_running()
 
 int main(int argc, char **argv)
 {
-
-	IedModel *iedModel_local = NULL;					//&iedModel;
-	IedModel_extensions *iedExtendedModel_local = NULL; //&iedExtendedModel;
+	OpenServerInstance openServer;
+	openServer.server = NULL;
+	openServer.Model = NULL;
+	//IedModel *iedModel_local = NULL;			
+	openServer.Model_ex = NULL;		
+	//IedModel_extensions *iedExtendedModel_local = NULL; 
+	openServer.allInputValues = NULL;
+	openServer.SMVControlInstances = NULL;
 
 	int port = 102;
 	char *ethernetIfcID = "lo";
@@ -90,10 +95,10 @@ int main(int argc, char **argv)
 	}
 	if (argc > 3)
 	{
-		iedModel_local = ConfigFileParser_createModelFromConfigFileEx(argv[3]);
-		iedExtendedModel_local = ConfigFileParser_createModelFromConfigFileEx_inputs(argv[4], iedModel_local);
+		openServer.Model = ConfigFileParser_createModelFromConfigFileEx(argv[3]);
+		openServer.Model_ex = ConfigFileParser_createModelFromConfigFileEx_inputs(argv[4], openServer.Model);
 
-		if (iedModel_local == NULL || iedExtendedModel_local == NULL)
+		if (openServer.Model == NULL || openServer.Model_ex == NULL)
 		{
 			printf("Parsing dynamic config failed! Exit.\n");
 			exit(-1);
@@ -108,32 +113,31 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		if (iedModel_local == NULL || iedExtendedModel_local == NULL)
+		if (openServer.Model == NULL || openServer.Model_ex == NULL)
 		{
 			printf("No valid model provided! Exit.\n");
 			exit(-1);
 		}
 	}
 
-	iedServer = IedServer_create(iedModel_local);
+	openServer.server = IedServer_create(openServer.Model);
 
 	GooseReceiver GSEreceiver = GooseReceiver_create();
 	SVReceiver SMVreceiver = SVReceiver_create();
 
 	/* set GOOSE interface for all GOOSE publishers (GCBs) */
-	IedServer_setGooseInterfaceId(iedServer, ethernetIfcID);
+	IedServer_setGooseInterfaceId(openServer.server, ethernetIfcID);
 	// goose subscriber
 	GooseReceiver_setInterfaceId(GSEreceiver, ethernetIfcID);
 	// smv subscriber
 	SVReceiver_setInterfaceId(SMVreceiver, ethernetIfcID);
 
 	// subscribe to datasets and local DA's based on iput/extRef, and generate one list with all inputValues
-	LinkedList allInputValues = subscribeToGOOSEInputs(iedExtendedModel_local, GSEreceiver);
-	LinkedList temp = allInputValues;
+	openServer.allInputValues = subscribeToGOOSEInputs(openServer.Model_ex, GSEreceiver);
+	LinkedList temp = LinkedList_getLastElement(openServer.allInputValues);
+	temp->next = subscribeToSMVInputs(openServer.Model_ex, SMVreceiver);
 	temp = LinkedList_getLastElement(temp);
-	temp->next = subscribeToSMVInputs(iedExtendedModel_local, SMVreceiver);
-	temp = LinkedList_getLastElement(temp);
-	temp->next = subscribeToLocalDAInputs(iedExtendedModel_local, iedModel_local, iedServer);
+	temp->next = subscribeToLocalDAInputs(openServer.server,openServer.Model_ex, openServer.Model);
 
 	// start subscribers
 	GooseReceiver_start(GSEreceiver);
@@ -149,29 +153,30 @@ int main(int argc, char **argv)
 	}
 
 	/* MMS server will be instructed to start listening to client connections. */
-	IedServer_start(iedServer, port);
+	IedServer_start(openServer.server, port);
 	running = 1;
 
-	if (!IedServer_isRunning(iedServer))
+	if (!IedServer_isRunning(openServer.server))
 	{
 		printf("Starting server failed! Exit.\n");
-		IedServer_destroy(iedServer);
+		IedServer_destroy(openServer.server);
 		exit(-1);
 	}
 
 	// call initializers for sampled value control blocks and start publishing
-	iedExtendedModel_local->SMVControlInstances = attachSMV(iedServer, iedModel_local, ethernetIfcID, allInputValues);
+	attachSMV(openServer.server, openServer.Model, openServer.allInputValues, ethernetIfcID);
 
 	// call all initializers for logical nodes in the model
-	attachLogicalNodes(iedServer, iedExtendedModel_local, allInputValues);
+	attachLogicalNodes(openServer.server, openServer.Model_ex, openServer.allInputValues);
 
 	/* Start GOOSE publishing */
-	IedServer_enableGoosePublishing(iedServer);
+	IedServer_enableGoosePublishing(openServer.server);
 
 	/* PLUGIN SYSTEM */
 	// load all .so in plugin folder, and call init
 	// plugins are allowed to call exported functions from main executable
 
+	printf("\n--- loading plugins ---\n");
 	DIR *d;
 	struct dirent *dir;
 	d = opendir("./plugin");
@@ -211,13 +216,15 @@ int main(int argc, char **argv)
 				printf("ERROR: Unable to get symbol\n");
 				continue;
 			}
-			if (init_func(iedModel_local, iedExtendedModel_local) != 0)
+			if (init_func(&openServer) != 0)
 			{
 				printf("ERROR: could not succesfully run init of plugin: %s\n", dir->d_name);
 			}
+			printf("\n");
 		}
 		closedir(d);
 	}
+	printf("--- loading plugins finished ---\n\n");
 
 	signal(SIGINT, sigint_handler);
 	while (running)
@@ -235,9 +242,9 @@ int main(int argc, char **argv)
 	/* Cleanup and free resources */
 	SVReceiver_destroy(SMVreceiver);
 	/* stop MMS server - close TCP server socket and all client sockets */
-	IedServer_stop(iedServer);
+	IedServer_stop(openServer.server);
 	/* Cleanup - free all resources */
-	IedServer_destroy(iedServer);
+	IedServer_destroy(openServer.server);
 
 
 } /* main() */

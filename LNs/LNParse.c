@@ -17,72 +17,72 @@
 void attachLogicalNodes(IedServer server, IedModel_extensions *model, LinkedList allInputValues)
 {
   // iterate over struct that attaches model-instances to LogicalNode Classes
-  LogicalNodeClass *lnClass = model->logicalNodes;
-  while (lnClass != NULL)
-  { // call init, to attach input-nodes of this instance to callback-items. store instance in lnClass
-    Input *input = getInput(model, lnClass->parent);
+  LogicalNodeClass *lnInstance = model->logicalNodes;
+  while (lnInstance != NULL)
+  { // call init, to attach input-nodes of this instance to callback-items. store instance in lnInstance
+    Input *input = getInput(model, lnInstance->parent);
 
-    if (strcmp(lnClass->lnClass, "LLN0") == 0)
+    if (strcmp(lnInstance->lnClass, "LLN0") == 0)
     {
       printf("Found mandatory Class LLN0\n");
-      LLN0_init(server, lnClass->parent);
+      LLN0_init(server, lnInstance->parent);
     }
-    else if (strcmp(lnClass->lnClass, "LPHD") == 0)
+    else if (strcmp(lnInstance->lnClass, "LPHD") == 0)
     {
       printf("Found mandatory Class LPHD\n");
     }
     // simulated
-    else if (strcmp(lnClass->lnClass, "XSWI") == 0)
+    else if (strcmp(lnInstance->lnClass, "XSWI") == 0)
     {
-      lnClass->instance = XSWI_init(server, lnClass->parent, input, allInputValues);
+      lnInstance->instance = XSWI_init(server, lnInstance->parent, input, allInputValues);
     }
-    else if (strcmp(lnClass->lnClass, "XCBR") == 0)
+    else if (strcmp(lnInstance->lnClass, "XCBR") == 0)
     {
-      lnClass->instance = XCBR_init(server, lnClass->parent, input, allInputValues);
+      lnInstance->instance = XCBR_init(server, lnInstance->parent, input, allInputValues);
     }
-    else if (strcmp(lnClass->lnClass, "TCTR") == 0)
+    else if (strcmp(lnInstance->lnClass, "TCTR") == 0)
     {
-      lnClass->instance = TCTR_init(server, lnClass->parent, input, allInputValues);
+      lnInstance->instance = TCTR_init(server, lnInstance->parent, input, allInputValues);
     }
-    else if (strcmp(lnClass->lnClass, "TVTR") == 0)
+    else if (strcmp(lnInstance->lnClass, "TVTR") == 0)
     {
-      lnClass->instance = TVTR_init(server, lnClass->parent, input, allInputValues);
+      lnInstance->instance = TVTR_init(server, lnInstance->parent, input, allInputValues);
     }
     // basic functional
-    else if (strcmp(lnClass->lnClass, "PTRC") == 0)
+    else if (strcmp(lnInstance->lnClass, "PTRC") == 0)
     {
-      PTRC_init(server, lnClass->parent, input, allInputValues);
+      PTRC_init(server, lnInstance->parent, input, allInputValues);
     }
-    else if (strcmp(lnClass->lnClass, "PTOC") == 0)
+    else if (strcmp(lnInstance->lnClass, "PTOC") == 0)
     {
-      PTOC_init(server, lnClass->parent, input, allInputValues);
+      PTOC_init(server, lnInstance->parent, input, allInputValues);
     }
-    else if (strcmp(lnClass->lnClass, "MMXU") == 0)
+    else if (strcmp(lnInstance->lnClass, "MMXU") == 0)
     {
-      MMXU_init(server, lnClass->parent, input, allInputValues);
+      MMXU_init(server, lnInstance->parent, input, allInputValues);
     }
-    else if (strcmp(lnClass->lnClass, "CSWI") == 0)
+    else if (strcmp(lnInstance->lnClass, "CSWI") == 0)
     {
-      CSWI_init(server, lnClass->parent, input, allInputValues);
+      CSWI_init(server, lnInstance->parent, input, allInputValues);
     }
-    else if (strcmp(lnClass->lnClass, "CILO") == 0)
+    else if (strcmp(lnInstance->lnClass, "CILO") == 0)
     {
-      CILO_init(server, lnClass->parent, input, allInputValues);
+      CILO_init(server, lnInstance->parent, input, allInputValues);
     }
     // stubs
-    else if (strcmp(lnClass->lnClass, "RADR") == 0)
+    else if (strcmp(lnInstance->lnClass, "RADR") == 0)
     {
       RADR_init(input);
     }
     else
     {
-      printf("ERROR: Class %s not supported\n", lnClass->lnClass);
+      printf("ERROR: Class %s not supported\n", lnInstance->lnClass);
     }
-    lnClass = lnClass->sibling;
+    lnInstance = lnInstance->sibling;
   }
 }
 
-SMVcB *attachSMV(IedServer server, IedModel *model, char *ethernetIfcID, LinkedList allInputValues) // allInputValues is needed for callbacks when a local value is updated
+SMVcB *attachSMV(IedServer server, IedModel *model, LinkedList allInputValues, char *ethernetIfcID) // allInputValues is needed for callbacks when a local value is updated
 {
   SMVcB *head = NULL;
   SMVcB *last = NULL;
@@ -136,14 +136,14 @@ LogicalNodeClass *getLNClass(IedModel *model, IedModel_extensions *model_ex, con
   return NULL;
 }
 
-SMVcB *getSMVInstance(IedModel *model, IedModel_extensions *model_ex, const char *objectReference)
+SMVcB *getSMVInstance(IedModel *model, SMVcB *SMVControlInstances, const char *objectReference)
 {
   SVControlBlock *svCBs = model->svCBs;
   while (svCBs != NULL)
   {
     if (strcmp(svCBs->name, objectReference) == 0)
     {
-      SMVcB *entry = model_ex->SMVControlInstances;
+      SMVcB *entry = SMVControlInstances;
       while (entry)
       {
         if (entry->svCBs == svCBs)

@@ -26,25 +26,25 @@ typedef struct sLSMS
 void local_SMV_Thread();
 void SMV_Callback(int samplecount, void *parameter);
 
-int init(IedModel *Model, IedModel_extensions *Model_ex)
+int init(OpenServerInstance *srv)
 {
     IedModel *model;
     IedModel_extensions *model_ex;
-    printf("local_sample_simulation module initialising\n");
-    model = Model;
-    model_ex = Model_ex;
+    printf(" local_sample_simulation module initialising\n");
+    model = srv->Model;
+    model_ex = srv->Model_ex;
     FILE *fp;
     char *line = NULL;
     size_t len = 0;
     int read;
 
-    fp = fopen("local_sample_simulator.config", "r");
+    fp = fopen("./plugin/local_sample_simulator.config", "r");
     if (fp == NULL)
     {
-        printf("ERROR: could not open local_sample_simulator.config\n");
+        printf(" ERROR: could not open local_sample_simulator.config\n");
         return 0;
     }
-    printf("opened local_sample_simulator.config\n");
+    printf(" opened local_sample_simulator.config\n");
 
     int state = 0;
     uint8_t type = 0;
@@ -115,13 +115,13 @@ int init(IedModel *Model, IedModel_extensions *Model_ex)
 
     if (state != 2)
     {
-        printf("ERROR: could not parse file\n");
-        printf("First line has to be T or C\n");
-        printf("Second line an smvref or 'none' \n");
-        printf("other lines should refer to TCTR or TVTR instances\n");
+        printf(" ERROR: could not parse file\n");
+        printf(" First line has to be T or C\n");
+        printf(" Second line an smvref or 'none' \n");
+        printf(" other lines should refer to TCTR or TVTR instances\n");
         return 1;
     }
-    printf("file parsed succesfully\n");
+    printf(" file parsed succesfully\n");
 
     if (type == 'T')
     {
@@ -130,21 +130,21 @@ int init(IedModel *Model, IedModel_extensions *Model_ex)
     }
     else if (type == 'C')
     {
-        SMVcB *smv = getSMVInstance(Model, Model_ex, svcb);
+        SMVcB *smv = getSMVInstance(model, srv->SMVControlInstances, svcb);
         if (smv == NULL)
         {
-            printf("ERROR: cannot find SMV instance: %s in model\n", svcb);
+            printf(" ERROR: cannot find SMV instance: %s in model\n", svcb);
             return 1;
         }
         setSampleCallback(smv->instance, SMV_Callback, head);
     }
     else
     {
-        printf("ERROR: unrecognised option. First line has to be T or C\n");
+        printf(" ERROR: unrecognised option. First line has to be T or C\n");
         return 1;
     }
 
-    printf("local_sample_simulation module initialised\n");
+    printf(" local_sample_simulation module initialised\n");
     return 0; // 0 means success
 }
 
@@ -175,7 +175,7 @@ void SMV_Callback(int sampleCount, void *parameter)
 
 void local_SMV_Thread(void *parameter)
 {
-    printf("smv thread started\n");
+    printf(" smv thread started\n");
     int sampleCount = 0;
 
     uint64_t nextCycleStart = Hal_getTimeInMs() + 1000;

@@ -3,8 +3,9 @@ FROM debian:stable-20211115-slim
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
               git \
-              build-essential \   
-              cmake \         
+              build-essential \
+              cmake \
+              python3 python3-dev \
          && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=
 
@@ -20,7 +21,7 @@ RUN cd /tmp/iec61850_open_server && cmake . \
        && make
 
 WORKDIR /srv
-RUN cd /tmp/iec61850_open_server && cp open_server /srv/libiec61850_server && cp -R plugin /srv/plugin && cp *.config /srv/
+RUN cd /tmp/iec61850_open_server && cp open_server /srv/libiec61850_server && cp -R plugin /srv/plugin
 
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
 

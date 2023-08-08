@@ -5,21 +5,29 @@
 #include <libiec61850/sv_publisher.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-void attachLogicalNodes(IedServer server, IedModel_extensions* model, LinkedList allInputValues);
+    // struct for sampled value control block instances
+    typedef struct sSMVcB SMVcB;
+    
+    struct sSMVcB {
+        SVControlBlock *svCBs;
+        void *instance;
+        SMVcB *sibling;
+    };
 
-SMVcB* attachSMV(IedServer server, IedModel* model, char* ethernetIfcID, LinkedList allInputValues);
+    void attachLogicalNodes(IedServer server,IedModel_extensions *model, LinkedList allInputValues);
 
-LogicalNodeClass* getLNClass(IedModel* model, IedModel_extensions* model_ex, const char * objectReference);
+    SMVcB *attachSMV(IedServer server, IedModel *model, LinkedList allInputValues, char *ethernetIfcID);
 
-SMVcB* getSMVInstance(IedModel* model, IedModel_extensions* model_ex, const char * objectReference);
+    LogicalNodeClass *getLNClass(IedModel *model, IedModel_extensions *model_ex, const char *objectReference);
+
+    SMVcB *getSMVInstance(IedModel *model, SMVcB *SMVControlInstances, const char *objectReference);
 
 #ifdef __cplusplus
 }
 #endif
 
-
 #endif /* LNS_H_ */
-
