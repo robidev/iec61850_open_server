@@ -24,6 +24,9 @@ void Python_threat(void * srv);
 
 MmsValue * getDataRefFromModel(OpenServerInstance *srv, char *ref)
 {
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || ref == NULL)
+        return NULL;
+
     DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
     if(Pos_stVal == NULL)
         return NULL;
@@ -32,6 +35,9 @@ MmsValue * getDataRefFromModel(OpenServerInstance *srv, char *ref)
 
 void updateDataRef(OpenServerInstance *srv, char *ref, int value)
 {
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
+        return;
+
     DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
     if(Pos_stVal == NULL)
         return;
@@ -66,9 +72,10 @@ void Python_threat(void * srv)
     int i;
 
     Py_Initialize();
-    //PySys_SetPath(L"./plugin/python_app/");
+
     PyObject *sys_path = PySys_GetObject("path");
     PyList_Append(sys_path, PyUnicode_FromString("./plugin/python_app/"));
+
     pName = PyUnicode_DecodeFSDefault("app");
     /* Error checking of pName left out */
 
@@ -121,7 +128,7 @@ void Python_threat(void * srv)
         printf(" ERROR: Failed to load app.py\n");
         return;
     }
-    printf(" Python thread ended\n");
+    printf(" Python thread ended normally\n");
     if (Py_FinalizeEx() < 0) {
         return;
     }
