@@ -167,7 +167,7 @@ int main(int argc, char **argv)
 	attachSMV(openServer.server, openServer.Model, openServer.allInputValues, ethernetIfcID);
 
 	// call all initializers for logical nodes in the model
-	attachLogicalNodes(openServer.server, openServer.Model_ex, openServer.allInputValues);
+	attachLogicalNodes(openServer.server, openServer.Model, openServer.Model_ex, openServer.allInputValues);
 
 	/* Start GOOSE publishing */
 	IedServer_enableGoosePublishing(openServer.server);

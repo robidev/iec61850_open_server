@@ -2,14 +2,14 @@
 #include "inputs_api.h"
 #include <libiec61850/hal_thread.h>
 // #include "../static_model.h"
-#include "PTOC.h"
+#include "PIOC.h"
 
 #include <time.h>
 
 //
-// PTOC : time over current protection; will trip after set time-curve when current is too high
+// PIOC : instantanious over current protection; will trip immediately when current is too high
 //
-typedef struct sPTOC
+typedef struct sPIOC
 {
   IedServer server;
   DataAttribute *Op_general;
@@ -17,28 +17,27 @@ typedef struct sPTOC
   Input *input;
   int tripTimer;
   bool trip;
-  uint64_t overCurrent;
-  msSinceEpoch prevTime;
-} PTOC;
+} PIOC;
+
 
 // callback when GOOSE is received
-void PTOC_callback_GOOSE(InputEntry *extRef)
+void PIOC_callback_GOOSE(InputEntry *extRef)
 {
-  PTOC *inst = extRef->callBackParam;
+  PIOC *inst = extRef->callBackParam;
 
   if (extRef->value != NULL)
   {
     // char printBuf[1024];
 
     // MmsValue_printToBuffer(extRef->value, printBuf, 1024);
-    // printf("PTOC: Received Breaker position: %s\n", printBuf);
+    // printf("PIOC: Received Breaker position: %s\n", printBuf);
   }
 }
 
 // callback when SMV is received
-void PTOC_callback_SMV(InputEntry *extRef)
+void PIOC_callback_SMV(InputEntry *extRef)
 {
-  PTOC *inst = extRef->callBackParam;
+  PIOC *inst = extRef->callBackParam;
   extRef = inst->input->extRefs; // start from the first extref, and check all values
   int i = 0;
   while (extRef != NULL)
@@ -48,17 +47,11 @@ void PTOC_callback_SMV(InputEntry *extRef)
       if (i < 4) // only trigger on amps. TODO: ensure it only triggers on Amps lnrefs, instead of relying on the order in the SCD file
       {
         MmsValue *stVal = MmsValue_getElement(extRef->value, 0);
-        int64_t current = llabs( MmsValue_toInt64(stVal) );
-
-        msSinceEpoch time = Hal_getTimeInMs();
-        msSinceEpoch delta_t = time - inst->prevTime;
-        inst->prevTime = time;
-
         // check if value is outside allowed band
         // TODO: get values from settings
-        if (current > 500)
+        if (MmsValue_toInt64(stVal) > 500 || MmsValue_toInt64(stVal) < -500)
         {
-          printf("PTOC: treshold reached by immediate overcurrent\n");
+          printf("PIOC: treshold reached\n");
           MmsValue *tripValue = MmsValue_newBoolean(true);
 
           IedServer_updateAttributeValue(inst->server, inst->Op_general, tripValue);
@@ -69,28 +62,6 @@ void PTOC_callback_SMV(InputEntry *extRef)
           inst->trip = true;
           // if so send to internal PTRC
         }
-        else if (current> 400 )// lineair time overcurrent
-        {
-          inst->overCurrent += (current - 400) * delta_t;
-          if( inst->overCurrent > 100 )
-          {
-            printf("PTOC: treshold reached by time overcurrent\n");
-            MmsValue *tripValue = MmsValue_newBoolean(true);
-
-            IedServer_updateAttributeValue(inst->server, inst->Op_general, tripValue);
-            InputValueHandleExtensionCallbacks(inst->Op_general_callback); // update the associated callbacks with this Data Element
-
-            MmsValue_delete(tripValue);
-            inst->tripTimer = 0;
-            inst->trip = true;
-          }
-        }
-        else if(inst->overCurrent > 0)
-        {
-          inst->overCurrent += (current - 400) * delta_t;
-          if(inst->overCurrent < 0)
-            inst->overCurrent = 0;
-        }
       }
       i++;
     }
@@ -99,7 +70,7 @@ void PTOC_callback_SMV(InputEntry *extRef)
 
   if (inst->tripTimer > 200 && inst->trip == true)
   {
-    // printf("PTOC: treshold NOT reached\n");
+    // printf("PIOC: treshold NOT reached\n");
     MmsValue *tripValue = MmsValue_newBoolean(false);
 
     IedServer_updateAttributeValue(inst->server, inst->Op_general, tripValue);
@@ -109,14 +80,13 @@ void PTOC_callback_SMV(InputEntry *extRef)
     // if so send to internal PTRC
     inst->tripTimer = 0;
     inst->trip = false;
-    inst->overCurrent = 0;
   }
   inst->tripTimer++;
 }
 
-void PTOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
+void PIOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
-  PTOC *inst = (PTOC *)malloc(sizeof(PTOC)); // create new instance with MALLOC
+  PIOC *inst = (PIOC *)malloc(sizeof(PIOC)); // create new instance with MALLOC
   inst->server = server;
   inst->tripTimer = 0;
   inst->trip = false;
@@ -132,12 +102,12 @@ void PTOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allIn
     {
       if (strcmp(extRef->intAddr, "Amp3") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
       {
-        extRef->callBack = (callBackFunction)PTOC_callback_SMV; // TODO: replace smv with samples
+        extRef->callBack = (callBackFunction)PIOC_callback_SMV; // TODO: replace smv with samples
         extRef->callBackParam = inst;
       }
       if (strcmp(extRef->intAddr, "xcbr_stval") == 0)
       {
-        extRef->callBack = (callBackFunction)PTOC_callback_GOOSE; // TODO: replace GOOSE with status
+        extRef->callBack = (callBackFunction)PIOC_callback_GOOSE; // TODO: replace GOOSE with status
         extRef->callBackParam = inst;
       }
       extRef = extRef->sibling;

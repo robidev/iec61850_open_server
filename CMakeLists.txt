@@ -26,7 +26,7 @@ check_library_exists(rt clock_gettime "time.h" CONFIG_SYSTEM_HAS_CLOCK_GETTIME)
 include (TestBigEndian)
 test_big_endian(PLATFORM_IS_BIGENDIAN)
 
-option(DEBUG "Enable debugging" OFF)
+option(DEBUG "Enable debugging" ON)
 #option(DEBUG "Enable debugging" ON)
 option(BUILD_PLUGINS "Build the plugins" ON)
 
@@ -45,13 +45,19 @@ set(open_server_SRCS
    LNs/CSWI.c
    LNs/MMXU.c
    LNs/PTOC.c
+   LNs/PIOC.c
+   LNs/PDIF.c
+   LNs/PDIS.c
    LNs/PTRC.c
    LNs/RADR.c
+   LNs/RBDR.c
+   LNs/RDRE.c
    LNs/XCBR.c
    LNs/XSWI.c
    LNs/LLN0.c
    LNs/TVTR.c
    LNs/TCTR.c
+   LNs/RREC.c
 
    open_server.c
 )
@@ -66,6 +72,13 @@ endif(BUILD_PLUGINS)
 
 add_executable(open_server
   ${open_server_SRCS}
+)
+
+set_target_properties( open_server
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}"
 )
 
 target_link_libraries(open_server

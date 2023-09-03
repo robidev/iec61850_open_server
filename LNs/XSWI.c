@@ -40,6 +40,7 @@ void *XSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
   if (input != NULL)
   {
     InputEntry *extref = input->extRefs;
+    
     while (extref != NULL)
     {
       if (strcmp(extref->intAddr, "Tr") == 0) // TODO: should be Op, but then also modify in SCL

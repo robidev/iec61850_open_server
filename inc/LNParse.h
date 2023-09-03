@@ -18,7 +18,7 @@ extern "C"
         SMVcB *sibling;
     };
 
-    void attachLogicalNodes(IedServer server,IedModel_extensions *model, LinkedList allInputValues);
+    void attachLogicalNodes(IedServer server,IedModel *model,IedModel_extensions *model_ex, LinkedList allInputValues);
 
     SMVcB *attachSMV(IedServer server, IedModel *model, LinkedList allInputValues, char *ethernetIfcID);
 

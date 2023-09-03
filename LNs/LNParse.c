@@ -5,8 +5,14 @@
 #include "XSWI.h"
 #include "XCBR.h"
 #include "RADR.h"
+#include "RBDR.h"
+#include "RDRE.h"
+#include "RREC.h"
 #include "PTRC.h"
 #include "PTOC.h"
+#include "PIOC.h"
+#include "PDIS.h"
+#include "PDIF.h"
 #include "MMXU.h"
 #include "CSWI.h"
 #include "CILO.h"
@@ -14,14 +20,14 @@
 #include "TCTR.h"
 #include "TVTR.h"
 
-void attachLogicalNodes(IedServer server, IedModel_extensions *model, LinkedList allInputValues)
+void attachLogicalNodes(IedServer server, IedModel *model, IedModel_extensions *model_ex, LinkedList allInputValues)
 {
-  // iterate over struct that attaches model-instances to LogicalNode Classes
-  LogicalNodeClass *lnInstance = model->logicalNodes;
+  // iterate over struct that attaches model_ex-instances to LogicalNode Classes
+  LogicalNodeClass *lnInstance = model_ex->logicalNodes;
   while (lnInstance != NULL)
   { // call init, to attach input-nodes of this instance to callback-items. store instance in lnInstance
-    Input *input = getInput(model, lnInstance->parent);
-
+    Input *input = getInput(model_ex, lnInstance->parent);
+    
     if (strcmp(lnInstance->lnClass, "LLN0") == 0)
     {
       printf("Found mandatory Class LLN0\n");
@@ -53,9 +59,21 @@ void attachLogicalNodes(IedServer server, IedModel_extensions *model, LinkedList
     {
       PTRC_init(server, lnInstance->parent, input, allInputValues);
     }
+    else if (strcmp(lnInstance->lnClass, "PIOC") == 0)
+    {
+      PIOC_init(server, lnInstance->parent, input, allInputValues);
+    }
     else if (strcmp(lnInstance->lnClass, "PTOC") == 0)
     {
       PTOC_init(server, lnInstance->parent, input, allInputValues);
+    }
+    else if (strcmp(lnInstance->lnClass, "PDIS") == 0)
+    {
+      PDIS_init(server, lnInstance->parent, input, allInputValues);
+    }
+    else if (strcmp(lnInstance->lnClass, "PDIF") == 0)
+    {
+      PDIF_init(server, lnInstance->parent, input, allInputValues);
     }
     else if (strcmp(lnInstance->lnClass, "MMXU") == 0)
     {
@@ -72,7 +90,19 @@ void attachLogicalNodes(IedServer server, IedModel_extensions *model, LinkedList
     // stubs
     else if (strcmp(lnInstance->lnClass, "RADR") == 0)
     {
-      RADR_init(input);
+      RADR_init(server, lnInstance->parent, model, model_ex, input, allInputValues);
+    }
+    else if (strcmp(lnInstance->lnClass, "RBDR") == 0)
+    {
+      RBDR_init(server, lnInstance->parent, model, model_ex, input, allInputValues);
+    }
+    else if (strcmp(lnInstance->lnClass, "RDRE") == 0)
+    {
+      RDRE_init(server, lnInstance->parent, model, model_ex, input, allInputValues);
+    }
+    else if (strcmp(lnInstance->lnClass, "RREC") == 0)
+    {
+      RREC_init(server, lnInstance->parent, model, model_ex, input, allInputValues);
     }
     else
     {
