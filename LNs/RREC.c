@@ -28,6 +28,7 @@ void RREC_reenable_timer(InputEntry *extRef)
   {
     if((inst->tripstate > 0 || inst->tripCount > 0) && Dbpos_fromMmsValue(extRef->value) == DBPOS_ON)
     {
+      printf("Re-arm recloser\n");
       inst->tripstate = 0;
       inst->tripCount = 0;
     }
@@ -43,6 +44,7 @@ void RREC_recloser_timer(InputEntry *extRef)
     if(inst->tripstate == 2 && Dbpos_fromMmsValue(extRef->value) == DBPOS_OFF)
     {
       //operate 
+      printf("Reclose!\n");
       MmsValue *opValue = MmsValue_newBoolean(true);
       IedServer_updateAttributeValue(inst->server, inst->Op_general, opValue);
       InputValueHandleExtensionCallbacks(inst->Op_general_callback); // update the associated callbacks with this Data Element
@@ -72,7 +74,7 @@ void RREC_xcbr_callback(InputEntry *extRef)
       }
       else // lock state
       {
-        printf("Recloser in locked state");
+        printf("Recloser in locked state\n");
         inst->tripCount++;
         inst->tripstate = 0;
       }
@@ -95,7 +97,7 @@ void RREC_timeout(InputEntry *extRef)
   if(inst->tripstate == 1)
   {
     inst->tripstate = 0;
-    printf("Recloser timeout during time between trip and switch response");
+    printf("Recloser timeout during time between trip and switch response\n");
   }
 }
 
@@ -116,7 +118,7 @@ void RREC_input_callback(InputEntry *extRef)
   }
 }
 
-void RREC_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_extensions * model_ex,Input *input, LinkedList allInputValues)
+void * RREC_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_extensions * model_ex,Input *input, LinkedList allInputValues)
 {
   //input is trip and pos
   //if trip signal detect, and a set time is passed, check pos, and if still open, close switch, increment tripCount
@@ -127,7 +129,7 @@ void RREC_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_ex
   RREC *inst = (RREC *)malloc(sizeof(RREC)); // create new instance with MALLOC
   inst->server = server;
   inst->tripstate = 0;
-  inst->Op_general = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Op.general"); // the node to operate on, to which the XCBR is subscribed
+  inst->Op_general = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "OpCls.general"); // the node to operate on, to which the XCBR is subscribed
   inst->Op_general_callback = _findAttributeValueEx(inst->Op_general, allInputValues);
 
   // find extref for the input signals for this LN
@@ -138,13 +140,13 @@ void RREC_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_ex
     while (extRef != NULL)
     {
       // subscribed to Op signal of Protection; Time Over Current
-      if (strcmp(extRef->intAddr, "PTRC_Tr") == 0)
+      if (strcmp(extRef->intAddr, "RREC_Tr") == 0)
       {
         extRef->callBack = (callBackFunction)RREC_input_callback; // callback to trigger when PTOC.Op is set
         extRef->callBackParam = inst;
       }
       // subscribed to stVal of XCBR to check its position
-      if (strcmp(extRef->intAddr, "xcbr_stval") == 0)
+      if (strcmp(extRef->intAddr, "RREC_xcbr_stval") == 0)
       {
         extRef->callBack = (callBackFunction)RREC_xcbr_callback;
         extRef->callBackParam = inst;
@@ -152,5 +154,5 @@ void RREC_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_ex
       extRef = extRef->sibling;
     }
   }
-
+  return inst;
 }

@@ -9,27 +9,28 @@ CL(LPHD);
 LN(PTOC1){
 CL(PTOC);
 IN{
-ER(sample_a1 IED1_XCBRGenericIO/TCTR1.Amp Amp1 Poll IED1_XCBR/);
-ER(sample_a2 IED1_XCBRGenericIO/TCTR2.Amp Amp2 Poll IED1_XCBR/);
-ER(sample_a3 IED1_XCBRGenericIO/TCTR3.Amp Amp3 Poll IED1_XCBR/);
-ER(sample_a4 IED1_XCBRGenericIO/TCTR4.Amp Amp4 Poll IED1_XCBR/);
-ER(xcbr_status IED1_XCBRGenericIO/XCBR1.Pos.stVal xcbr_stval Poll IED1_XCBR/);
+ER(sample_a1 IED1_XCBRGenericIO/TCTR1.Amp.instMag.i PTOC_Amp1 Poll IED1_XCBR/);
+ER(sample_a2 IED1_XCBRGenericIO/TCTR2.Amp.instMag.i PTOC_Amp2 Poll IED1_XCBR/);
+ER(sample_a3 IED1_XCBRGenericIO/TCTR3.Amp.instMag.i PTOC_Amp3 Poll IED1_XCBR/);
+ER(sample_a4 IED1_XCBRGenericIO/TCTR4.Amp.instMag.i PTOC_Amp4 Poll IED1_XCBR/);
+ER(xcbr_status IED1_XCBRGenericIO/XCBR1.Pos.stVal PTOC_xcbr_stval Poll IED1_XCBR/);
 }
 }
 LN(PIOC1){
 CL(PIOC);
 IN{
-ER(sample_a1 IED1_XCBRGenericIO/TCTR1.Amp Amp1 Poll IED1_XCBR/);
-ER(sample_a2 IED1_XCBRGenericIO/TCTR2.Amp Amp2 Poll IED1_XCBR/);
-ER(sample_a3 IED1_XCBRGenericIO/TCTR3.Amp Amp3 Poll IED1_XCBR/);
-ER(sample_a4 IED1_XCBRGenericIO/TCTR4.Amp Amp4 Poll IED1_XCBR/);
-ER(xcbr_status IED1_XCBRGenericIO/XCBR1.Pos.stVal xcbr_stval Poll IED1_XCBR/);
+ER(sample_a1 IED1_XCBRGenericIO/TCTR1.Amp.instMag.i PIOC_Amp1 Poll IED1_XCBR/);
+ER(sample_a2 IED1_XCBRGenericIO/TCTR2.Amp.instMag.i PIOC_Amp2 Poll IED1_XCBR/);
+ER(sample_a3 IED1_XCBRGenericIO/TCTR3.Amp.instMag.i PIOC_Amp3 Poll IED1_XCBR/);
+ER(sample_a4 IED1_XCBRGenericIO/TCTR4.Amp.instMag.i PIOC_Amp4 Poll IED1_XCBR/);
+ER(xcbr_status IED1_XCBRGenericIO/XCBR1.Pos.stVal PIOC_xcbr_stval Poll IED1_XCBR/);
 }
 }
 LN(PTRC1){
 CL(PTRC);
 IN{
 ER(PTOC_trip IED1_XCBRGenericIO/PTOC1.Op.general PTOC_Op Poll IED1_XCBR/);
+ER(Operate IED1_XCBRGenericIO/RREC1.OpCls.general RREC_OpCls Poll IED1_XCBR/);
 ER(xcbr_status IED1_XCBRGenericIO/XCBR1.Pos.stVal xcbr_stval Poll IED1_XCBR/);
 }
 }
@@ -78,6 +79,18 @@ CL(TCTR);
 LN(TCTR4){
 CL(TCTR);
 }
+LN(TCTR5){
+CL(TCTR);
+}
+LN(TCTR6){
+CL(TCTR);
+}
+LN(TCTR7){
+CL(TCTR);
+}
+LN(TCTR8){
+CL(TCTR);
+}
 LN(TVTR1){
 CL(TVTR);
 }
@@ -93,33 +106,79 @@ CL(TVTR);
 LN(MMXU1){
 CL(MMXU);
 IN{
-ER(sample_a1 IED1_XCBRGenericIO/TCTR1.Amp.instMag.i Amp1 Poll IED1_XCBR/);
-ER(sample_a2 IED1_XCBRGenericIO/TCTR2.Amp.instMag.i Amp2 Poll IED1_XCBR/);
-ER(sample_a3 IED1_XCBRGenericIO/TCTR3.Amp.instMag.i Amp3 Poll IED1_XCBR/);
-ER(sample_a4 IED1_XCBRGenericIO/TCTR4.Amp.instMag.i Amp4 Poll IED1_XCBR/);
-ER(sample_v1 IED1_XCBRGenericIO/TVTR1.Vol.instMag.i Vol1 Poll IED1_XCBR/);
-ER(sample_v2 IED1_XCBRGenericIO/TVTR2.Vol.instMag.i Vol2 Poll IED1_XCBR/);
-ER(sample_v3 IED1_XCBRGenericIO/TVTR3.Vol.instMag.i Vol3 Poll IED1_XCBR/);
-ER(sample_v4 IED1_XCBRGenericIO/TVTR4.Vol.instMag.i Vol4 Poll IED1_XCBR/);
+ER(sample_a1 IED1_XCBRGenericIO/TCTR1.Amp.instMag.i MMXU_Amp1 Poll IED1_XCBR/);
+ER(sample_a2 IED1_XCBRGenericIO/TCTR2.Amp.instMag.i MMXU_Amp2 Poll IED1_XCBR/);
+ER(sample_a3 IED1_XCBRGenericIO/TCTR3.Amp.instMag.i MMXU_Amp3 Poll IED1_XCBR/);
+ER(sample_a4 IED1_XCBRGenericIO/TCTR4.Amp.instMag.i MMXU_Amp4 Poll IED1_XCBR/);
+ER(sample_v1 IED1_XCBRGenericIO/TVTR1.Vol.instMag.i MMXU_Vol1 Poll IED1_XCBR/);
+ER(sample_v2 IED1_XCBRGenericIO/TVTR2.Vol.instMag.i MMXU_Vol2 Poll IED1_XCBR/);
+ER(sample_v3 IED1_XCBRGenericIO/TVTR3.Vol.instMag.i MMXU_Vol3 Poll IED1_XCBR/);
+ER(sample_v4 IED1_XCBRGenericIO/TVTR4.Vol.instMag.i MMXU_Vol4 Poll IED1_XCBR/);
+}
+}
+LN(MMXU2){
+CL(MMXU);
+IN{
+ER(sample_a1 IED1_XCBRGenericIO/TCTR5.Amp.instMag.i MMXU_Amp1 Poll IED1_XCBR/);
+ER(sample_a2 IED1_XCBRGenericIO/TCTR6.Amp.instMag.i MMXU_Amp2 Poll IED1_XCBR/);
+ER(sample_a3 IED1_XCBRGenericIO/TCTR7.Amp.instMag.i MMXU_Amp3 Poll IED1_XCBR/);
+ER(sample_a4 IED1_XCBRGenericIO/TCTR8.Amp.instMag.i MMXU_Amp4 Poll IED1_XCBR/);
 }
 }
 LN(PDIF1){
 CL(PDIF);
+IN{
+ER(sample_a1 IED1_XCBRGenericIO/TCTR1.Amp.instMag.i PDIF_Amp1_1 Poll IED1_XCBR/);
+ER(sample_a2 IED1_XCBRGenericIO/TCTR2.Amp.instMag.i PDIF_Amp2_1 Poll IED1_XCBR/);
+ER(sample_a3 IED1_XCBRGenericIO/TCTR3.Amp.instMag.i PDIF_Amp3_1 Poll IED1_XCBR/);
+ER(sample_a4 IED1_XCBRGenericIO/TCTR4.Amp.instMag.i PDIF_Amp4_1 Poll IED1_XCBR/);
+ER(sample_a1 IED1_XCBRGenericIO/TCTR5.Amp.instMag.i PDIF_Amp1_2 Poll IED1_XCBR/);
+ER(sample_a2 IED1_XCBRGenericIO/TCTR6.Amp.instMag.i PDIF_Amp2_2 Poll IED1_XCBR/);
+ER(sample_a3 IED1_XCBRGenericIO/TCTR7.Amp.instMag.i PDIF_Amp3_2 Poll IED1_XCBR/);
+ER(sample_a4 IED1_XCBRGenericIO/TCTR8.Amp.instMag.i PDIF_Amp4_2 Poll IED1_XCBR/);
+ER(xcbr_status IED1_XCBRGenericIO/XCBR1.Pos.stVal PDIF_xcbr_stval Poll IED1_XCBR/);
+}
 }
 LN(PDIS1){
 CL(PDIS);
+IN{
+ER(sample_a1 IED1_XCBRGenericIO/TCTR1.Amp.instMag.i PDIS_Amp1 Poll IED1_XCBR/);
+ER(sample_a2 IED1_XCBRGenericIO/TCTR2.Amp.instMag.i PDIS_Amp2 Poll IED1_XCBR/);
+ER(sample_a3 IED1_XCBRGenericIO/TCTR3.Amp.instMag.i PDIS_Amp3 Poll IED1_XCBR/);
+ER(sample_a4 IED1_XCBRGenericIO/TCTR4.Amp.instMag.i PDIS_Amp4 Poll IED1_XCBR/);
+ER(sample_v1 IED1_XCBRGenericIO/TVTR1.Vol.instMag.i PDIS_Vol1 Poll IED1_XCBR/);
+ER(sample_v2 IED1_XCBRGenericIO/TVTR2.Vol.instMag.i PDIS_Vol2 Poll IED1_XCBR/);
+ER(sample_v3 IED1_XCBRGenericIO/TVTR3.Vol.instMag.i PDIS_Vol3 Poll IED1_XCBR/);
+ER(sample_v4 IED1_XCBRGenericIO/TVTR4.Vol.instMag.i PDIS_Vol4 Poll IED1_XCBR/);
+ER(xcbr_status IED1_XCBRGenericIO/XCBR1.Pos.stVal PDIS_xcbr_stval Poll IED1_XCBR/);
+}
 }
 LN(RREC1){
 CL(RREC);
+IN{
+ER(Trip IED1_XCBRGenericIO/PTRC1.Tr.general RREC_Tr Poll IED1_XCBR/);
+ER(xcbr_status IED1_XCBRGenericIO/XCBR1.Pos.stVal RREC_xcbr_stval Poll IED1_XCBR/);
+}
 }
 LN(RADR1){
 CL(RADR);
+IN{
+ER(sample_a1 IED1_XCBRGenericIO/TCTR1.Amp.instMag.i analog Poll IED1_XCBR/);
+}
 }
 LN(RBDR1){
 CL(RBDR);
+IN{
+ER(xcbr_status IED1_XCBRGenericIO/XCBR1.Pos.stVal digital Poll IED1_XCBR/);
+}
 }
 LN(RDRE1){
 CL(RDRE);
+IN{
+ER(radr IED1_XCBRGenericIO/RADR1.ChTrg RDRE_analog Poll IED1_XCBR/);
+ER(rbdr IED1_XCBRGenericIO/RBDR1.ChTrg RDRE_digital Poll IED1_XCBR/);
+ER(Trip IED1_XCBRGenericIO/PTRC1.Tr.general RDRE_Trigger Poll IED1_XCBR/);
+}
 }
 }
 SD(IED1_XCBRGenericIO/XCBR1.Pos.stVal Events 4096 010ccd010001 IED1_XCBRGenericIO/LLN0$GO$gcbEvents events);

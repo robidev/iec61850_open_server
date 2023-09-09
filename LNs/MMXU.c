@@ -13,6 +13,11 @@ typedef struct sMMXU
   void *da_A_callback;
   void *da_V_callback;
 
+  void *da_A_phs[4];
+  void *da_A_phs_callback[4];
+  void *da_V_phs[4];
+  void *da_V_phs_callback[4];
+
   float RMS[8];
   int RMS_samplecountV;
   int RMS_samplecountI;
@@ -60,6 +65,9 @@ void MMXU_callbackI(InputEntry *extRef)
           inst->RMS[i] /= 80;
           inst->RMS[i] = sqrt(inst->RMS[i]);
 
+          IedServer_updateFloatAttributeValue(inst->server, inst->da_A_phs[ i % 4 ], inst->RMS[i]);
+          InputValueHandleExtensionCallbacks(inst->da_A_phs_callback[i % 4]); // update the associated callbacks with this Data Element
+
           if (i == 3)
           {
             a = (inst->RMS[0] + inst->RMS[1] + inst->RMS[2]) / 3;
@@ -103,6 +111,9 @@ void MMXU_callbackV(InputEntry *extRef)
           inst->RMS[i] /= 80;
           inst->RMS[i] = sqrt(inst->RMS[i]);
 
+          IedServer_updateFloatAttributeValue(inst->server, inst->da_V_phs[ i % 4 ], inst->RMS[i]);
+          InputValueHandleExtensionCallbacks(inst->da_V_phs_callback[i % 4]); // update the associated callbacks with this Data Element
+
           if (i == 7)
           {
             v = (inst->RMS[4] + inst->RMS[5] + inst->RMS[6]) / 3;
@@ -132,18 +143,36 @@ void *MMXU_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
   inst->da_V = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "AvPhVPhs.mag.f"); // the node to operate on
   inst->da_V_callback = _findAttributeValueEx(inst->da_V, allInputValues);
 
+  inst->da_A_phs[0] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "A.phsA.cVal.mag.f"); // the node to operate on
+  inst->da_A_phs_callback[0] = _findAttributeValueEx(inst->da_A, allInputValues);
+  inst->da_A_phs[1] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "A.phsB.cVal.mag.f"); // the node to operate on
+  inst->da_A_phs_callback[1] = _findAttributeValueEx(inst->da_A, allInputValues);
+  inst->da_A_phs[2] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "A.phsC.cVal.mag.f"); // the node to operate on
+  inst->da_A_phs_callback[2] = _findAttributeValueEx(inst->da_A, allInputValues);
+  inst->da_A_phs[3] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "A.neut.cVal.mag.f"); // the node to operate on
+  inst->da_A_phs_callback[3] = _findAttributeValueEx(inst->da_A, allInputValues);
+
+  inst->da_V_phs[0] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "PhV.phsA.cVal.mag.f"); // the node to operate on
+  inst->da_V_phs_callback[0] = _findAttributeValueEx(inst->da_V, allInputValues);
+  inst->da_V_phs[1] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "PhV.phsB.cVal.mag.f"); // the node to operate on
+  inst->da_V_phs_callback[1] = _findAttributeValueEx(inst->da_V, allInputValues);
+  inst->da_V_phs[2] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "PhV.phsC.cVal.mag.f"); // the node to operate on
+  inst->da_V_phs_callback[2] = _findAttributeValueEx(inst->da_V, allInputValues);
+  inst->da_V_phs[3] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "PhV.neut.cVal.mag.f"); // the node to operate on
+  inst->da_V_phs_callback[3] = _findAttributeValueEx(inst->da_V, allInputValues);
+
   if (input != NULL)
   {
     InputEntry *extRef = input->extRefs;
 
     while (extRef != NULL)
     {
-      if (strcmp(extRef->intAddr, "Amp3") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
+      if (strcmp(extRef->intAddr, "MMXU_Amp3") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
       {
         extRef->callBack = (callBackFunction)MMXU_callbackI;
         extRef->callBackParam = inst;
       }
-      if (strcmp(extRef->intAddr, "Vol3") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
+      if (strcmp(extRef->intAddr, "MMXU_Vol3") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
       {
         extRef->callBack = (callBackFunction)MMXU_callbackV;
         extRef->callBackParam = inst;

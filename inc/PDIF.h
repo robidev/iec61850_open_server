@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-void PDIF_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allInputValues);
+void * PDIF_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allInputValues);
 
 #ifdef __cplusplus
 }

@@ -69,6 +69,28 @@ int open_server_running()
 	return running;
 }
 
+
+static MmsError
+fileAccessHandler (void* parameter, MmsServerConnection connection, MmsFileServiceType service,
+                                          const char* localFilename, const char* otherFilename)
+{
+    printf("fileAccessHandler: service = %i, local-file: %s other-file: %s\n", service, localFilename, otherFilename);
+
+    /* Don't allow client to rename files */
+    if (service == MMS_FILE_ACCESS_TYPE_RENAME)
+        return MMS_ERROR_FILE_FILE_ACCESS_DENIED;
+
+    /* Don't allow client to delete file "IEDSERVER.BIN" */
+    if (service == MMS_FILE_ACCESS_TYPE_DELETE) {
+        if (strcmp(localFilename, "IEDSERVER.BIN") == 0)
+            return MMS_ERROR_FILE_FILE_ACCESS_DENIED;
+    }
+
+    /* allow all other accesses */
+    return MMS_ERROR_NONE;
+}
+
+
 int main(int argc, char **argv)
 {
 	OpenServerInstance openServer;
@@ -225,6 +247,12 @@ int main(int argc, char **argv)
 		closedir(d);
 	}
 	printf("--- loading plugins finished ---\n\n");
+
+
+	IedServer_setFilestoreBasepath(openServer.server, "./vmd-filestore/");
+	/* Set a callback handler to control file accesses */
+	MmsServer_installFileAccessHandler(IedServer_getMmsServer(openServer.server), fileAccessHandler, NULL);
+
 
 	signal(SIGINT, sigint_handler);
 	while (running)

@@ -30,14 +30,14 @@ CL(TVTR);
 LN(MMXU1){
 CL(MMXU);
 IN{
-ER(sample_a1 IED3_SMVMUnn/TCTR1.Amp.instMag.i Amp1 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_a2 IED3_SMVMUnn/TCTR2.Amp.instMag.i Amp2 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_a3 IED3_SMVMUnn/TCTR3.Amp.instMag.i Amp3 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_a4 IED3_SMVMUnn/TCTR4.Amp.instMag.i Amp4 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_v1 IED3_SMVMUnn/TVTR1.Vol.instMag.i Vol1 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_v2 IED3_SMVMUnn/TVTR2.Vol.instMag.i Vol2 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_v3 IED3_SMVMUnn/TVTR3.Vol.instMag.i Vol3 Poll IED3_SMVMUnn/LLN0.MSVCB01);
-ER(sample_v4 IED3_SMVMUnn/TVTR4.Vol.instMag.i Vol4 Poll IED3_SMVMUnn/LLN0.MSVCB01);
+ER(sample_a1 IED3_SMVMUnn/TCTR1.Amp.instMag.i MMXU_Amp1 Poll IED3_SMVMUnn/LLN0.MSVCB01);
+ER(sample_a2 IED3_SMVMUnn/TCTR2.Amp.instMag.i MMXU_Amp2 Poll IED3_SMVMUnn/LLN0.MSVCB01);
+ER(sample_a3 IED3_SMVMUnn/TCTR3.Amp.instMag.i MMXU_Amp3 Poll IED3_SMVMUnn/LLN0.MSVCB01);
+ER(sample_a4 IED3_SMVMUnn/TCTR4.Amp.instMag.i MMXU_Amp4 Poll IED3_SMVMUnn/LLN0.MSVCB01);
+ER(sample_v1 IED3_SMVMUnn/TVTR1.Vol.instMag.i MMXU_Vol1 Poll IED3_SMVMUnn/LLN0.MSVCB01);
+ER(sample_v2 IED3_SMVMUnn/TVTR2.Vol.instMag.i MMXU_Vol2 Poll IED3_SMVMUnn/LLN0.MSVCB01);
+ER(sample_v3 IED3_SMVMUnn/TVTR3.Vol.instMag.i MMXU_Vol3 Poll IED3_SMVMUnn/LLN0.MSVCB01);
+ER(sample_v4 IED3_SMVMUnn/TVTR4.Vol.instMag.i MMXU_Vol4 Poll IED3_SMVMUnn/LLN0.MSVCB01);
 }
 }
 }

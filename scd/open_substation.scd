@@ -283,16 +283,16 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
               </DAI>
             </DOI>
             <Inputs>
-              <ExtRef intAddr="Amp1" desc="sample_a1" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="1" doName="Amp" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Amp2" desc="sample_a2" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="2" doName="Amp" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Amp3" desc="sample_a3" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="3" doName="Amp" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Amp4" desc="sample_a4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="4" doName="Amp" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol1" desc="sample_v1" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="1" doName="Vol" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol2" desc="sample_v2" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="2" doName="Vol" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol3" desc="sample_v3" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="3" doName="Vol" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol4" desc="sample_v4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="4" doName="Vol" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="PTOC_Amp1" desc="sample_a1" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="1" doName="Amp" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="PTOC_Amp2" desc="sample_a2" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="2" doName="Amp" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="PTOC_Amp3" desc="sample_a3" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="3" doName="Amp" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="PTOC_Amp4" desc="sample_a4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="4" doName="Amp" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="PTOC_Vol1" desc="sample_v1" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="1" doName="Vol" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="PTOC_Vol2" desc="sample_v2" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="2" doName="Vol" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="PTOC_Vol3" desc="sample_v3" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="3" doName="Vol" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="PTOC_Vol4" desc="sample_v4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="4" doName="Vol" serviceType="SMV" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
 
-              <ExtRef intAddr="xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="GOOSE" srcLDInst="GenericIO" srcLNClass="LLN0" srcCBName="GoCB" />
+              <ExtRef intAddr="PTOC_xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="GOOSE" srcLDInst="GenericIO" srcLNClass="LLN0" srcCBName="GoCB" />
             </Inputs>
           </LN>
           <LN lnClass="PTRC" lnType="PTRC1" inst="1" prefix="" >
@@ -369,14 +369,14 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
 
           <LN lnType="MMXUa" lnClass="MMXU" inst="1" >
             <Inputs>
-              <ExtRef intAddr="Amp1" desc="sample_a1" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Amp2" desc="sample_a2" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="2" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Amp3" desc="sample_a3" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="3" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Amp4" desc="sample_a4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="4" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol1" desc="sample_v1" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="1" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol2" desc="sample_v2" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="2" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol3" desc="sample_v3" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="3" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol4" desc="sample_v4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="2" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="3" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="4" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Vol1" desc="sample_v1" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="1" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Vol2" desc="sample_v2" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="2" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Vol3" desc="sample_v3" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="3" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Vol4" desc="sample_v4" iedName="IED3_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
             </Inputs>
           </LN>
         </LDevice>
@@ -416,20 +416,21 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
 
           <LN lnType="MMXUa" lnClass="MMXU" inst="1" >
             <Inputs>
-              <ExtRef intAddr="Amp1" desc="sample_a1" iedName="IED4_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Amp2" desc="sample_a2" iedName="IED4_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="2" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Amp3" desc="sample_a3" iedName="IED4_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="3" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Amp4" desc="sample_a4" iedName="IED4_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="4" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol1" desc="sample_v1" iedName="IED4_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="1" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol2" desc="sample_v2" iedName="IED4_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="2" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol3" desc="sample_v3" iedName="IED4_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="3" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
-              <ExtRef intAddr="Vol4" desc="sample_v4" iedName="IED4_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="IED4_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="IED4_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="2" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="IED4_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="3" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="IED4_SMV" ldInst="MUnn" lnClass="TCTR" lnInst="4" doName="Amp" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Vol1" desc="sample_v1" iedName="IED4_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="1" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Vol2" desc="sample_v2" iedName="IED4_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="2" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Vol3" desc="sample_v3" iedName="IED4_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="3" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
+              <ExtRef intAddr="MMXU_Vol4" desc="sample_v4" iedName="IED4_SMV" ldInst="MUnn" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll" srcLDInst="MUnn" srcLNClass="LLN0" srcCBName="MSVCB01" />
             </Inputs>
           </LN>
         </LDevice>
       </Server>
     </AccessPoint>
   </IED>
+
 
   <DataTypeTemplates>
 
@@ -485,6 +486,66 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       <DO name="TmACrv" type="CURVE" />
     </LNodeType>
 
+    <LNodeType id="PIOC1" lnClass="PIOC">
+      <DO name="Mod" type="INC_2_Mod" />
+      <DO name="Beh" type="INS_1_Beh" />
+      <DO name="Health" type="INS_1_Beh" />
+      <DO name="NamPlt" type="LPL_2_NamPlt" />
+      <DO name="Str" type="ACD" />
+      <DO name="Op" type="ACT" />
+      <DO name="StrVal" type="ASG" />
+    </LNodeType>
+
+		<LNodeType id="PDIFa" lnClass="PDIF">
+			<DO name="Mod" type="INC_2_Mod"/>
+			<DO name="Beh" type="INS_1_Beh"/>
+			<DO name="Health" type="INS_1_Beh"/>
+			<DO name="NamPlt" type="LPL_2_NamPlt"/>
+			<DO name="Str" type="ACD"/>
+			<DO name="Op" type="ACT"/>
+		</LNodeType>
+
+		<LNodeType id="PDISa" lnClass="PDIS">
+			<DO name="Mod" type="INC_2_Mod"/>
+			<DO name="Beh" type="INS_1_Beh"/>
+			<DO name="Health" type="INS_1_Beh"/>
+			<DO name="NamPlt" type="LPL_2_NamPlt"/>
+			<DO name="Str" type="ACD"/>
+			<DO name="Op" type="ACT"/>
+		</LNodeType>
+
+		<LNodeType id="RRECa" lnClass="RREC">
+			<DO name="Mod" type="INC_2_Mod"/>
+			<DO name="Beh" type="INS_1_Beh"/>
+			<DO name="Health" type="INS_1_Beh"/>
+			<DO name="NamPlt" type="LPL_2_NamPlt"/>
+			<DO name="OpCls" type="ACT"/>
+			<DO name="AutoRecSt" type="ENS_2"/>
+		</LNodeType>
+
+		<LNodeType id="RADRa" lnClass="RADR">
+			<DO name="Mod" type="INC_2_Mod"/>
+			<DO name="Beh" type="INS_1_Beh"/>
+			<DO name="Health" type="INS_1_Beh"/>
+			<DO name="NamPlt" type="LPL_2_NamPlt"/>
+			<DO name="ChTrg" type="SPS_1_Proxy"/>
+		</LNodeType>
+    <LNodeType id="RBDRa" lnClass="RBDR">
+			<DO name="Mod" type="INC_2_Mod"/>
+			<DO name="Beh" type="INS_1_Beh"/>
+			<DO name="Health" type="INS_1_Beh"/>
+			<DO name="NamPlt" type="LPL_2_NamPlt"/>
+			<DO name="ChTrg" type="SPS_1_Proxy"/>
+		</LNodeType>
+    <LNodeType id="RDREa" lnClass="RDRE">
+			<DO name="Mod" type="INC_2_Mod"/>
+			<DO name="Beh" type="INS_1_Beh"/>
+			<DO name="Health" type="INS_1_Beh"/>
+			<DO name="NamPlt" type="LPL_2_NamPlt"/>
+			<DO name="RcdMade" type="SPS_1_Proxy"/>
+			<DO name="FltNum" type="INS_1_Beh"/>
+		</LNodeType>
+
     <LNodeType id="XCBR1" lnClass="XCBR" desc="Circuit breaker">
       <DO name="Mod" type="INC_2_Mod" />
       <DO name="Beh" type="INS_1_Beh" />
@@ -529,6 +590,8 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       <DO name="MaxPhVPhs" type="myMV"/>
       <DO name="MinAPhs" type="myMV"/>
       <DO name="MinPhVPhs" type="myMV"/>
+      <DO name="PhV" type="WYE"/>
+      <DO name="A" type="WYE"/>
     </LNodeType>
 
     <LNodeType id="GGIO1" lnClass="GGIO">
@@ -576,6 +639,11 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       <DA name="q" bType="Quality" fc="ST" qchg="true" desc="Quality of the data value: 'stVal'." />
       <DA name="t" bType="Timestamp" fc="ST" desc="Timestamp of the last change in one of the attributes representing the data value ('stVal') or the data quality ('q'), i.e., those which have 'dchg' or 'qchg'." />
     </DOType>
+    <DOType cdc="ENS" id="ENS_2" desc="Enumerated status">
+      <DA name="stVal" bType="Enum" type="Recloser_Enum" fc="ST" dchg="true" desc="" />
+      <DA name="q" bType="Quality" fc="ST" qchg="true" desc="Quality of the data value: 'stVal'." />
+      <DA name="t" bType="Timestamp" fc="ST" desc="Timestamp of the last change in one of the attributes representing the data value ('stVal') or the data quality ('q'), i.e., those which have 'dchg' or 'qchg'." />
+    </DOType>
     <DOType cdc="DPC" id="DPC_CO" desc="Controllable double point CDC.">
       <DA name="stVal" bType="Dbpos" fc="ST" dchg="true" desc="intermediate-state | off | on | bad-state" />
       <DA name="q" bType="Quality" fc="ST" qchg="true" desc="Quality of the data value: 'stVal'." />
@@ -596,6 +664,9 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       <DA name="general" fc="ST" dchg="true" bType="BOOLEAN" />
       <DA name="q" fc="ST" qchg="true" bType="Quality" />
       <DA name="t" fc="ST" bType="Timestamp" />
+    </DOType>
+    <DOType id="ASG" cdc="ASG">
+      <DA name="setMag" fc="SP" dchg="true" bType="Struct" type="AnalogueValue_1" />
     </DOType>
 
     <DOType id="9-2LESAVAmp" cdc="SAV">
@@ -651,6 +722,22 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       <DA name="q" bType="Quality" fc="MX" qchg="true" />
       <DA name="t" bType="Timestamp" fc="MX" />
     </DOType>
+
+		<DOType id="myCMV" cdc="CMV">
+			<DA name="cVal" fc="MX" dchg="true" bType="Struct" type="myVector"/>
+			<DA name="q" fc="MX" qchg="true" bType="Quality"/>
+			<DA name="t" fc="MX" bType="Timestamp"/>
+		</DOType>
+
+    <DOType id="WYE" cdc="WYE">
+      <SDO name="phsA" type="myCMV" />
+      <SDO name="phsB" type="myCMV" />
+      <SDO name="phsC" type="myCMV" />
+      <SDO name="neut" type="myCMV" />
+      <SDO name="net" type="myCMV" />
+      <SDO name="res" type="myCMV" />
+    </DOType>
+
     <DOType id="SPC_1_SPCSO1" cdc="SPC">
       <DA name="stVal" bType="BOOLEAN" fc="ST" dchg="true" />
       <DA name="q" bType="Quality" fc="ST" qchg="true" />
@@ -685,6 +772,8 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       <DA name="t" bType="Timestamp" fc="ST" />
     </DOType>
 
+
+
     <DAType id="ScaledValueConfig">
       <BDA name="scaleFactor" bType="FLOAT32"/>
       <BDA name="offset" bType="FLOAT32"/>
@@ -712,6 +801,12 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
     <DAType id="AnalogueValue_1">
       <BDA name="f" bType="FLOAT32" />
     </DAType>
+
+		<DAType id="myVector">
+			<BDA name="mag" bType="Struct" type="AnalogueValue_1"/>
+			<BDA name="ang" bType="Struct" type="AnalogueValue_1"/>
+		</DAType>
+
     <DAType id="Originator_1">
       <BDA name="orCat" type="OrCat" bType="Enum" />
       <BDA name="orIdent" bType="Octet64" />
@@ -789,6 +884,19 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       <EnumVal ord="2">Disconnector</EnumVal>
       <EnumVal ord="3">Earthing switch</EnumVal>
       <EnumVal ord="4">High speed earthing switch</EnumVal>
+    </EnumType>
+    <EnumType id="Recloser_Enum">
+      <EnumVal ord="1">Ready</EnumVal>
+      <EnumVal ord="2">In Progress</EnumVal>
+      <EnumVal ord="3">Successful</EnumVal>
+      <EnumVal ord="4">Waiting for trip</EnumVal>
+      <EnumVal ord="5">Trip issued by protection</EnumVal>
+      <EnumVal ord="6">Fault disappeared</EnumVal>
+      <EnumVal ord="7">Wait to complete</EnumVal>
+      <EnumVal ord="8">Circuit breaker closed</EnumVal>
+      <EnumVal ord="9">Cycle unsuccessful</EnumVal>
+      <EnumVal ord="10">Unsuccessful</EnumVal>
+      <EnumVal ord="11">Aborted</EnumVal>
     </EnumType>
   </DataTypeTemplates>
 </SCL>

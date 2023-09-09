@@ -53,7 +53,7 @@ void PTRC_xcbr_callback(InputEntry *extRef)
   }
 }
 
-void PTRC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
+void * PTRC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
   PTRC *inst = (PTRC *)malloc(sizeof(PTRC)); // create new instance with MALLOC
   inst->server = server;
@@ -75,9 +75,9 @@ void PTRC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allIn
         extRef->callBackParam = inst;
       }
       // subscribed to Op signal of recloser
-      if (strcmp(extRef->intAddr, "RREC_Op") == 0)
+      if (strcmp(extRef->intAddr, "RREC_OpCls") == 0)
       {
-        extRef->callBack = (callBackFunction)PTRC_input_callback; // callback to trigger when RREC.Op is set
+        extRef->callBack = (callBackFunction)PTRC_input_callback; // callback to trigger when RREC.OpCls is set, TRUE when switch should be closed(ON)
         extRef->callBackParam = inst;
       }
       // subscribed to stVal of XCBR to check its position
@@ -89,4 +89,5 @@ void PTRC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allIn
       extRef = extRef->sibling;
     }
   }
+  return inst;
 }

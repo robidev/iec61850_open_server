@@ -15,4 +15,5 @@ java -jar model_input_generator/genconfig.jar $PROJECT_ICD_FILE -ied IED4_SMV ./
 java -jar model_input_generator/genconfig_input.jar $PROJECT_ICD_FILE -ied IED4_SMV ./cfg/IED4_SMV.ext
 
 
-
+java -jar model_input_generator/genconfig.jar scd/protection_relay.scd -ied IED1_XCBR ./cfg/PROT_RELAIS.cfg
+java -jar model_input_generator/genconfig_input.jar scd/protection_relay.scd -ied IED1_XCBR ./cfg/PROT_RELAIS.ext

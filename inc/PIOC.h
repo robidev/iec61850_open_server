@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-void PIOC_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allInputValues);
+void * PIOC_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allInputValues);
 
 #ifdef __cplusplus
 }

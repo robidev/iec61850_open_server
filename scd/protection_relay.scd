@@ -72,25 +72,26 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
               </DAI>
             </DOI>
             <Inputs>
-              <ExtRef intAddr="Amp1" desc="sample_a1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="1" doName="Amp" serviceType="Poll"  />
-              <ExtRef intAddr="Amp2" desc="sample_a2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="2" doName="Amp" serviceType="Poll"  />
-              <ExtRef intAddr="Amp3" desc="sample_a3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="3" doName="Amp" serviceType="Poll"  />
-              <ExtRef intAddr="Amp4" desc="sample_a4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="4" doName="Amp" serviceType="Poll"  />
-              <ExtRef intAddr="xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll" />
+              <ExtRef intAddr="PTOC_Amp1" desc="sample_a1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="1" doName="Amp" serviceType="Poll" daName="instMag.i" />
+              <ExtRef intAddr="PTOC_Amp2" desc="sample_a2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="2" doName="Amp" serviceType="Poll" daName="instMag.i" />
+              <ExtRef intAddr="PTOC_Amp3" desc="sample_a3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="3" doName="Amp" serviceType="Poll" daName="instMag.i" />
+              <ExtRef intAddr="PTOC_Amp4" desc="sample_a4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="4" doName="Amp" serviceType="Poll" daName="instMag.i" />
+              <ExtRef intAddr="PTOC_xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll" />
             </Inputs>
           </LN>
           <LN lnClass="PIOC" lnType="PIOC1" inst="1" prefix="" >
             <Inputs>
-              <ExtRef intAddr="Amp1" desc="sample_a1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="1" doName="Amp" serviceType="Poll"  />
-              <ExtRef intAddr="Amp2" desc="sample_a2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="2" doName="Amp" serviceType="Poll"  />
-              <ExtRef intAddr="Amp3" desc="sample_a3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="3" doName="Amp" serviceType="Poll"  />
-              <ExtRef intAddr="Amp4" desc="sample_a4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="4" doName="Amp" serviceType="Poll"  />
-              <ExtRef intAddr="xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll" />
+              <ExtRef intAddr="PIOC_Amp1" desc="sample_a1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="1" doName="Amp" serviceType="Poll" daName="instMag.i" />
+              <ExtRef intAddr="PIOC_Amp2" desc="sample_a2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="2" doName="Amp" serviceType="Poll" daName="instMag.i" />
+              <ExtRef intAddr="PIOC_Amp3" desc="sample_a3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="3" doName="Amp" serviceType="Poll" daName="instMag.i" />
+              <ExtRef intAddr="PIOC_Amp4" desc="sample_a4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="4" doName="Amp" serviceType="Poll" daName="instMag.i" />
+              <ExtRef intAddr="PIOC_xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll" />
             </Inputs>
           </LN>
           <LN lnClass="PTRC" lnType="PTRC1" inst="1" prefix="" >
             <Inputs>
               <ExtRef intAddr="PTOC_Op" desc="PTOC_trip" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="PTOC" lnInst="1" doName="Op" daName="general" serviceType="Poll" />
+              <ExtRef intAddr="RREC_OpCls" desc="Operate" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="RREC" lnInst="1" doName="OpCls" daName="general" serviceType="Poll" />
               <ExtRef intAddr="xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll"  />
             </Inputs>
           </LN>
@@ -143,30 +144,91 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
           <LN lnType="9-2LETCTR" lnClass="TCTR" inst="3" />
           <LN lnType="9-2LETCTR" lnClass="TCTR" inst="4" />
 
+          <LN lnType="9-2LETCTR" lnClass="TCTR" inst="5" />
+          <LN lnType="9-2LETCTR" lnClass="TCTR" inst="6" />
+          <LN lnType="9-2LETCTR" lnClass="TCTR" inst="7" />
+          <LN lnType="9-2LETCTR" lnClass="TCTR" inst="8" />
+
           <LN lnType="9-2LETVTR" lnClass="TVTR" inst="1" />
           <LN lnType="9-2LETVTR" lnClass="TVTR" inst="2" />
           <LN lnType="9-2LETVTR" lnClass="TVTR" inst="3" />
           <LN lnType="9-2LETVTR" lnClass="TVTR" inst="4" />
+
           <LN lnType="MMXUa" lnClass="MMXU" inst="1" >
             <Inputs>
-              <ExtRef intAddr="Amp1" desc="sample_a1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll"  />
-              <ExtRef intAddr="Amp2" desc="sample_a2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="2" doName="Amp" daName="instMag.i" serviceType="Poll"  />
-              <ExtRef intAddr="Amp3" desc="sample_a3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="3" doName="Amp" daName="instMag.i" serviceType="Poll"  />
-              <ExtRef intAddr="Amp4" desc="sample_a4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="4" doName="Amp" daName="instMag.i" serviceType="Poll"  />
-              <ExtRef intAddr="Vol1" desc="sample_v1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TVTR" lnInst="1" doName="Vol" daName="instMag.i" serviceType="Poll"  />
-              <ExtRef intAddr="Vol2" desc="sample_v2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TVTR" lnInst="2" doName="Vol" daName="instMag.i" serviceType="Poll"  />
-              <ExtRef intAddr="Vol3" desc="sample_v3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TVTR" lnInst="3" doName="Vol" daName="instMag.i" serviceType="Poll"  />
-              <ExtRef intAddr="Vol4" desc="sample_v4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="2" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="3" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="4" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="MMXU_Vol1" desc="sample_v1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TVTR" lnInst="1" doName="Vol" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="MMXU_Vol2" desc="sample_v2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TVTR" lnInst="2" doName="Vol" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="MMXU_Vol3" desc="sample_v3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TVTR" lnInst="3" doName="Vol" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="MMXU_Vol4" desc="sample_v4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll"  />
             </Inputs>
           </LN>
-					<LN lnType="PDIFa" inst="1" lnClass="PDIF" />
-					<LN lnType="PDISa" inst="1" lnClass="PDIS" />
 
-					<LN lnType="RRECa" inst="1" lnClass="RREC" />
+          <LN lnType="MMXUa" lnClass="MMXU" inst="2" >
+            <Inputs>
+              <ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="5" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="6" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="7" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="8" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+            </Inputs>
+          </LN>
 
-					<LN lnType="RADRa" inst="1" lnClass="RADR" />
-					<LN lnType="RBDRa" inst="1" lnClass="RBDR" />
-					<LN lnType="RDREa" inst="1" lnClass="RDRE" />
+					<LN lnType="PDIFa" inst="1" lnClass="PDIF">
+            <Inputs>
+              <ExtRef intAddr="PDIF_Amp1_1" desc="sample_a1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIF_Amp2_1" desc="sample_a2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="2" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIF_Amp3_1" desc="sample_a3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="3" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIF_Amp4_1" desc="sample_a4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="4" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIF_Amp1_2" desc="sample_a1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="5" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIF_Amp2_2" desc="sample_a2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="6" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIF_Amp3_2" desc="sample_a3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="7" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIF_Amp4_2" desc="sample_a4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="8" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIF_xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll" />
+            </Inputs>
+          </LN>
+
+					<LN lnType="PDISa" inst="1" lnClass="PDIS">
+            <Inputs>
+              <ExtRef intAddr="PDIS_Amp1" desc="sample_a1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIS_Amp2" desc="sample_a2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="2" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIS_Amp3" desc="sample_a3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="3" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIS_Amp4" desc="sample_a4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="4" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIS_Vol1" desc="sample_v1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TVTR" lnInst="1" doName="Vol" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIS_Vol2" desc="sample_v2" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TVTR" lnInst="2" doName="Vol" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIS_Vol3" desc="sample_v3" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TVTR" lnInst="3" doName="Vol" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIS_Vol4" desc="sample_v4" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TVTR" lnInst="4" doName="Vol" daName="instMag.i" serviceType="Poll"  />
+              <ExtRef intAddr="PDIS_xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll" />
+            </Inputs>
+          </LN>
+
+					<LN lnType="RRECa" inst="1" lnClass="RREC" >
+            <Inputs>
+              <ExtRef intAddr="RREC_Tr" desc="Trip" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="PTRC" lnInst="1" doName="Tr" daName="general" serviceType="Poll" />
+              <ExtRef intAddr="RREC_xcbr_stval" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll" />
+            </Inputs>
+          </LN>
+
+
+					<LN lnType="RADRa" inst="1" lnClass="RADR">
+           <Inputs>
+              <ExtRef intAddr="analog" desc="sample_a1" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="TCTR" lnInst="1" doName="Amp" daName="instMag.i" serviceType="Poll"  />
+            </Inputs>
+          </LN>
+					<LN lnType="RBDRa" inst="1" lnClass="RBDR">
+           <Inputs>
+              <ExtRef intAddr="digital" desc="xcbr_status" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll"   />
+            </Inputs>
+          </LN>
+					<LN lnType="RDREa" inst="1" lnClass="RDRE">
+           <Inputs>
+              <ExtRef intAddr="RDRE_analog" desc="radr" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="RADR" lnInst="1" doName="ChTrg" serviceType="Poll" />
+              <ExtRef intAddr="RDRE_digital" desc="rbdr" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="RBDR" lnInst="1" doName="ChTrg" serviceType="Poll" />
+              <ExtRef intAddr="RDRE_Trigger" desc="Trip" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="PTRC" lnInst="1" doName="Tr" daName="general" serviceType="Poll" />
+            </Inputs>          
+          </LN>
         </LDevice>
       </Server>
     </AccessPoint>
@@ -331,6 +393,8 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       <DO name="MaxPhVPhs" type="myMV"/>
       <DO name="MinAPhs" type="myMV"/>
       <DO name="MinPhVPhs" type="myMV"/>
+      <DO name="PhV" type="WYE"/>
+      <DO name="A" type="WYE"/>
     </LNodeType>
 
     <LNodeType id="GGIO1" lnClass="GGIO">
@@ -461,6 +525,22 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       <DA name="q" bType="Quality" fc="MX" qchg="true" />
       <DA name="t" bType="Timestamp" fc="MX" />
     </DOType>
+
+		<DOType id="myCMV" cdc="CMV">
+			<DA name="cVal" fc="MX" dchg="true" bType="Struct" type="myVector"/>
+			<DA name="q" fc="MX" qchg="true" bType="Quality"/>
+			<DA name="t" fc="MX" bType="Timestamp"/>
+		</DOType>
+
+    <DOType id="WYE" cdc="WYE">
+      <SDO name="phsA" type="myCMV" />
+      <SDO name="phsB" type="myCMV" />
+      <SDO name="phsC" type="myCMV" />
+      <SDO name="neut" type="myCMV" />
+      <SDO name="net" type="myCMV" />
+      <SDO name="res" type="myCMV" />
+    </DOType>
+
     <DOType id="SPC_1_SPCSO1" cdc="SPC">
       <DA name="stVal" bType="BOOLEAN" fc="ST" dchg="true" />
       <DA name="q" bType="Quality" fc="ST" qchg="true" />
@@ -495,6 +575,8 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
       <DA name="t" bType="Timestamp" fc="ST" />
     </DOType>
 
+
+
     <DAType id="ScaledValueConfig">
       <BDA name="scaleFactor" bType="FLOAT32"/>
       <BDA name="offset" bType="FLOAT32"/>
@@ -522,6 +604,12 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
     <DAType id="AnalogueValue_1">
       <BDA name="f" bType="FLOAT32" />
     </DAType>
+
+		<DAType id="myVector">
+			<BDA name="mag" bType="Struct" type="AnalogueValue_1"/>
+			<BDA name="ang" bType="Struct" type="AnalogueValue_1"/>
+		</DAType>
+
     <DAType id="Originator_1">
       <BDA name="orCat" type="OrCat" bType="Enum" />
       <BDA name="orIdent" bType="Octet64" />

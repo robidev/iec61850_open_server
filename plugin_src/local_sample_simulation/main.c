@@ -116,7 +116,7 @@ int init(OpenServerInstance *srv)
     if (state != 2)
     {
         printf(" ERROR: could not parse file\n");
-        printf(" First line has to be T or C\n");
+        printf(" First line has to be T for Threat or C for Callback\n");
         printf(" Second line an smvref or 'none' \n");
         printf(" other lines should refer to TCTR or TVTR instances\n");
         return 1;
@@ -158,11 +158,11 @@ void SMV_Callback(int sampleCount, void *parameter)
     while (item)
     {
         int measurement = 0;
-        if (item->magnitude > 0.1 && item->freq > 0.1)
+        if (item->magnitude > 0.001 && item->freq > 0.1)
         {
-            int amp = (int)(item->magnitude * sqrt(2)); // RMS to peak
+            double amp = item->magnitude * sqrt(2); // RMS to peak
             double angle = ((item->freq / 25) * M_PI / 80) * samplePoint - (item->angle * M_PI / 180.0);
-            measurement = (amp * sin(angle)) * 1000;
+            measurement = (int)((amp * sin(angle)) * 1000);
         }
         // for all refs
         TCTR *inst = item->instance;
@@ -188,11 +188,11 @@ void local_SMV_Thread(void *parameter)
         while (item)
         {
             int measurement = 0;
-            if (item->magnitude > 0.1 && item->freq > 0.1)
+            if (item->magnitude > 0.001 && item->freq > 0.1)
             {
-                int amp = (int)(item->magnitude * sqrt(2)); // RMS to peak
+                double amp = item->magnitude * sqrt(2); // RMS to peak
                 double angle = ((item->freq / 25) * M_PI / 80) * samplePoint - (item->angle * M_PI / 180.0);
-                measurement = (amp * sin(angle)) * 1000;
+                measurement = (int)((amp * sin(angle)) * 1000);
             }
 
             // for all refs

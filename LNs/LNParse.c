@@ -57,52 +57,51 @@ void attachLogicalNodes(IedServer server, IedModel *model, IedModel_extensions *
     // basic functional
     else if (strcmp(lnInstance->lnClass, "PTRC") == 0)
     {
-      PTRC_init(server, lnInstance->parent, input, allInputValues);
+      lnInstance->instance = PTRC_init(server, lnInstance->parent, input, allInputValues);
     }
     else if (strcmp(lnInstance->lnClass, "PIOC") == 0)
     {
-      PIOC_init(server, lnInstance->parent, input, allInputValues);
+      lnInstance->instance = PIOC_init(server, lnInstance->parent, input, allInputValues);
     }
     else if (strcmp(lnInstance->lnClass, "PTOC") == 0)
     {
-      PTOC_init(server, lnInstance->parent, input, allInputValues);
+      lnInstance->instance = PTOC_init(server, lnInstance->parent, input, allInputValues);
     }
     else if (strcmp(lnInstance->lnClass, "PDIS") == 0)
     {
-      PDIS_init(server, lnInstance->parent, input, allInputValues);
+      lnInstance->instance = PDIS_init(server, lnInstance->parent, input, allInputValues);
     }
     else if (strcmp(lnInstance->lnClass, "PDIF") == 0)
     {
-      PDIF_init(server, lnInstance->parent, input, allInputValues);
+      lnInstance->instance = PDIF_init(server, lnInstance->parent, input, allInputValues);
     }
     else if (strcmp(lnInstance->lnClass, "MMXU") == 0)
     {
-      MMXU_init(server, lnInstance->parent, input, allInputValues);
+      lnInstance->instance = MMXU_init(server, lnInstance->parent, input, allInputValues);
     }
     else if (strcmp(lnInstance->lnClass, "CSWI") == 0)
     {
-      CSWI_init(server, lnInstance->parent, input, allInputValues);
+      lnInstance->instance = CSWI_init(server, lnInstance->parent, input, allInputValues);
     }
     else if (strcmp(lnInstance->lnClass, "CILO") == 0)
     {
-      CILO_init(server, lnInstance->parent, input, allInputValues);
+      lnInstance->instance = CILO_init(server, lnInstance->parent, input, allInputValues);
     }
-    // stubs
     else if (strcmp(lnInstance->lnClass, "RADR") == 0)
     {
-      RADR_init(server, lnInstance->parent, model, model_ex, input, allInputValues);
+      lnInstance->instance = RADR_init(server, lnInstance->parent, model, model_ex, input, allInputValues);
     }
     else if (strcmp(lnInstance->lnClass, "RBDR") == 0)
     {
-      RBDR_init(server, lnInstance->parent, model, model_ex, input, allInputValues);
+      lnInstance->instance = RBDR_init(server, lnInstance->parent, model, model_ex, input, allInputValues);
     }
     else if (strcmp(lnInstance->lnClass, "RDRE") == 0)
     {
-      RDRE_init(server, lnInstance->parent, model, model_ex, input, allInputValues);
+      lnInstance->instance = RDRE_init(server, lnInstance->parent, model, model_ex, input, allInputValues);
     }
     else if (strcmp(lnInstance->lnClass, "RREC") == 0)
     {
-      RREC_init(server, lnInstance->parent, model, model_ex, input, allInputValues);
+      lnInstance->instance = RREC_init(server, lnInstance->parent, model, model_ex, input, allInputValues);
     }
     else
     {
@@ -157,7 +156,11 @@ LogicalNodeClass *getLNClass(IedModel *model, IedModel_extensions *model_ex, con
   LogicalNodeClass *lnClass = model_ex->logicalNodes;
   while (lnClass != NULL)
   {
-    if (lnClass->parent == ln)
+    if (lnClass->parent == ln) //when we provide a Logical Node as reference
+    {
+      return lnClass;
+    }
+    else if ((LogicalNodeClass *)lnClass->parent == (LogicalNodeClass *)ln->parent) // in case we provide a DO as object reference
     {
       return lnClass;
     }

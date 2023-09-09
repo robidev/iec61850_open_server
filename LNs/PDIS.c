@@ -48,16 +48,42 @@ void PDIS_callback_SMV(InputEntry *extRef)
     {
       if (i < 4) // get the amps
       {
-        MmsValue *stVal = MmsValue_getElement(extRef->value, 0);
-        AmpValues[i] =  MmsValue_toInt64(stVal);
+        MmsValue *stVal = MmsValue_getElement(extRef->value, 0);// for datasets?
+        if(stVal == NULL)
+        {
+          stVal = extRef->value;
+        }
+        if(stVal != NULL)
+        {
+          AmpValues[i] =  MmsValue_toInt64(stVal);
+        } 
+        else 
+        {
+          AmpValues[i] = 0;
+          printf("could not read %s value\n", extRef->Ref);
+        }
       }
       else if(i < 8) // get the volts
       {
-        MmsValue *stVal = MmsValue_getElement(extRef->value, 0);
+        MmsValue *stVal = MmsValue_getElement(extRef->value, 0); // for datasets?
+        if(stVal == NULL)
+        {
+          stVal = extRef->value;
+        }
         // check if value is outside allowed band
         // TODO: get values from settings
-        int64_t VoltValue =  MmsValue_toInt64(stVal);
-        if(VoltValue != 0.0 && AmpValues[i % 4] != 0.0 && ( VoltValue / AmpValues[i % 4]) < 500 )
+        int64_t VoltValue =  0;
+        if(stVal != NULL)
+        {
+          VoltValue =  MmsValue_toInt64(stVal);
+        } 
+        else 
+        {
+          printf("could not read %s value\n", extRef->Ref);
+        }
+
+
+        if(VoltValue != 0.0 && AmpValues[i % 4] != 0.0 && ( VoltValue / AmpValues[i % 4]) > 500 )
         {
           printf("PDIS: treshold reached\n");
           MmsValue *tripValue = MmsValue_newBoolean(true);
@@ -92,7 +118,7 @@ void PDIS_callback_SMV(InputEntry *extRef)
   inst->tripTimer++;
 }
 
-void PDIS_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
+void * PDIS_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
   PDIS *inst = (PDIS *)malloc(sizeof(PDIS)); // create new instance with MALLOC
   inst->server = server;
@@ -108,12 +134,12 @@ void PDIS_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allIn
 
     while (extRef != NULL)
     {
-      if (strcmp(extRef->intAddr, "Vol3") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
+      if (strcmp(extRef->intAddr, "PDIS_Vol3") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
       {
         extRef->callBack = (callBackFunction)PDIS_callback_SMV; // TODO: replace smv with samples
         extRef->callBackParam = inst;
       }
-      if (strcmp(extRef->intAddr, "xcbr_stval") == 0)
+      if (strcmp(extRef->intAddr, "PDIS_xcbr_stval") == 0)
       {
         extRef->callBack = (callBackFunction)PDIS_callback_GOOSE; // TODO: replace GOOSE with status
         extRef->callBackParam = inst;
@@ -121,4 +147,5 @@ void PDIS_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allIn
       extRef = extRef->sibling;
     }
   }
+  return inst;
 }

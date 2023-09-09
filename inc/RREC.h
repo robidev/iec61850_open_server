@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-void RREC_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_extensions * model_ex,Input *input, LinkedList allInputValues);
+void * RREC_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_extensions * model_ex,Input *input, LinkedList allInputValues);
 
 #ifdef __cplusplus
 }

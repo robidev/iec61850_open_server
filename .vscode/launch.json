@@ -4,11 +4,35 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    {
+        "name": "(gdb) Launch PROT_RELAY",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/open_server",
+        "args": ["lo","7102","cfg/PROT_RELAIS.cfg","cfg/PROT_RELAIS.ext", "L"],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            },
+            {
+                "description": "Set Disassembly Flavor to Intel",
+                "text": "-gdb-set disassembly-flavor intel",
+                "ignoreFailures": true
+            }
+        ]
+    },
         {
             "name": "(gdb) Launch IED1",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/open_server",
+            "program": "${workspaceFolder}/open_server",
             "args": ["lo","7102","cfg/IED1_XCBR.cfg","cfg/IED1_XCBR.ext"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -27,8 +51,8 @@
             "name": "(gdb) Launch IED3",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/open_server",
-            "args": ["lo","9102","cfg/IED3_SMV.cfg","cfg/IED3_SMV.ext"],
+            "program": "${workspaceFolder}/open_server",
+            "args": ["lo","9102","cfg/IED3_SMV.cfg","cfg/IED3_SMV.ext","L"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -46,7 +70,7 @@
             "name": "(gdb) Launch IED2",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/open_server",
+            "program": "${workspaceFolder}/open_server",
             "args": ["lo","8102","cfg/IED2_PTOC.cfg","cfg/IED2_PTOC.ext"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

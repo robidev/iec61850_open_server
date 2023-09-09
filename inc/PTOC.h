@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-void PTOC_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allInputValues);
+void * PTOC_init(IedServer server, LogicalNode* ln, Input* input, LinkedList allInputValues);
 
 #ifdef __cplusplus
 }

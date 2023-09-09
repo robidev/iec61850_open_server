@@ -47,7 +47,7 @@ void CILO_currentValue_callback(InputEntry *extRef)
   }
 }
 
-void CILO_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
+void * CILO_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
   CILO *inst = (CILO *)malloc(sizeof(CILO)); // create new instance with MALLOC
 
@@ -74,4 +74,5 @@ void CILO_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allIn
       extRef = extRef->sibling;
     }
   }
+  return inst;
 }

@@ -46,7 +46,11 @@ void PIOC_callback_SMV(InputEntry *extRef)
     {
       if (i < 4) // only trigger on amps. TODO: ensure it only triggers on Amps lnrefs, instead of relying on the order in the SCD file
       {
-        MmsValue *stVal = MmsValue_getElement(extRef->value, 0);
+        MmsValue *stVal = MmsValue_getElement(extRef->value, 0);// for datasets?
+        if(stVal == NULL)
+        {
+          stVal = extRef->value;
+        }
         // check if value is outside allowed band
         // TODO: get values from settings
         if (MmsValue_toInt64(stVal) > 500 || MmsValue_toInt64(stVal) < -500)
@@ -84,7 +88,7 @@ void PIOC_callback_SMV(InputEntry *extRef)
   inst->tripTimer++;
 }
 
-void PIOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
+void * PIOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
   PIOC *inst = (PIOC *)malloc(sizeof(PIOC)); // create new instance with MALLOC
   inst->server = server;
@@ -100,12 +104,12 @@ void PIOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allIn
 
     while (extRef != NULL)
     {
-      if (strcmp(extRef->intAddr, "Amp3") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
+      if (strcmp(extRef->intAddr, "PIOC_Amp3") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
       {
         extRef->callBack = (callBackFunction)PIOC_callback_SMV; // TODO: replace smv with samples
         extRef->callBackParam = inst;
       }
-      if (strcmp(extRef->intAddr, "xcbr_stval") == 0)
+      if (strcmp(extRef->intAddr, "PIOC_xcbr_stval") == 0)
       {
         extRef->callBack = (callBackFunction)PIOC_callback_GOOSE; // TODO: replace GOOSE with status
         extRef->callBackParam = inst;
@@ -113,4 +117,5 @@ void PIOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allIn
       extRef = extRef->sibling;
     }
   }
+  return inst;
 }

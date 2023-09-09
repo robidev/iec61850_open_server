@@ -48,18 +48,43 @@ void PDIF_callback_SMV(InputEntry *extRef)
     {
       if (i < 4) // only trigger on amps. TODO: ensure it only triggers on Amps lnrefs, instead of relying on the order in the SCD file
       {
-        MmsValue *stVal = MmsValue_getElement(extRef->value, 0);
-        values[i] =  MmsValue_toInt64(stVal);
+        MmsValue *stVal = MmsValue_getElement(extRef->value, 0);// for datasets?
+        if(stVal == NULL)
+        {
+          stVal = extRef->value;
+        }
+        if(stVal != NULL)
+        {
+          values[i] =  MmsValue_toInt64(stVal);
+        } 
+        else 
+        {
+          printf("could not read %s value\n", extRef->Ref);
+          values[i] = 0;
+        }
+        
       }
       else if(i < 8)
       {
-        MmsValue *stVal = MmsValue_getElement(extRef->value, 0);
+        MmsValue *stVal = MmsValue_getElement(extRef->value, 0);// for datasets?
+        if(stVal == NULL)
+        {
+          stVal = extRef->value;
+        }
+        int64_t local_values = 0;
+        if(stVal != NULL)
+        {
+          local_values =  MmsValue_toInt64(stVal);
+        } 
+        else 
+        {
+          printf("could not read %s value\n", extRef->Ref);
+        }
         // check if value is outside allowed band
         // TODO: get values from settings
-        int64_t local_values =  MmsValue_toInt64(stVal);
-        if( (local_values - values[i % 4]) > 500 || (local_values - values[i % 4]) < -500 )
+        if( (local_values - values[i % 4]) > 5000 || (local_values - values[i % 4]) < -5000 )
         {
-          printf("PDIS: treshold reached\n");
+          printf("PDIF: treshold reached\n");
           MmsValue *tripValue = MmsValue_newBoolean(true);
 
           IedServer_updateAttributeValue(inst->server, inst->Op_general, tripValue);
@@ -92,7 +117,7 @@ void PDIF_callback_SMV(InputEntry *extRef)
   inst->tripTimer++;
 }
 
-void PDIF_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
+void * PDIF_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
   PDIF *inst = (PDIF *)malloc(sizeof(PDIF)); // create new instance with MALLOC
   inst->server = server;
@@ -108,12 +133,12 @@ void PDIF_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allIn
 
     while (extRef != NULL)
     {
-      if (strcmp(extRef->intAddr, "Amp3_2") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
+      if (strcmp(extRef->intAddr, "PDIF_Amp3_2") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
       {
         extRef->callBack = (callBackFunction)PDIF_callback_SMV; // TODO: replace smv with samples
         extRef->callBackParam = inst;
       }
-      if (strcmp(extRef->intAddr, "xcbr_stval") == 0)
+      if (strcmp(extRef->intAddr, "PDIF_xcbr_stval") == 0)
       {
         extRef->callBack = (callBackFunction)PDIF_callback_GOOSE; // TODO: replace GOOSE with status
         extRef->callBackParam = inst;
@@ -121,4 +146,5 @@ void PDIF_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allIn
       extRef = extRef->sibling;
     }
   }
+  return inst;
 }

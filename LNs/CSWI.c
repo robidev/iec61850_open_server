@@ -137,7 +137,7 @@ static ControlHandlerResult controlHandlerForBinaryOutput(ControlAction action, 
   return CONTROL_RESULT_FAILED;
 }
 
-void CSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
+void * CSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
   CSWI *inst = (CSWI *)malloc(sizeof(CSWI)); // create new instance with MALLOC
 
@@ -185,4 +185,5 @@ void CSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allIn
   IedServer_setControlHandler(server, (DataObject *)ModelNode_getChild((ModelNode *)ln, "Pos"), (ControlHandler)controlHandlerForBinaryOutput, inst);
   // during an operate, a certain element will need to update in the CSWI model(opOk element? ctlVal is not subscribable), to which the XCBR is subscribed (goose or directly)
   IedServer_setPerformCheckHandler(server, (DataObject *)ModelNode_getChild((ModelNode *)ln, "Pos"), checkHandler, inst);
+  return inst;
 }

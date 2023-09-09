@@ -85,10 +85,11 @@ LinkedList subscribeToGOOSEInputs(IedModel_extensions *self, GooseReceiver GSEre
       {
         if (strcmp_p(subscriberEntry->variableName, extRef->Ref) == 0) // if extref and datasetname match, we subscribe to it!
         {
-          InputValue *inputValue = create_InputValue(dataSetIndex, NULL, inputs, extRef); // match a dataset index to an extref, so we know how to decode a subscribed dataset
-
           if (strcmp_p(extRef->serviceType, "GOOSE") == 0 && GSEreceiver != NULL)
-          {                                       // if the extref is GOOSE subscribed, then create a subscriber
+          { 
+            InputValue *inputValue = create_InputValue(dataSetIndex, NULL, inputs, extRef); // match a dataset index to an extref, so we know how to decode a subscribed dataset
+   
+                                               // if the extref is GOOSE subscribed, then create a subscriber
             if (previous_subscriberEntry == NULL) // always create an initial subscriber
             {
               previous_subscriberEntry = subscriberEntry;
@@ -160,10 +161,11 @@ LinkedList subscribeToSMVInputs(IedModel_extensions *self, SVReceiver SMVreceive
       {
         if (strcmp_p(subscriberEntry->variableName, extRef->Ref) == 0) // if extref and datasetname match, we subscribe to it!
         {
-          InputValue *inputValue = create_InputValue(dataSetIndex, NULL, inputs, extRef); // match a dataset index to an extref, so we know how to decode a subscribed dataset
-
           if (strcmp_p(extRef->serviceType, "SMV") == 0 && SMVreceiver != NULL)
-          {                                       // if the extref is SMV, then create/add a subscriber
+          {
+            InputValue *inputValue = create_InputValue(dataSetIndex, NULL, inputs, extRef); // match a dataset index to an extref, so we know how to decode a subscribed dataset
+
+                                                  // if the extref is SMV, then create/add a subscriber
             if (previous_subscriberEntry == NULL) // always create an initial subscriber
             {
               previous_subscriberEntry = subscriberEntry;
@@ -238,6 +240,11 @@ LinkedList subscribeToLocalDAInputs(IedServer server, IedModel_extensions *self,
         if (strcmp_p(buf1, iedNameString) == 0) // IED is our own IED, link the mmsValue
         {
           DataAttribute *da = (DataAttribute *)IedModel_getModelNodeByObjectReference(model, extRef->Ref);
+          if(da == NULL){
+            printf("ERROR: could not find data attribute name in %s\n",  extRef->Ref);
+            extRef = extRef->sibling;
+            continue;
+          }
           MmsValue *value = IedServer_getAttributeValue(server, da);
           extRef->value = value;
 
@@ -446,7 +453,7 @@ void InputValueHandleExtensionCallbacks(void *param)
   // call all inputVals that are associated with this (local)DA
   while (inputValue != NULL) // list of associated inputvals with this DA
   {
-    if (inputValue->extRef->callBack != NULL)
+    if (inputValue->extRef != NULL && inputValue->extRef->callBack != NULL)
       inputValue->extRef->callBack(inputValue->extRef);
 
     inputValue = inputValue->sibling;

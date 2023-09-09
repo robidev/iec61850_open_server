@@ -9,17 +9,17 @@
 extern "C" {
 #endif
 
-#define MAX_SAMPLES 100
+#define RBDR_MAX_SAMPLES 100
 
 typedef struct sRBDR {
   IedServer server;
   Input *input;
-  bool buffer[MAX_SAMPLES];
+  int32_t buffer[RBDR_MAX_SAMPLES];
   int bufferIndex;
   int semaphore;
 } RBDR;
 
-void RBDR_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_extensions * model_ex,Input *input, LinkedList allInputValues);
+void * RBDR_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_extensions * model_ex,Input *input, LinkedList allInputValues);
 
 #ifdef __cplusplus
 }
