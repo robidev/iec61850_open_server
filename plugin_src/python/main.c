@@ -33,7 +33,32 @@ MmsValue * getDataRefFromModel(OpenServerInstance *srv, char *ref)
     return IedServer_getAttributeValue(srv->server, Pos_stVal);
 }
 
-void updateDataRef(OpenServerInstance *srv, char *ref, int value)
+
+void updateDataRef(OpenServerInstance *srv, char *ref, MmsValue* value)
+{
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
+        return;
+
+    DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
+    if(Pos_stVal == NULL)
+        return;
+    IedServer_updateAttributeValue(srv->server, Pos_stVal, value);
+    AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
+}
+
+void updateDataRefFloat(OpenServerInstance *srv, char *ref, float value)
+{
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
+        return;
+
+    DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
+    if(Pos_stVal == NULL)
+        return;
+    IedServer_updateFloatAttributeValue(srv->server, Pos_stVal, value);
+    AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
+}
+
+void updateDataRefInt32(OpenServerInstance *srv, char *ref, int value)
 {
     if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
         return;
@@ -44,6 +69,115 @@ void updateDataRef(OpenServerInstance *srv, char *ref, int value)
     IedServer_updateInt32AttributeValue(srv->server, Pos_stVal, value);
     AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
 }
+
+void updateDataRefDbpos(OpenServerInstance *srv, char *ref, uint8_t value)
+{
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
+        return;
+
+    DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
+    if(Pos_stVal == NULL)
+        return;
+    IedServer_updateDbposValue(srv->server, Pos_stVal, value);
+    AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
+}
+
+void updateDataRefInt64(OpenServerInstance *srv, char *ref, int64_t value)
+{
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
+        return;
+
+    DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
+    if(Pos_stVal == NULL)
+        return;
+    IedServer_updateInt64AttributeValue(srv->server, Pos_stVal, value);
+    AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
+}
+
+void updateDataRefUnsignedInt32(OpenServerInstance *srv, char *ref, uint32_t value)
+{
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
+        return;
+
+    DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
+    if(Pos_stVal == NULL)
+        return;
+    IedServer_updateUnsignedAttributeValue(srv->server, Pos_stVal, value);
+    AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
+}
+
+void updateDataRefBitString(OpenServerInstance *srv, char *ref, uint32_t value)
+{
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
+        return;
+
+    DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
+    if(Pos_stVal == NULL)
+        return;
+    IedServer_updateBitStringAttributeValue(srv->server, Pos_stVal, value);
+    AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
+}
+
+void updateDataRefBool(OpenServerInstance *srv, char *ref, bool value)
+{
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
+        return;
+
+    DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
+    if(Pos_stVal == NULL)
+        return;
+    IedServer_updateBooleanAttributeValue(srv->server, Pos_stVal, value);
+    AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
+}
+
+void updateDataRefVisString(OpenServerInstance *srv, char *ref, char* value)
+{
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
+        return;
+
+    DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
+    if(Pos_stVal == NULL)
+        return;
+    IedServer_updateVisibleStringAttributeValue(srv->server, Pos_stVal, value);
+    AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
+}
+
+void updateDataRefUTCTime(OpenServerInstance *srv, char *ref, uint32_t value)
+{
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
+        return;
+
+    DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
+    if(Pos_stVal == NULL)
+        return;
+    IedServer_updateUTCTimeAttributeValue(srv->server, Pos_stVal, value);
+    AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
+}
+
+void updateDataRefTimestamp(OpenServerInstance *srv, char *ref, uint8_t *value)//uint8_t timestamp[8]
+{
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
+        return;
+
+    DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
+    if(Pos_stVal == NULL)
+        return;
+    IedServer_updateTimestampAttributeValue(srv->server, Pos_stVal, (Timestamp *)value);
+    AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
+}
+
+void updateDataRefQuality(OpenServerInstance *srv, char *ref, uint16_t value)
+{
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| ref == NULL)
+        return;
+
+    DataAttribute* Pos_stVal = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
+    if(Pos_stVal == NULL)
+        return;
+    IedServer_updateQuality(srv->server, Pos_stVal, value);
+    AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
+}
+
 
 int init(OpenServerInstance *srv)
 {

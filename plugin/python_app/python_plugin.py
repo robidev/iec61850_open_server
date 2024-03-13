@@ -1416,16 +1416,115 @@ for _lib in _libs.values():
     getDataRefFromModel.restype = POINTER(MmsValue)
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 15
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 16
 for _lib in _libs.values():
     if not _lib.has("updateDataRef", "cdecl"):
         continue
     updateDataRef = _lib.get("updateDataRef", "cdecl")
-    updateDataRef.argtypes = [POINTER(OpenServerInstance), String, c_int]
+    updateDataRef.argtypes = [POINTER(OpenServerInstance), String, POINTER(MmsValue)]
     updateDataRef.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 16
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 17
+for _lib in _libs.values():
+    if not _lib.has("updateDataRefFloat", "cdecl"):
+        continue
+    updateDataRefFloat = _lib.get("updateDataRefFloat", "cdecl")
+    updateDataRefFloat.argtypes = [POINTER(OpenServerInstance), String, c_float]
+    updateDataRefFloat.restype = None
+    break
+
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 18
+for _lib in _libs.values():
+    if not _lib.has("updateDataRefInt32", "cdecl"):
+        continue
+    updateDataRefInt32 = _lib.get("updateDataRefInt32", "cdecl")
+    updateDataRefInt32.argtypes = [POINTER(OpenServerInstance), String, c_int]
+    updateDataRefInt32.restype = None
+    break
+
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 19
+for _lib in _libs.values():
+    if not _lib.has("updateDataRefDbpos", "cdecl"):
+        continue
+    updateDataRefDbpos = _lib.get("updateDataRefDbpos", "cdecl")
+    updateDataRefDbpos.argtypes = [POINTER(OpenServerInstance), String, uint8_t]
+    updateDataRefDbpos.restype = None
+    break
+
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 20
+for _lib in _libs.values():
+    if not _lib.has("updateDataRefInt64", "cdecl"):
+        continue
+    updateDataRefInt64 = _lib.get("updateDataRefInt64", "cdecl")
+    updateDataRefInt64.argtypes = [POINTER(OpenServerInstance), String, c_int64]
+    updateDataRefInt64.restype = None
+    break
+
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 21
+for _lib in _libs.values():
+    if not _lib.has("updateDataRefUnsignedInt32", "cdecl"):
+        continue
+    updateDataRefUnsignedInt32 = _lib.get("updateDataRefUnsignedInt32", "cdecl")
+    updateDataRefUnsignedInt32.argtypes = [POINTER(OpenServerInstance), String, uint32_t]
+    updateDataRefUnsignedInt32.restype = None
+    break
+
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 22
+for _lib in _libs.values():
+    if not _lib.has("updateDataRefBitString", "cdecl"):
+        continue
+    updateDataRefBitString = _lib.get("updateDataRefBitString", "cdecl")
+    updateDataRefBitString.argtypes = [POINTER(OpenServerInstance), String, uint32_t]
+    updateDataRefBitString.restype = None
+    break
+
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 23
+for _lib in _libs.values():
+    if not _lib.has("updateDataRefBool", "cdecl"):
+        continue
+    updateDataRefBool = _lib.get("updateDataRefBool", "cdecl")
+    updateDataRefBool.argtypes = [POINTER(OpenServerInstance), String, c_bool]
+    updateDataRefBool.restype = None
+    break
+
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 24
+for _lib in _libs.values():
+    if not _lib.has("updateDataRefVisString", "cdecl"):
+        continue
+    updateDataRefVisString = _lib.get("updateDataRefVisString", "cdecl")
+    updateDataRefVisString.argtypes = [POINTER(OpenServerInstance), String, String]
+    updateDataRefVisString.restype = None
+    break
+
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 25
+for _lib in _libs.values():
+    if not _lib.has("updateDataRefUTCTime", "cdecl"):
+        continue
+    updateDataRefUTCTime = _lib.get("updateDataRefUTCTime", "cdecl")
+    updateDataRefUTCTime.argtypes = [POINTER(OpenServerInstance), String, uint32_t]
+    updateDataRefUTCTime.restype = None
+    break
+
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 26
+for _lib in _libs.values():
+    if not _lib.has("updateDataRefTimestamp", "cdecl"):
+        continue
+    updateDataRefTimestamp = _lib.get("updateDataRefTimestamp", "cdecl")
+    updateDataRefTimestamp.argtypes = [POINTER(OpenServerInstance), String, POINTER(uint8_t)]
+    updateDataRefTimestamp.restype = None
+    break
+
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 27
+for _lib in _libs.values():
+    if not _lib.has("updateDataRefQuality", "cdecl"):
+        continue
+    updateDataRefQuality = _lib.get("updateDataRefQuality", "cdecl")
+    updateDataRefQuality.argtypes = [POINTER(OpenServerInstance), String, uint16_t]
+    updateDataRefQuality.restype = None
+    break
+
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 29
 for _lib in _libs.values():
     if not _lib.has("castOpenServerInstance", "cdecl"):
         continue
