@@ -96,9 +96,28 @@ void *SMVP_init(SVPublisher SMVPublisher, SVControlBlock *svcb, IedServer server
     DataSetEntry *dataSetEntry = dataSet->fcdas;
     while (dataSetEntry != NULL)
     {
-        LinkedList_add(inst->dataSetValues, dataSetEntry->value);
+        MmsValue * childEntry = NULL;
+        MmsValue * entry =  dataSetEntry->value;
+        if(entry == NULL)
+        {
+            printf("ERROR: dataset element '%s' is not initialised, dataset entry not used by SMV\n",
+                dataSetEntry->variableName);
+            dataSetEntry = dataSetEntry->sibling;
+            continue;
+        }
+        childEntry = MmsValue_getElement(entry, 0);
+        if(childEntry == NULL)
+        {
+            printf("ERROR: dataset element '%s' is not a Data Object, but a Data Attribute. this is not supported. Please define a Data Object instead\n",
+                dataSetEntry->variableName);
 
-        DataAttribute *da = IedModel_lookupDataAttributeByMmsValue(model, MmsValue_getElement(MmsValue_getElement(dataSetEntry->value, 0), 0));
+            dataSetEntry = dataSetEntry->sibling;
+            continue;
+        }
+        LinkedList_add(inst->dataSetValues, entry);
+    
+        DataAttribute *da = IedModel_lookupDataAttributeByMmsValue(model, childEntry);
+        //TODO check for correct DA type 
         dataSetEntry = dataSetEntry->sibling;
     }
 
