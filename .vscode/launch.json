@@ -64,7 +64,8 @@
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
                 }
-            ]
+            ],
+            "miDebuggerPath": "${workspaceFolder}/sudo_gdb.sh",
         },
         {
             "name": "(gdb) Launch IED2",

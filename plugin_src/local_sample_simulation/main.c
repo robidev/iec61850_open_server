@@ -23,8 +23,44 @@ typedef struct sLSMS
     void *sibling;
 } LSMS;
 
-void local_SMV_Thread();
-void SMV_Callback(int samplecount, void *parameter);
+static void local_SMV_Thread(void *parameter);
+static void SMV_Callback(int samplecount, void *parameter);
+
+static LSMS* lsms_list = NULL;
+
+LSMS* get_sample_simulation_setting(int index)
+{
+    LSMS* item = lsms_list;
+    int i=0;
+    while (item)
+    {
+        if(index == i)
+        {
+            return item;
+        }
+        i++;
+        item = item->sibling;
+    }
+    return NULL;
+}
+
+//TODO: not threat safe! add a semaphore
+int update_sample_simulation_magnitude(int index, double magnitude)
+{
+    LSMS* item = lsms_list;
+    int i=0;
+    while (item)
+    {
+        if(index == i)
+        {
+            item->magnitude = magnitude;
+            return 1;
+        }
+        i++;
+        item = item->sibling;
+    }
+    return 0;
+}
 
 int init(OpenServerInstance *srv)
 {
@@ -99,6 +135,7 @@ int init(OpenServerInstance *srv)
             {
                 head = inst;
                 tail = inst;
+                lsms_list = inst;
             }
             else
             {
@@ -148,7 +185,7 @@ int init(OpenServerInstance *srv)
     return 0; // 0 means success
 }
 
-void SMV_Callback(int sampleCount, void *parameter)
+static void SMV_Callback(int sampleCount, void *parameter)
 {
     // printf("smv callback called\n");
     LSMS *item = (LSMS *)parameter;
@@ -173,7 +210,7 @@ void SMV_Callback(int sampleCount, void *parameter)
     }
 }
 
-void local_SMV_Thread(void *parameter)
+static void local_SMV_Thread(void *parameter)
 {
     printf(" smv thread started\n");
     int sampleCount = 0;
