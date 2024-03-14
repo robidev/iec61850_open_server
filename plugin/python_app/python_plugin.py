@@ -1271,7 +1271,7 @@ class struct_sSubscriberEntry(Structure):
 
 SubscriberEntry = struct_sSubscriberEntry# ../../inc/iec61850_model_extensions.h: 33
 
-callBackFunction = CFUNCTYPE(UNCHECKED(None), POINTER(None))# ../../inc/iec61850_model_extensions.h: 34
+callBackFunction = CFUNCTYPE(UNCHECKED(None), UNCHECKED(None))# ../../inc/iec61850_model_extensions.h: 34
 
 struct_sIedModel_extensions.__slots__ = [
     'inputs',
@@ -1407,7 +1407,7 @@ for _lib in _libs.values():
     open_server_running.restype = c_int
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 14
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 13
 for _lib in _libs.values():
     if not _lib.has("getDataRefFromModel", "cdecl"):
         continue
@@ -1416,7 +1416,7 @@ for _lib in _libs.values():
     getDataRefFromModel.restype = POINTER(MmsValue)
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 16
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 15
 for _lib in _libs.values():
     if not _lib.has("updateDataRef", "cdecl"):
         continue
@@ -1425,7 +1425,7 @@ for _lib in _libs.values():
     updateDataRef.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 17
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 16
 for _lib in _libs.values():
     if not _lib.has("updateDataRefFloat", "cdecl"):
         continue
@@ -1434,7 +1434,7 @@ for _lib in _libs.values():
     updateDataRefFloat.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 18
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 17
 for _lib in _libs.values():
     if not _lib.has("updateDataRefInt32", "cdecl"):
         continue
@@ -1443,7 +1443,7 @@ for _lib in _libs.values():
     updateDataRefInt32.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 19
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 18
 for _lib in _libs.values():
     if not _lib.has("updateDataRefDbpos", "cdecl"):
         continue
@@ -1452,7 +1452,7 @@ for _lib in _libs.values():
     updateDataRefDbpos.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 20
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 19
 for _lib in _libs.values():
     if not _lib.has("updateDataRefInt64", "cdecl"):
         continue
@@ -1461,7 +1461,7 @@ for _lib in _libs.values():
     updateDataRefInt64.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 21
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 20
 for _lib in _libs.values():
     if not _lib.has("updateDataRefUnsignedInt32", "cdecl"):
         continue
@@ -1470,7 +1470,7 @@ for _lib in _libs.values():
     updateDataRefUnsignedInt32.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 22
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 21
 for _lib in _libs.values():
     if not _lib.has("updateDataRefBitString", "cdecl"):
         continue
@@ -1479,7 +1479,7 @@ for _lib in _libs.values():
     updateDataRefBitString.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 23
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 22
 for _lib in _libs.values():
     if not _lib.has("updateDataRefBool", "cdecl"):
         continue
@@ -1488,7 +1488,7 @@ for _lib in _libs.values():
     updateDataRefBool.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 24
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 23
 for _lib in _libs.values():
     if not _lib.has("updateDataRefVisString", "cdecl"):
         continue
@@ -1497,7 +1497,7 @@ for _lib in _libs.values():
     updateDataRefVisString.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 25
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 24
 for _lib in _libs.values():
     if not _lib.has("updateDataRefUTCTime", "cdecl"):
         continue
@@ -1506,7 +1506,7 @@ for _lib in _libs.values():
     updateDataRefUTCTime.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 26
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 25
 for _lib in _libs.values():
     if not _lib.has("updateDataRefTimestamp", "cdecl"):
         continue
@@ -1515,7 +1515,7 @@ for _lib in _libs.values():
     updateDataRefTimestamp.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 27
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 26
 for _lib in _libs.values():
     if not _lib.has("updateDataRefQuality", "cdecl"):
         continue
@@ -1524,7 +1524,16 @@ for _lib in _libs.values():
     updateDataRefQuality.restype = None
     break
 
-# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 29
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 28
+for _lib in _libs.values():
+    if not _lib.has("registerDaCallback", "cdecl"):
+        continue
+    registerDaCallback = _lib.get("registerDaCallback", "cdecl")
+    registerDaCallback.argtypes = [POINTER(OpenServerInstance), String, callBackFunction, POINTER(None)]
+    registerDaCallback.restype = None
+    break
+
+# /home/user/Desktop/scada/iec61850_open_server/plugin_src/python/python_plugin.h: 31
 for _lib in _libs.values():
     if not _lib.has("castOpenServerInstance", "cdecl"):
         continue

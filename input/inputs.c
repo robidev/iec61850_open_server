@@ -454,8 +454,9 @@ void InputValueHandleExtensionCallbacks(void *param)
   while (inputValue != NULL) // list of associated inputvals with this DA
   {
     if (inputValue->extRef != NULL && inputValue->extRef->callBack != NULL)
-      inputValue->extRef->callBack(inputValue->extRef);
-
+    {
+        inputValue->extRef->callBack(inputValue->extRef);
+    }
     inputValue = inputValue->sibling;
   }
 }

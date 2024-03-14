@@ -1,9 +1,13 @@
 # functions to cast data-types
-import ctypes
+import ctypes, time
 # functions for reading/writing the active datamodel
 import python_plugin
 # functions for working with MmsValue's and such
 import lib61850
+
+# note, the extref parameter contains a callback parameter, but it is in a c-struct.
+def cb(extref):
+    print("callback")
 
 def main(server_instance):
     # convert the server instance to the right type
@@ -18,6 +22,10 @@ def main(server_instance):
         return 1
 
     print("found mms_pos data ref @IED1_XCBRGenericIO/XCBR1.Pos.stVal")
+
+    # register a callback for when a DA is updated
+    cbRef = python_plugin.callBackFunction(cb)
+    python_plugin.registerDaCallback(srv,"IED1_XCBRGenericIO/XCBR1.Pos.stVal",cbRef,None)
 
     # cast the type to the correct MmsValue* type for use by libiec61850
     pos = ctypes.cast(mms_pos,ctypes.POINTER(lib61850.struct_sMmsValue ) )

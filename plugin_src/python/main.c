@@ -14,6 +14,9 @@
 #include "LNParse.h"
 #include "python_plugin.h"
 
+
+extern InputValue *create_InputValue(int index, DataAttribute *da, Input *input, InputEntry *extRef);
+
 OpenServerInstance *castOpenServerInstance(void * srv)
 {
     return (OpenServerInstance * )srv;
@@ -178,6 +181,63 @@ void updateDataRefQuality(OpenServerInstance *srv, char *ref, uint16_t value)
     AttributeValueHandleExtensionCallbacks(Pos_stVal, srv->allInputValues); // update the associated callbacks with this Data Element
 }
 
+void registerDaCallback(OpenServerInstance *srv, const char* ref, callBackFunction handler, void* handlerParameter)
+{
+    if(srv == NULL || srv->Model == NULL || srv->server == NULL || srv->allInputValues == NULL|| 
+      ref == NULL || srv->Model_ex == NULL )
+    {
+        printf("ERROR: could not register callback\n");
+        return;
+    }
+        
+    //find data reference in datamodel
+    DataAttribute* da = (DataAttribute *)IedModel_getModelNodeByObjectReference(srv->Model,ref);
+    if(da == NULL)
+    {
+        printf("ERROR: could not register callback. No DA\n");
+        return;
+    }
+    if(srv->Model_ex->inputs == NULL)
+    {
+        printf("ERROR: could not register callback. inputs list missing. did you load an .ext model with inputs?\n");
+        return;            
+    }
+    //create a new callback entry at the end of the list
+    InputEntry * entry = InputEntry_create(srv->Model_ex->inputs,"pycallback", ref, "intPyRef", "python", "srcPy");
+    entry->value = da->mmsValue;
+    entry->callBack = handler;
+    entry->callBackParam = handlerParameter;
+        
+    //check if a callback for inputvalues is already registered for this DA
+    InputValue * callback_list =  _findAttributeValueEx(da, srv->allInputValues);
+    if(callback_list != NULL)
+    {
+        // we have a callback list for this DA, so add the callback and parameter to the data reference,
+        // so it gets called when the DA value is updated
+        InputValue *inputValue_local = NULL;
+        inputValue_local = callback_list;
+        while (inputValue_local->sibling != NULL) // find the last entry in the list
+        {
+            inputValue_local = inputValue_local->sibling;
+        }
+        inputValue_local->sibling = create_InputValue(0,da,srv->Model_ex->inputs,entry);
+        if(inputValue_local->sibling == NULL)
+        {
+            printf("ERROR: could not register callback. could not allocate memory\n");
+            return;
+        }
+    }
+    else // no callback list defined, so create one
+    {
+        callback_list = create_InputValue(0,da,srv->Model_ex->inputs,entry);
+        if(callback_list == NULL)
+        {
+            printf("ERROR: could not register callback. could not allocate memory\n");
+            return;
+        }
+        LinkedList_add(srv->allInputValues, callback_list);
+    }
+}
 
 int init(OpenServerInstance *srv)
 {

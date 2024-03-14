@@ -10,7 +10,6 @@ extern "C"
 {
 #endif
 
-
 MmsValue * getDataRefFromModel(OpenServerInstance *srv, char *ref);
 
 void updateDataRef(OpenServerInstance *srv, char *ref, MmsValue* value);
@@ -25,6 +24,9 @@ void updateDataRefVisString(OpenServerInstance *srv, char *ref, char* value);
 void updateDataRefUTCTime(OpenServerInstance *srv, char *ref, uint32_t value);
 void updateDataRefTimestamp(OpenServerInstance *srv, char *ref, uint8_t *value);//uint8_t timestamp[8]
 void updateDataRefQuality(OpenServerInstance *srv, char *ref, uint16_t value);
+
+void registerDaCallback(OpenServerInstance *srv, const char* ref, callBackFunction handler, void* handlerParameter);
+
 
 OpenServerInstance *castOpenServerInstance(void * srv);
 
