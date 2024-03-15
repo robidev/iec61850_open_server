@@ -5,6 +5,8 @@ import python_plugin
 # functions for working with MmsValue's and such
 import lib61850
 
+#import pygame
+
 # note, the extref parameter contains a callback parameter, but it is in a c-struct.
 def cb(extref):
     var = ctypes.cast(extref,ctypes.POINTER(python_plugin.InputEntry)).contents # cast the extref struct
@@ -46,24 +48,27 @@ def main(server_instance):
 
     ######################################################################################
     # example to dynamically modify simulation values by calling another plugin
-    #  time.sleep(10)
-    #  lss = python_plugin.load_library("../liblocal_sample_simulation.so")
-    #  update_sample_simulation_magnitude = lss.update_sample_simulation_magnitude
-    #  update_sample_simulation_magnitude.restype=ctypes.c_int
-#  
-    #  result = update_sample_simulation_magnitude(ctypes.c_int(2),ctypes.c_double(5.0))
-    #  if result:
-    #      print("value updated")
-    #  else:
-    #      print("could not find value")
-    #  time.sleep(0.15)
-    #  result = update_sample_simulation_magnitude(ctypes.c_int(2),ctypes.c_double(0.2))
-    #  if result:
-    #      print("value reset")
-    #  else:
-    #      print("could not find value")
+    # time.sleep(10)
+    # lss = python_plugin.load_library("../liblocal_sample_simulation.so")
+    # update_sample_simulation_magnitude = lss.update_sample_simulation_magnitude
+    # update_sample_simulation_magnitude.restype=ctypes.c_int
+    # 
+    # result = update_sample_simulation_magnitude(ctypes.c_int(0),ctypes.c_double(5.0))
+    # if result:
+    #     print("PYTHON_APP: value updated")
+    # else:
+    #     print("PYTHON_APP: could not find value")
+    # time.sleep(0.15)
+    # result = update_sample_simulation_magnitude(ctypes.c_int(0),ctypes.c_double(0.2))
+    # if result:
+    #     print("PYTHON_APP: value reset")
+    # else:
+    #     print("PYTHON_APP: could not find value")
     #######################################################################################
         
+
+    #pygame.init()
+    #pygame.display.set_mode((100,100))
     # dont quit the python app if callbacks are registered, or the program will segfault
     while True:
         time.sleep(1)

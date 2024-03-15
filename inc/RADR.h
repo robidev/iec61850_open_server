@@ -9,12 +9,13 @@
 extern "C" {
 #endif
 
-#define RADR_MAX_SAMPLES 100
+//record 4 seconds
+#define RADR_MAX_SAMPLES (80*50*4)
 
 typedef struct sRADR {
   IedServer server;
   Input *input;
-  int32_t buffer[RADR_MAX_SAMPLES];
+  int32_t *buffer;
   int bufferIndex;
   int semaphore;
 } RADR;

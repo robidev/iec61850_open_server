@@ -6,19 +6,27 @@
 void RBDR_callback(InputEntry *extRef)
 {
   RBDR *inst = extRef->callBackParam;
-  inst->buffer[inst->bufferIndex] = MmsValue_toInt32(extRef->value);
-    inst->bufferIndex++;
-    if(inst->bufferIndex >= RBDR_MAX_SAMPLES)
-    {
-      inst->bufferIndex = 0;
-    }
+  inst->buffer[inst->bufferIndex] = MmsValue_getBitStringAsInteger(extRef->value);
+  inst->bufferIndex++;
+  if(inst->bufferIndex >= RBDR_MAX_SAMPLES)
+  {
+    inst->bufferIndex = 0;
+  }
 }
 
+//TODO, callback does not equal sample rate. We probably should launch a sampler thread or advance the bufferindex some other way
 void * RBDR_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_extensions * model_ex,Input *input, LinkedList allInputValues)
 {
   RBDR *inst = (RBDR *)malloc(sizeof(RBDR)); // create new instance with MALLOC
   inst->server = server;
   inst->input = input;
+  inst->buffer = malloc( sizeof(int32_t)*RBDR_MAX_SAMPLES );
+  if(inst->buffer == NULL)
+  {
+    printf("RBDR: ERROR could not allocate buffer of size %ld", sizeof(int32_t)*RBDR_MAX_SAMPLES );
+    free(inst);
+    return NULL;
+  }
   inst->bufferIndex = 0;
   for(int i = 0; i < RBDR_MAX_SAMPLES; i++)
   {
@@ -32,7 +40,7 @@ void * RBDR_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_
 
     while (extRef != NULL)
     {
-      if (strcmp(extRef->intAddr, "digital") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
+      if (strcmp(extRef->intAddr, "digital") == 0) 
       {
         extRef->callBack = (callBackFunction)RBDR_callback;
         extRef->callBackParam = inst;

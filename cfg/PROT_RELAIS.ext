@@ -38,6 +38,7 @@ LN(XCBR1){
 CL(XCBR);
 IN{
 ER(Trip IED1_XCBRGenericIO/PTRC1.Tr.general Tr Poll IED1_XCBR/);
+ER(OpClose IED1_XCBRGenericIO/PTRC1.Op.general OpCls Poll IED1_XCBR/);
 ER(Operate IED1_XCBRGenericIO/CSWI1.Pos.opOk Op Poll IED1_XCBR/);
 }
 }

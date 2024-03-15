@@ -24,6 +24,13 @@ void * RADR_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_
   RADR *inst = (RADR *)malloc(sizeof(RADR)); // create new instance with MALLOC
   inst->server = server;
   inst->input = input;
+  inst->buffer = malloc( sizeof(int32_t)*RADR_MAX_SAMPLES );
+  if(inst->buffer == NULL)
+  {
+    printf("RADR: ERROR could not allocate buffer of size %ld", sizeof(int32_t)*RADR_MAX_SAMPLES );
+    free(inst);
+    return NULL;
+  }
   inst->bufferIndex = 0;
   for(int i = 0; i < RADR_MAX_SAMPLES; i++)
   {
@@ -37,7 +44,7 @@ void * RADR_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_
 
     while (extRef != NULL)
     {
-      if (strcmp(extRef->intAddr, "analog") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
+      if (strcmp(extRef->intAddr, "analog") == 0) 
       {
         extRef->callBack = (callBackFunction)RADR_callback;
         extRef->callBackParam = inst;

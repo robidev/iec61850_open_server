@@ -31,6 +31,21 @@ void XCBR_callback_Op(InputEntry *extRef)
   inst->XSWI_callback_ln(inst, state);
 }
 
+// callback for operate signal -> will trigger process to close the switch
+void XCBR_callback_OpCls(InputEntry *extRef)
+{
+  XSWI * inst = extRef->callBackParam;
+  bool state = MmsValue_getBoolean(extRef->value);
+
+  if(inst->XSWI_callback_ln == NULL)
+    return;
+
+  if (state == true)
+  {
+    inst->XSWI_callback_ln(inst, true);
+  }
+}
+
 // initialise XCBR instance for process simulation, and publish/subscription of GOOSE
 void *XCBR_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
@@ -58,6 +73,12 @@ void *XCBR_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
       {
         // register callbacks for poll and GOOSE-subscription
         extref->callBack = (callBackFunction)XCBR_callback_Op;
+        extref->callBackParam = inst; // pass instance in param
+      }
+      if (strcmp(extref->intAddr, "OpCls") == 0)//For recloser
+      {
+        // register callbacks for poll and GOOSE-subscription
+        extref->callBack = (callBackFunction)XCBR_callback_OpCls;
         extref->callBackParam = inst; // pass instance in param
       }
 

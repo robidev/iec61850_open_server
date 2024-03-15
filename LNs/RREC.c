@@ -28,7 +28,7 @@ void RREC_reenable_timer(InputEntry *extRef)
   {
     if((inst->tripstate > 0 || inst->tripCount > 0) && Dbpos_fromMmsValue(extRef->value) == DBPOS_ON)
     {
-      printf("Re-arm recloser\n");
+      printf("RREC: Re-arm recloser\n");
       inst->tripstate = 0;
       inst->tripCount = 0;
     }
@@ -44,7 +44,7 @@ void RREC_recloser_timer(InputEntry *extRef)
     if(inst->tripstate == 2 && Dbpos_fromMmsValue(extRef->value) == DBPOS_OFF)
     {
       //operate 
-      printf("Reclose!\n");
+      printf("RREC: Reclose!\n");
       MmsValue *opValue = MmsValue_newBoolean(true);
       IedServer_updateAttributeValue(inst->server, inst->Op_general, opValue);
       InputValueHandleExtensionCallbacks(inst->Op_general_callback); // update the associated callbacks with this Data Element
@@ -74,7 +74,7 @@ void RREC_xcbr_callback(InputEntry *extRef)
       }
       else // lock state
       {
-        printf("Recloser in locked state\n");
+        printf("RREC: Recloser in locked state\n");
         inst->tripCount++;
         inst->tripstate = 0;
       }
@@ -97,7 +97,7 @@ void RREC_timeout(InputEntry *extRef)
   if(inst->tripstate == 1)
   {
     inst->tripstate = 0;
-    printf("Recloser timeout during time between trip and switch response\n");
+    printf("RREC: Recloser timeout during time between trip and switch response\n");
   }
 }
 

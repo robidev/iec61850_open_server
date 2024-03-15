@@ -98,6 +98,7 @@ xsi:schemaLocation="http://www.iec.ch/61850/2003/SCL schema/SCL.xsd" >
           <LN lnClass="XCBR" lnType="XCBR1" inst="1" prefix="">
             <Inputs>
               <ExtRef intAddr="Tr" desc="Trip" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="PTRC" lnInst="1" doName="Tr" daName="general" serviceType="Poll" />
+              <ExtRef intAddr="OpCls" desc="OpCLose" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="PTRC" lnInst="1" doName="Op" daName="general" serviceType="Poll" />
               <ExtRef intAddr="Op" desc="Operate" iedName="IED1_XCBR" ldInst="GenericIO" lnClass="CSWI" lnInst="1" doName="Pos" daName="opOk" serviceType="Poll" />
             </Inputs>
           </LN>
