@@ -13,6 +13,8 @@ typedef struct sMMXU
   void *da_A_callback;
   void *da_V_callback;
 
+  void *da_A_phsAng[4];
+
   void *da_A_phs[4];
   void *da_A_phs_callback[4];
   void *da_V_phs[4];
@@ -22,10 +24,104 @@ typedef struct sMMXU
   int RMS_samplecountV;
   int RMS_samplecountI;
 
+  double **xn;
+  double Xr[4];
+  double Xi[4];
+	int sample_index;
 } MMXU;
 
-// callback when SMV is received
-void MMXU_callbackI(InputEntry *extRef)
+const double INTERESTED_FREQ = 50;
+const double SAMPLE_FREQ = 4000;
+const uint32_t WINDOW_SIZE = 80; // amount of samples im the window-size
+const double const_Rms = 0.7071;
+
+void MMXU_I_DFT(InputEntry *extRef)
+{
+  MMXU *inst = extRef->callBackParam;
+  extRef = inst->input->extRefs; // start from the first extref, and check all values, we assume there are 8!
+  int i = 0;
+  double Ni=0, Nr=0;
+  double AvgAmp=0;
+
+  while (extRef != NULL)
+  {
+    if (extRef->value != NULL)
+    {
+      if (i < 4)
+      {
+        double k=INTERESTED_FREQ / (SAMPLE_FREQ / WINDOW_SIZE);
+
+        if(1)//calculate dft every WINDOW_SIZE (e.g. 80) cycles. this means low latency, but the values are updated only once per cycle
+        {
+          double multiplier = 0.5 * (1 - cos( 2 * M_PI * inst->sample_index / WINDOW_SIZE));//Hanning window
+          inst->Xr[i] = (inst->Xr[i] +  MmsValue_toInt32(extRef->value) * multiplier * cos(2 * M_PI * k * (double)inst->sample_index / WINDOW_SIZE));
+          inst->Xi[i] = (inst->Xi[i] -  MmsValue_toInt32(extRef->value) * multiplier * sin(2 * M_PI * k * (double)inst->sample_index / WINDOW_SIZE));
+          //k * (SAMPLE_FREQ / WINDOW_SIZE), Xr/WINDOW_SIZE, Xi/WINDOW_SIZE, amplitude/(WINDOW_SIZE)*4, angle);
+          if ((inst->sample_index % WINDOW_SIZE) == WINDOW_SIZE-1) // we calculate the dft vector after WINDOW_SIZE samples
+          {
+            if(i < 3)
+            {
+              //calculate neutral by adding other vectors
+              inst->Xi[3] += inst->Xi[i];
+              inst->Xr[3] += inst->Xr[i];
+            }
+            double amplitude = sqrt((inst->Xr[i]*inst->Xr[i]) + (inst->Xi[i]*inst->Xi[i]))/(WINDOW_SIZE)*4;
+            IedServer_updateFloatAttributeValue(inst->server, inst->da_A_phs[ i % 4 ],amplitude * const_Rms);
+            InputValueHandleExtensionCallbacks(inst->da_A_phs_callback[i % 4]); // update the associated callbacks with this Data Element
+
+            double quadrant = 0;
+            if(inst->Xr[i] < 0.0 ) quadrant = 180;
+            if(inst->Xr[i] > 0.0 && inst->Xi[i] < 0.0) quadrant = 360;
+            double angle = (atan(inst->Xi[i]/inst->Xr[i]) * (180/M_PI)) + quadrant;
+            IedServer_updateFloatAttributeValue(inst->server, inst->da_A_phsAng[ i % 4 ],angle);
+
+            AvgAmp += amplitude;
+            if (i == 3)
+            {
+              IedServer_updateFloatAttributeValue(inst->server, inst->da_A, AvgAmp/3 * const_Rms);
+              InputValueHandleExtensionCallbacks(inst->da_A_callback); // update the associated callbacks with this Data Element
+            }
+            inst->Xr[i] = 0;
+            inst->Xi[i] = 0;
+          }
+        }
+        else//calculate whole window every cycle
+        {
+          double Xr =0, Xi = 0;
+          int n;
+          inst->xn[i][inst->sample_index] = MmsValue_toInt32(extRef->value);
+        
+          for (n = 0; n < WINDOW_SIZE; n++) { //calculate 1 cycle(WINDOW_SIZE samples)
+            double multiplier = 0.5 * (1 - cos( 2 * M_PI *n / WINDOW_SIZE));//Hanning window
+            Xr = (Xr + inst->xn[i][(n + inst->sample_index) % WINDOW_SIZE] * multiplier * cos(2 * M_PI * k * (double)n / WINDOW_SIZE));
+            Xi = (Xi - inst->xn[i][(n + inst->sample_index) % WINDOW_SIZE] * multiplier * sin(2 * M_PI * k * (double)n / WINDOW_SIZE));
+          }
+          double amplitude = sqrt((Xr*Xr) + (Xi*Xi))/(WINDOW_SIZE)*4;
+          /*if(Xr < 0.0 ) quadrant = 180;
+          if(Xr > 0.0 && Xi < 0.0) quadrant = 360;
+          double angle = (atan(Xi/Xr) * (180/M_PI)) + quadrant;*/
+          IedServer_updateFloatAttributeValue(inst->server, inst->da_A_phs[ i % 4 ],amplitude * const_Rms);
+          InputValueHandleExtensionCallbacks(inst->da_A_phs_callback[i % 4]); // update the associated callbacks with this Data Element
+
+          //calculate neutral
+          Ni += Xi;
+          Nr += Xr;
+          if (i == 3)
+          {
+            float a = sqrt((Nr*Nr) + (Ni*Ni))/(WINDOW_SIZE * 3)*4;
+            IedServer_updateFloatAttributeValue(inst->server, inst->da_A, a * const_Rms);
+            InputValueHandleExtensionCallbacks(inst->da_A_callback); // update the associated callbacks with this Data Element
+          }
+        }
+      }
+      i++;
+    }
+    extRef = extRef->sibling;
+  }
+  inst->sample_index = (inst->sample_index + 1) % WINDOW_SIZE;
+}
+
+void MMXU_I_RMS(InputEntry *extRef)
 {
   MMXU *inst = extRef->callBackParam;
   extRef = inst->input->extRefs; // start from the first extref, and check all values, we assume there are 8!
@@ -85,7 +181,21 @@ void MMXU_callbackI(InputEntry *extRef)
 }
 
 // callback when SMV is received
-void MMXU_callbackV(InputEntry *extRef)
+void MMXU_callbackI(InputEntry *extRef)
+{
+  if(0)
+    MMXU_I_RMS(extRef);
+  else
+    MMXU_I_DFT(extRef);
+}
+
+void MMXU_V_DFT(InputEntry *extRef)
+{
+
+}
+
+
+void MMXU_V_RMS(InputEntry *extRef)
 {
   MMXU *inst = extRef->callBackParam;
   extRef = inst->input->extRefs; // start from the first extref, and check all values, we assume there are 8!
@@ -130,8 +240,15 @@ void MMXU_callbackV(InputEntry *extRef)
   inst->RMS_samplecountV++;
 }
 
+// callback when SMV is received
+void MMXU_callbackV(InputEntry *extRef)
+{
+  MMXU_V_RMS(extRef);
+}
+
 void *MMXU_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
+  int i = 0;
   MMXU *inst = (MMXU *)malloc(sizeof(MMXU)); // create new instance with MALLOC
 
   inst->RMS_samplecountI = 0;
@@ -152,6 +269,11 @@ void *MMXU_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
   inst->da_A_phs[3] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "A.neut.cVal.mag.f"); // the node to operate on
   inst->da_A_phs_callback[3] = _findAttributeValueEx(inst->da_A, allInputValues);
 
+  inst->da_A_phsAng[0] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "A.phsA.cVal.ang.f"); // the node to operate on
+  inst->da_A_phsAng[1] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "A.phsB.cVal.ang.f"); // the node to operate on
+  inst->da_A_phsAng[2] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "A.phsC.cVal.ang.f"); // the node to operate on
+  inst->da_A_phsAng[3] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "A.neut.cVal.ang.f"); // the node to operate on
+
   inst->da_V_phs[0] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "PhV.phsA.cVal.mag.f"); // the node to operate on
   inst->da_V_phs_callback[0] = _findAttributeValueEx(inst->da_V, allInputValues);
   inst->da_V_phs[1] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "PhV.phsB.cVal.mag.f"); // the node to operate on
@@ -160,6 +282,16 @@ void *MMXU_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
   inst->da_V_phs_callback[2] = _findAttributeValueEx(inst->da_V, allInputValues);
   inst->da_V_phs[3] = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "PhV.neut.cVal.mag.f"); // the node to operate on
   inst->da_V_phs_callback[3] = _findAttributeValueEx(inst->da_V, allInputValues);
+
+  inst->xn = malloc(4*sizeof(double *));
+  inst->sample_index=0;
+  for(i=0; i<4; i++)
+  { 
+    inst->Xr[i] = 0;
+    inst->Xi[i] = 0;
+    inst->xn[i] = malloc(WINDOW_SIZE*sizeof(double));
+    memset(inst->xn[i], 0, WINDOW_SIZE*sizeof(double));
+  }
 
   if (input != NULL)
   {
@@ -180,6 +312,7 @@ void *MMXU_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
       extRef = extRef->sibling;
     }
   }
+
   // printf("mmxu init\n");
   return inst;
 }
