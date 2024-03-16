@@ -9,6 +9,9 @@ AutoRecSt ENS Auto reclosing status
 			<DO name="OpCls" type="ACT"/>
 			<DO name="AutoRecSt" type="ENS_2"/>
 */
+#define RREC_Timeout 10000
+#define RREC_Timer 1000
+#define RREC_RearmTimer 60000
 
 typedef struct sRREC
 {
@@ -22,7 +25,7 @@ typedef struct sRREC
 
 void RREC_reenable_timer(InputEntry *extRef)
 {
-  Thread_sleep(60000);
+  Thread_sleep(RREC_RearmTimer);
   RREC *inst = extRef->callBackParam;
   if (extRef->value != NULL)
   {
@@ -37,7 +40,7 @@ void RREC_reenable_timer(InputEntry *extRef)
 
 void RREC_recloser_timer(InputEntry *extRef)
 {
-  Thread_sleep(3000);
+  Thread_sleep(RREC_Timer);
   RREC *inst = extRef->callBackParam;
   if (extRef->value != NULL)
   {
@@ -92,7 +95,7 @@ void RREC_xcbr_callback(InputEntry *extRef)
 
 void RREC_timeout(InputEntry *extRef)
 {
-  Thread_sleep(10000);
+  Thread_sleep(RREC_Timeout);
   RREC *inst = extRef->callBackParam;
   if(inst->tripstate == 1)
   {

@@ -9,14 +9,11 @@
 extern "C" {
 #endif
 
-//4 seconds of recording
-#define RBDR_MAX_SAMPLES 80*50*4
 
 typedef struct sRBDR {
   IedServer server;
   Input *input;
-  int32_t *buffer;
-  int bufferIndex;
+  uint32_t value;
   int semaphore;
 } RBDR;
 
