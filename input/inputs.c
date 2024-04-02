@@ -213,71 +213,77 @@ LinkedList subscribeToLocalDAInputs(IedServer server, IedModel_extensions *self,
   LinkedList DAlist = LinkedList_create();
 
   char iedNameString[130];
-  StringUtils_copyStringToBuffer(model->name, iedNameString);
-  char *separator = iedNameString + strlen(iedNameString);
+  LogicalDevice * LD = model->firstChild;
 
-  StringUtils_copyStringToBuffer(model->firstChild->name, separator);
-
-  Input *inputs = self->inputs;
-  while (inputs != NULL)
+  while(LD != NULL) 
   {
-    InputEntry *extRef = inputs->extRefs;
-    while (extRef != NULL) // find all matching extref for this extRef
-    {
-      if (true) // strcmp_p(extRef->serviceType, "Poll") == 0)//if type is polling
-      {
-        char buf1[130];
-        StringUtils_copyStringToBuffer(extRef->Ref, buf1);
-        separator = strchr(buf1, '/');
-        if (separator == NULL)
-        {
-          printf("ERROR: could not find IED name in %s\n", buf1);
-          extRef = extRef->sibling;
-          continue;
-        }
-        *separator = 0;
+    StringUtils_copyStringToBuffer(model->name, iedNameString);
+    char *separator = iedNameString + strlen(iedNameString);
 
-        if (strcmp_p(buf1, iedNameString) == 0) // IED is our own IED, link the mmsValue
+    StringUtils_copyStringToBuffer(LD->name, separator);
+
+    Input *inputs = self->inputs;
+    while (inputs != NULL)
+    {
+      InputEntry *extRef = inputs->extRefs;
+      while (extRef != NULL) // find all matching extref for this extRef
+      {
+        if (true) // strcmp_p(extRef->serviceType, "Poll") == 0)//if type is polling
         {
-          DataAttribute *da = (DataAttribute *)IedModel_getModelNodeByObjectReference(model, extRef->Ref);
-          if(da == NULL){
-            printf("ERROR: could not find data attribute name in %s\n",  extRef->Ref);
+          char buf1[130];
+          StringUtils_copyStringToBuffer(extRef->Ref, buf1);
+          separator = strchr(buf1, '/');
+          if (separator == NULL)
+          {
+            printf("ERROR: could not find IED name in %s\n", buf1);
             extRef = extRef->sibling;
             continue;
           }
-          MmsValue *value = IedServer_getAttributeValue(server, da);
-          extRef->value = value;
+          *separator = 0;
 
-          InputValue *inputValue = create_InputValue(0, da, inputs, extRef);
-
-          LinkedList DAlist_local = DAlist;
-          while (DAlist_local != NULL && inputValue != NULL)
+          if (strcmp_p(buf1, iedNameString) == 0) // IED is our own IED, link the mmsValue
           {
-            InputValue *inputValue_local = (InputValue *)DAlist_local->data;
-            if (inputValue_local != NULL && inputValue_local->DA != NULL && inputValue_local->DA == da) // find a similar DA
-            {
-              while (inputValue_local->sibling != NULL) // find the last entry in the list of this DA
-              {
-                inputValue_local = inputValue_local->sibling;
-              }
-              // add this entry to the list of the similar DA's
-              inputValue_local->sibling = inputValue;
-              inputValue = NULL; // ensure we add only once
+            DataAttribute *da = (DataAttribute *)IedModel_getModelNodeByObjectReference(model, extRef->Ref);
+            if(da == NULL){
+              printf("ERROR: could not find data attribute name in %s\n",  extRef->Ref);
+              extRef = extRef->sibling;
+              continue;
             }
-            DAlist_local = LinkedList_getNext(DAlist_local);
-          }
-          // if we did not add it to any existing list
-          if (inputValue != NULL)
-          {
-            // then add an entry to the linked list
-            LinkedList_add(DAlist, inputValue);
+            MmsValue *value = IedServer_getAttributeValue(server, da);
+            extRef->value = value;
+
+            InputValue *inputValue = create_InputValue(0, da, inputs, extRef);
+
+            LinkedList DAlist_local = DAlist;
+            while (DAlist_local != NULL && inputValue != NULL)
+            {
+              InputValue *inputValue_local = (InputValue *)DAlist_local->data;
+              if (inputValue_local != NULL && inputValue_local->DA != NULL && inputValue_local->DA == da) // find a similar DA
+              {
+                while (inputValue_local->sibling != NULL) // find the last entry in the list of this DA
+                {
+                  inputValue_local = inputValue_local->sibling;
+                }
+                // add this entry to the list of the similar DA's
+                inputValue_local->sibling = inputValue;
+                inputValue = NULL; // ensure we add only once
+              }
+              DAlist_local = LinkedList_getNext(DAlist_local);
+            }
+            // if we did not add it to any existing list
+            if (inputValue != NULL)
+            {
+              // then add an entry to the linked list
+              LinkedList_add(DAlist, inputValue);
+            }
           }
         }
+        extRef = extRef->sibling;
       }
-      extRef = extRef->sibling;
+      inputs = inputs->sibling;
     }
-    inputs = inputs->sibling;
-  }
+    LD = (LogicalDevice *)LD->sibling;//next logical device
+  } 
   return DAlist;
 }
 

@@ -80,7 +80,7 @@ fileAccessHandler (void* parameter, MmsServerConnection connection, MmsFileServi
     if (service == MMS_FILE_ACCESS_TYPE_RENAME)
         return MMS_ERROR_FILE_FILE_ACCESS_DENIED;
 
-    /* Don't allow client to delete file "IEDSERVER.BIN" */
+    /* Don't allow client to delete files */
     if (service == MMS_FILE_ACCESS_TYPE_DELETE) {
         //if (strcmp(localFilename, "IEDSERVER.BIN") == 0)
         return MMS_ERROR_FILE_FILE_ACCESS_DENIED;
