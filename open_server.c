@@ -186,7 +186,7 @@ int main(int argc, char **argv)
 	}
 
 	// call initializers for sampled value control blocks and start publishing
-	attachSMV(openServer.server, openServer.Model, openServer.allInputValues, ethernetIfcID);
+	openServer.SMVControlInstances = attachSMV(openServer.server, openServer.Model, openServer.allInputValues, ethernetIfcID);
 
 	// call all initializers for logical nodes in the model
 	attachLogicalNodes(openServer.server, openServer.Model, openServer.Model_ex, openServer.allInputValues);
