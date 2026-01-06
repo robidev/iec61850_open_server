@@ -3,9 +3,11 @@ set(python_SRCS
    main.c
 )
 
+find_package(Python3 COMPONENTS Development REQUIRED)
+
 include_directories(
     ./inc
-    /usr/include/python3.11
+    ${Python3_INCLUDE_DIRS}
 )
 
 add_library(python SHARED
@@ -14,7 +16,7 @@ add_library(python SHARED
 
 target_link_libraries(python
     pthread
-    python3.11
+    ${Python3_LIBRARIES}
 )
 
 set_target_properties( python
