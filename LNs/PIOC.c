@@ -3,7 +3,7 @@
 #include <libiec61850/hal_thread.h>
 // #include "../static_model.h"
 #include "PIOC.h"
-
+#include "dsp.h"
 #include <time.h>
 
 //
@@ -17,6 +17,7 @@ typedef struct sPIOC
   Input *input;
   int tripTimer;
   bool trip;
+  DSP *dspI;
 } PIOC;
 
 
@@ -35,41 +36,29 @@ void PIOC_callback_GOOSE(InputEntry *extRef)
 }
 
 // callback when SMV is received
-void PIOC_callback_SMV(InputEntry *extRef)
+void PIOC_callback_SMV(void *pioc_inst)
 {
-  PIOC *inst = extRef->callBackParam;
-  extRef = inst->input->extRefs; // start from the first extref, and check all values
+  PIOC *inst = pioc_inst;
   int i = 0;
-  while (extRef != NULL)
+  while (i < 4) // only trigger on amps. TODO: ensure it only triggers on Amps lnrefs, instead of relying on the order in the SCD file
   {
-    if (strcmp(extRef->intAddr, "xcbr_stval") != 0 && extRef->value != NULL) // perform for all items except xcbr_stval (meaning: all SMV)
+    double current =  DSP_get_phs(inst->dspI, i); // get absolute current from dsp
+    // check if value is outside allowed band
+    // TODO: get values from settings
+    if (current > 1000 )
     {
-      if (i < 4) // only trigger on amps. TODO: ensure it only triggers on Amps lnrefs, instead of relying on the order in the SCD file
-      {
-        MmsValue *stVal = MmsValue_getElement(extRef->value, 0);// for datasets?
-        if(stVal == NULL)
-        {
-          stVal = extRef->value;
-        }
-        // check if value is outside allowed band
-        // TODO: get values from settings
-        if (MmsValue_toInt64(stVal) > 500 || MmsValue_toInt64(stVal) < -500)
-        {
-          printf("PIOC: treshold reached\n");
-          MmsValue *tripValue = MmsValue_newBoolean(true);
+      printf("PIOC: treshold reached\n");
+      MmsValue *tripValue = MmsValue_newBoolean(true);
 
-          IedServer_updateAttributeValue(inst->server, inst->Op_general, tripValue);
-          InputValueHandleExtensionCallbacks(inst->Op_general_callback); // update the associated callbacks with this Data Element
+      IedServer_updateAttributeValue(inst->server, inst->Op_general, tripValue);
+      InputValueHandleExtensionCallbacks(inst->Op_general_callback); // update the associated callbacks with this Data Element
 
-          MmsValue_delete(tripValue);
-          inst->tripTimer = 0;
-          inst->trip = true;
-          // if so send to internal PTRC
-        }
-      }
-      i++;
+      MmsValue_delete(tripValue);
+      inst->tripTimer = 0;
+      inst->trip = true;
+      // if so send to internal PTRC
     }
-    extRef = extRef->sibling;
+    i++;
   }
 
   if (inst->tripTimer > 200 && inst->trip == true)
@@ -97,6 +86,7 @@ void * PIOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
   inst->Op_general = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Op.general"); // the node to operate on
   inst->Op_general_callback = _findAttributeValueEx(inst->Op_general, allInputValues);
   inst->input = input;
+  inst->dspI = NULL;
 
   if (input != NULL)
   {
@@ -104,10 +94,15 @@ void * PIOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
 
     while (extRef != NULL)
     {
-      if (strcmp(extRef->intAddr, "PIOC_Amp3") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
+      if (strcmp(extRef->intAddr, "PIOC_Amp1") == 0)
       {
-        extRef->callBack = (callBackFunction)PIOC_callback_SMV; // TODO: replace smv with samples
-        extRef->callBackParam = inst;
+        inst->dspI = init_dsp_I(server, extRef);//this is to reference the first extref
+        DSP_add_callback_on_update(inst->dspI,PIOC_callback_SMV, inst);//called when DSP has processed data
+      }
+      if (strcmp(extRef->intAddr, "PIOC_Amp3") == 0) // find extref for the last SMV phase, using the intaddr, so that all values are updated, we ignore nutral in case we have 3 phase, and neutral is calculated
+      {
+        extRef->callBack = (callBackFunction)get_DSP_processing_callback(inst->dspI);
+        extRef->callBackParam = inst->dspI;
       }
       if (strcmp(extRef->intAddr, "PIOC_xcbr_stval") == 0)
       {

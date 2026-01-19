@@ -380,7 +380,7 @@ def _nextStep(ied_conn):
 
 class _sclNgSpiceShared(NgSpiceShared):
     def __init__(self, actuators, logger = None, ngspice_id=0, send_data=False):
-        super(_sclNgSpiceShared, self).__init__(ngspice_id, send_data)
+        super(_sclNgSpiceShared, self).__init__(ngspice_id, send_data, verbose=True)
         self.actuators = actuators
         self.actuatorCache = {}
         for node in self.actuators:
@@ -433,7 +433,8 @@ class circuit_simulator():
       os.remove('static/plot.png') 
     #general simulation options, these should not be altered during simulation
     self.title = ".title substation model"
-    self.options = "#.options interp  ; strongly reduces memory requirements"
+    self.options = "" #".options interp"
+    #  ; strongly reduces memory requirements"
     self.save = ".save none       ; ensure only last step is kept each iteration"
     #values: 19 us, 25 us, 250us
     self.tran = ".tran 19us 3600s uic; run for an hour max, with 100 samples per cycle (201u stepsize does not distort, 200 does...)"
@@ -441,7 +442,6 @@ class circuit_simulator():
     self.ngspice_shared = None
 
     self.init_simulator()
-
 
   def init_simulator(self):
     self.scd_schema = xmlschema.XMLSchema(self.scl_schema_file)
@@ -475,14 +475,15 @@ class circuit_simulator():
       return
 
     spice += netlist
-
     #build the complete netlist
 
     circuit = self.title + "\n"
-    circuit += self.options + "\n"
+
+    circuit += spice + "\n"
+
     circuit += self.save + "\n"
     circuit += self.tran + "\n"
-    circuit += spice 
+    circuit += self.options + "\n"
     circuit += ".end\n"
 
     self.measurantsA = measurantsA
@@ -496,9 +497,19 @@ class circuit_simulator():
     else:
       self.ngspice_shared = _sclNgSpiceShared(self.actuators, send_data=False) # create the shared ngspice object, that supports callbacks for interactive voltage-sources(actuators)
 
+    #print(self.ngspice_shared.exec_command('version -f'))
 
     self.ngspice_shared.load_circuit(self.circuit) # load the netlist
-    self.ngspice_shared.step(2) #needed to initialise simulation
+
+    #print(self.ngspice_shared.exec_command('set ngdebug'))
+    try:
+        result = self.ngspice_shared.step(2) #needed to initialise simulation
+        #print("Step output:", repr(result))
+    except Exception as e:
+      pass
+        #stdo = self.ngspice_shared.stdout
+        #stde = self.ngspice_shared.stderr
+        #print(f"Except: {e}\n out:{stdo}\n err:{stde}")
 
     #generate dict of alterable elements
     listing = self.ngspice_shared.exec_command("listing deck expand").splitlines()
@@ -541,7 +552,14 @@ class circuit_simulator():
 
 
   def simulation_step(self,steps = 10):
-    self.ngspice_shared.step(steps) # perform simulation steps
+    try:
+      self.ngspice_shared.step(steps) # perform simulation steps
+    except  Exception as e:
+      pass
+      #stdo = self.ngspice_shared.stdout
+      #stde = self.ngspice_shared.stderr
+      #print(f"Except: {e}\n out:{stdo}\n err:{stde}")
+
     analysis = self.ngspice_shared.plot(plot_name='tran1', simulation=None).to_analysis() # perform an analysis step
     #send values back to the merging units
     for key in self.measurantsA:

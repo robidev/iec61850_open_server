@@ -1,7 +1,8 @@
 .subckt CBR A1 B1 C1 A2 B2 C2
-scbrA A1 A2 sig 0
-scbrB B1 B2 sig 0
-scbrC C1 C2 sig 0
+.model smodel SW(Ron=0.01 Roff=1Meg Vt=0 Vh=0)
+scbrA A1 A2 sig 0 smodel
+scbrB B1 B2 sig 0 smodel
+scbrC C1 C2 sig 0 smodel
 vsig sig 0 dc 0 external
 rsig sig 0 10000
 .ends CBR

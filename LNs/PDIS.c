@@ -3,7 +3,7 @@
 #include <libiec61850/hal_thread.h>
 // #include "../static_model.h"
 #include "PDIS.h"
-
+#include "dsp.h"
 #include <time.h>
 
 
@@ -18,6 +18,8 @@ typedef struct sPDIS
   Input *input;
   int tripTimer;
   bool trip;
+  DSP *dspI;
+  DSP *dspU;
 } PDIS;
 
 // callback when GOOSE is received
@@ -35,71 +37,30 @@ void PDIS_callback_GOOSE(InputEntry *extRef)
 }
 
 // callback when SMV is received
-void PDIS_callback_SMV(InputEntry *extRef)
+void PDIS_callback_SMV(void *pdis_inst)
 {
-  PDIS *inst = extRef->callBackParam;
-  extRef = inst->input->extRefs; // start from the first extref, and check all values
+  PDIS *inst = pdis_inst;
   int i = 0;
-  int64_t AmpValues[4];
 
-  while (extRef != NULL)
+  while(i < 4)
   {
-    if (strcmp(extRef->intAddr, "xcbr_stval") != 0 && extRef->value != NULL) // perform for all items except xcbr_stval (meaning: all SMV)
+    double AmpValue  =  DSP_get_phs(inst->dspI, i); // get absolute current from dsp
+    double VoltValue =  DSP_get_phs(inst->dspU, i); // get absolute current from dsp
+
+    if(VoltValue != 0.0 && AmpValue != 0.0 && ( VoltValue / AmpValue) > 500 )
     {
-      if (i < 4) // get the amps
-      {
-        MmsValue *stVal = MmsValue_getElement(extRef->value, 0);// for datasets?
-        if(stVal == NULL)
-        {
-          stVal = extRef->value;
-        }
-        if(stVal != NULL)
-        {
-          AmpValues[i] =  MmsValue_toInt64(stVal);
-        } 
-        else 
-        {
-          AmpValues[i] = 0;
-          printf("could not read %s value\n", extRef->Ref);
-        }
-      }
-      else if(i < 8) // get the volts
-      {
-        MmsValue *stVal = MmsValue_getElement(extRef->value, 0); // for datasets?
-        if(stVal == NULL)
-        {
-          stVal = extRef->value;
-        }
-        // check if value is outside allowed band
-        // TODO: get values from settings
-        int64_t VoltValue =  0;
-        if(stVal != NULL)
-        {
-          VoltValue =  MmsValue_toInt64(stVal);
-        } 
-        else 
-        {
-          printf("could not read %s value\n", extRef->Ref);
-        }
+      printf("PDIS: treshold reached\n");
+      MmsValue *tripValue = MmsValue_newBoolean(true);
 
+      IedServer_updateAttributeValue(inst->server, inst->Op_general, tripValue);
+      InputValueHandleExtensionCallbacks(inst->Op_general_callback); // update the associated callbacks with this Data Element
 
-        if(VoltValue != 0.0 && AmpValues[i % 4] != 0.0 && ( VoltValue / AmpValues[i % 4]) > 500 )
-        {
-          printf("PDIS: treshold reached\n");
-          MmsValue *tripValue = MmsValue_newBoolean(true);
-
-          IedServer_updateAttributeValue(inst->server, inst->Op_general, tripValue);
-          InputValueHandleExtensionCallbacks(inst->Op_general_callback); // update the associated callbacks with this Data Element
-
-          MmsValue_delete(tripValue);
-          inst->tripTimer = 0;
-          inst->trip = true;
-          // if so send to internal PTRC
-        }
-      }
-      i++;
+      MmsValue_delete(tripValue);
+      inst->tripTimer = 0;
+      inst->trip = true;
+      // if so send to internal PTRC
     }
-    extRef = extRef->sibling;
+    i++;
   }
 
   if (inst->tripTimer > 200 && inst->trip == true)
@@ -127,6 +88,8 @@ void * PDIS_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
   inst->Op_general = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Op.general"); // the node to operate on
   inst->Op_general_callback = _findAttributeValueEx(inst->Op_general, allInputValues);
   inst->input = input;
+  inst->dspI = NULL;
+  inst->dspU = NULL;
 
   if (input != NULL)
   {
@@ -134,10 +97,25 @@ void * PDIS_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
 
     while (extRef != NULL)
     {
+      if (strcmp(extRef->intAddr, "PDIS_Amp1") == 0)
+      {
+        inst->dspI = init_dsp_I(server, extRef);//this is to reference the first extref
+        //we only call after voltage is processed(usually last)
+      }
+      if (strcmp(extRef->intAddr, "PDIS_Amp3") == 0) // find extref for the last SMV phase, using the intaddr, so that all values are updated, we ignore nutral in case we have 3 phase, and neutral is calculated
+      {
+        extRef->callBack = (callBackFunction)get_DSP_processing_callback(inst->dspI);
+        extRef->callBackParam = inst->dspI;
+      }
+      if (strcmp(extRef->intAddr, "PDIS_Vol1") == 0)
+      {
+        inst->dspU = init_dsp_U(server, extRef);//this is to reference the first extref
+        DSP_add_callback_on_update(inst->dspU,PDIS_callback_SMV, inst);//called when DSP has processed data
+      }
       if (strcmp(extRef->intAddr, "PDIS_Vol3") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
       {
-        extRef->callBack = (callBackFunction)PDIS_callback_SMV; // TODO: replace smv with samples
-        extRef->callBackParam = inst;
+        extRef->callBack = (callBackFunction)get_DSP_processing_callback(inst->dspU);
+        extRef->callBackParam = inst->dspU;
       }
       if (strcmp(extRef->intAddr, "PDIS_xcbr_stval") == 0)
       {

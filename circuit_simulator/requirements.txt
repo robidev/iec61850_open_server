@@ -1,5 +1,5 @@
 xmlschema==4.3.0
-PySpice==1.4.2
+PySpice==1.5.0
 flask==3.1.2
 flask-cors==6.0.2
 eventlet==0.40.4
