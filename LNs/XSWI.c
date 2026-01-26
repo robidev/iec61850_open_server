@@ -3,15 +3,30 @@
 #include "XSWI.h"
 
 
-// callback for open/close signal from input-> will trigger process 
-void XSWI_callback(InputEntry *extRef)
+// callback for open signal from input-> will trigger process 
+void XSWI_callback_Opn(InputEntry *extRef)
 {
   XSWI * inst = extRef->callBackParam;
   if(inst->XSWI_callback_ln == NULL)
     return;
 
-  bool state = MmsValue_getBoolean(extRef->value);
-  inst->XSWI_callback_ln(inst, state);
+  if(MmsValue_getBoolean(extRef->value))
+  {
+    inst->XSWI_callback_ln(inst, false); // false means open (not conducting)
+  }
+}
+
+// callback for close signal from input-> will trigger process 
+void XSWI_callback_Cls(InputEntry *extRef)
+{
+  XSWI * inst = extRef->callBackParam;
+  if(inst->XSWI_callback_ln == NULL)
+    return;
+
+  if(MmsValue_getBoolean(extRef->value))
+  {
+    inst->XSWI_callback_ln(inst, true);// true means closed (conducting)
+  }
 }
 
 int setXSWI_Callback(XSWI *instance, XSWICallback callback)
@@ -43,19 +58,18 @@ void *XSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
     
     while (extref != NULL)
     {
-      if (strcmp(extref->intAddr, "Tr") == 0) // TODO: should be Op, but then also modify in SCL
+      if (extref->intAddr != NULL && strncmp(extref->intAddr, "OpOpn", 5) == 0) // open from CSWI or RREC
       {
-        // register callbacks for input nodes
-        extref->callBack = (callBackFunction)XSWI_callback;
+        extref->callBack = (callBackFunction)XSWI_callback_Opn;
+        extref->callBackParam = inst; // pass instance in param
+      }
+      if (extref->intAddr != NULL && strncmp(extref->intAddr, "OpCls", 5) == 0) // close from CSWI or recloser
+      {
+        extref->callBack = (callBackFunction)XSWI_callback_Cls;
         extref->callBackParam = inst; // pass instance in param
       }
       extref = extref->sibling;
     }
-  }
-  else
-  {
-    printf("ERROR: no input element defined");
-    return 0;
   }
 
   return inst;

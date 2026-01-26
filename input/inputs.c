@@ -480,6 +480,9 @@ void UpdateAttributeValueEx(IedServer self, InputValue *inputValue, MmsValue *va
 // during an update of the DA, all DA related inputvalues in the list will receive a callback
 InputValue *_findAttributeValueEx(DataAttribute *dataAttribute, LinkedList inputvalues)
 {
+  if(dataAttribute == NULL)  {
+    return NULL;
+  }
   while (inputvalues != NULL) // for each LN with an inputs/extref defined;
   {
     if (inputvalues->data != NULL)

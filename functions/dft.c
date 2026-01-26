@@ -43,6 +43,11 @@ void * init_dft()
     return inst;
 }
 
+void destroy_dft()
+{
+  //TODO
+}
+
 
 void CALC_DFT(void * dsp)
 {

@@ -22,19 +22,6 @@ typedef struct sPDIS
   DSP *dspU;
 } PDIS;
 
-// callback when GOOSE is received
-void PDIS_callback_GOOSE(InputEntry *extRef)
-{
-  PDIS *inst = extRef->callBackParam;
-
-  if (extRef->value != NULL)
-  {
-    // char printBuf[1024];
-
-    // MmsValue_printToBuffer(extRef->value, printBuf, 1024);
-    // printf("PDIS: Received Breaker position: %s\n", printBuf);
-  }
-}
 
 // callback when SMV is received
 void PDIS_callback_SMV(void *pdis_inst)
@@ -116,11 +103,6 @@ void * PDIS_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
       {
         extRef->callBack = (callBackFunction)get_DSP_processing_callback(inst->dspU);
         extRef->callBackParam = inst->dspU;
-      }
-      if (strcmp(extRef->intAddr, "PDIS_xcbr_stval") == 0)
-      {
-        extRef->callBack = (callBackFunction)PDIS_callback_GOOSE; // TODO: replace GOOSE with status
-        extRef->callBackParam = inst;
       }
       extRef = extRef->sibling;
     }

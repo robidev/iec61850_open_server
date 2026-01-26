@@ -15,12 +15,12 @@ void XCBR_callback_Tr(InputEntry *extRef)
   // only one type of extref is expected: ctlVal
   if (state == true)
   {
-    inst->XSWI_callback_ln(inst, false);
+    inst->XSWI_callback_ln(inst, false); // false means open (not conducting)
   }
 }
 
 // callback for operate signal -> will trigger process
-void XCBR_callback_Op(InputEntry *extRef)
+void XCBR_callback_OpOpn(InputEntry *extRef)
 {
   XSWI * inst = extRef->callBackParam;
   bool state = MmsValue_getBoolean(extRef->value);
@@ -28,7 +28,10 @@ void XCBR_callback_Op(InputEntry *extRef)
   if(inst->XSWI_callback_ln == NULL)
     return;
 
-  inst->XSWI_callback_ln(inst, state);
+  if (state == true)
+  {
+    inst->XSWI_callback_ln(inst, false);// false means open (not conducting)
+  }
 }
 
 // callback for operate signal -> will trigger process to close the switch
@@ -42,7 +45,7 @@ void XCBR_callback_OpCls(InputEntry *extRef)
 
   if (state == true)
   {
-    inst->XSWI_callback_ln(inst, true);
+    inst->XSWI_callback_ln(inst, true);// true means closed (conducting)
   }
 }
 
@@ -63,32 +66,24 @@ void *XCBR_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
     InputEntry *extref = input->extRefs;
     while (extref != NULL)
     {
-      if (strcmp(extref->intAddr, "Tr") == 0)
+      if (extref->intAddr != NULL && strncmp(extref->intAddr, "Tr", 2) == 0)  // Trip from multiple sources
       {
-        // register callbacks for poll and GOOSE-subscription
         extref->callBack = (callBackFunction)XCBR_callback_Tr;
         extref->callBackParam = inst; // pass instance in param
       }
-      if (strcmp(extref->intAddr, "Op") == 0)
+      if (extref->intAddr != NULL && strncmp(extref->intAddr, "OpOpn", 5) == 0) // open from CSWI or RREC
       {
-        // register callbacks for poll and GOOSE-subscription
-        extref->callBack = (callBackFunction)XCBR_callback_Op;
+        extref->callBack = (callBackFunction)XCBR_callback_OpOpn;
         extref->callBackParam = inst; // pass instance in param
       }
-      if (strcmp(extref->intAddr, "OpCls") == 0)//For recloser
+      if (extref->intAddr != NULL && strncmp(extref->intAddr, "OpCls", 5) == 0) // close from CSWI or recloser
       {
-        // register callbacks for poll and GOOSE-subscription
         extref->callBack = (callBackFunction)XCBR_callback_OpCls;
         extref->callBackParam = inst; // pass instance in param
       }
 
       extref = extref->sibling;
     }
-  }
-  else
-  {
-    printf("ERROR: no input element defined");
-    return 0;
   }
 
   return inst;

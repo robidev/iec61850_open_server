@@ -10,8 +10,10 @@ typedef struct sCSWI
   DataAttribute *Pos_t;
   void *Pos_stVal_callback;
 
-  DataAttribute *opOk;
-  void *opOk_callback;
+  DataAttribute *OpOpn;
+  void *OpOpn_callback;
+  DataAttribute *OpCls;
+  void *OpCls_callback;
   Dbpos currentValue;
   int timeout;
   bool EnaOpn;
@@ -26,8 +28,6 @@ void CSWI_currentValue_callback(InputEntry *extRef)
   if (extRef->value != NULL)
   {
     inst->currentValue = Dbpos_fromMmsValue(extRef->value);
-    // MmsValue_printToBuffer(extRef->value, printBuf, 1024);
-    // printf("CSWI: Received Breaker position: %s\n", printBuf);
   }
 }
 
@@ -81,9 +81,9 @@ static CheckHandlerResult checkHandler(ControlAction action, void *parameter, Mm
   {
     // check interlocking
     bool state = MmsValue_getBoolean(ctlVal);
-    if (state == true && inst->EnaOpn == true) // if we try to open the switch, and opOpen allows it
+    if (state == false && inst->EnaOpn == true) // if we try to open(ctlVal==false) the switch, and opOpen allows it
       return CONTROL_ACCEPTED;
-    if (state == false && inst->EnaCls == true) // if we try to close the switch, and opClose allows it
+    if (state == true && inst->EnaCls == true) // if we try to close(ctlVal==true) the switch, and opClose allows it
       return CONTROL_ACCEPTED;
     // else the object will be refused
     ControlAction_setAddCause(action, ADD_CAUSE_BLOCKED_BY_INTERLOCKING); // ControlAddCause addCause
@@ -92,6 +92,42 @@ static CheckHandlerResult checkHandler(ControlAction action, void *parameter, Mm
 
   return CONTROL_OBJECT_UNDEFINED;
 }
+
+void pulseOp(CSWI *inst, Dbpos pos, bool on)
+{
+  if(on == true)
+  {
+    MmsValue *opValue = MmsValue_newBoolean(true);
+    if(pos == DBPOS_OFF)//open the switch, so pulse OpOpn to true
+    {
+      IedServer_updateAttributeValue(inst->server, inst->OpOpn, opValue);
+      InputValueHandleExtensionCallbacks(inst->OpOpn_callback); // update the associated callbacks with this Data Element
+    }
+    if(pos == DBPOS_ON)//close the switch, so pulse OpCls to true
+    {
+      IedServer_updateAttributeValue(inst->server, inst->OpCls, opValue);
+      InputValueHandleExtensionCallbacks(inst->OpCls_callback); // update the associated callbacks with this Data Element
+    }
+    MmsValue_delete(opValue);
+  }
+  else
+  {
+    MmsValue *opValue = MmsValue_newBoolean(false);
+    if(pos == DBPOS_OFF)//open the switch done, so reset OpOpn to false
+    {
+      IedServer_updateAttributeValue(inst->server, inst->OpOpn, opValue);
+      InputValueHandleExtensionCallbacks(inst->OpOpn_callback); // update the associated callbacks with this Data Element
+    }
+    if(pos == DBPOS_ON)//close the switch done, so reset OpCls to false
+    {
+      IedServer_updateAttributeValue(inst->server, inst->OpCls, opValue);
+      InputValueHandleExtensionCallbacks(inst->OpCls_callback); // update the associated callbacks with this Data Element
+    }
+    MmsValue_delete(opValue);
+  }
+
+}
+
 
 static ControlHandlerResult controlHandlerForBinaryOutput(ControlAction action, void *parameter, MmsValue *value, bool test)
 {
@@ -107,20 +143,25 @@ static ControlHandlerResult controlHandlerForBinaryOutput(ControlAction action, 
     uint64_t timestamp = Hal_getTimeInMs();
     IedServer_updateUTCTimeAttributeValue(inst->server, inst->Pos_t, timestamp);
 
-    IedServer_updateAttributeValue(inst->server, inst->opOk, value);
-    InputValueHandleExtensionCallbacks(inst->opOk_callback); // update the associated callbacks with this Data Element
+    if(state == true) // True is closed, i.e. on
+      pulseOp(inst, DBPOS_ON, true); // set signal for OPEN
+    else // False is open, i.e. off
+      pulseOp(inst, DBPOS_OFF, true); // set signal for CLOSE,
   }
 
-  if ((state == 1 && inst->currentValue == DBPOS_OFF) || (state == 0 && inst->currentValue == DBPOS_ON))
+  if ((state == 1 && inst->currentValue == DBPOS_ON) || (state == 0 && inst->currentValue == DBPOS_OFF))
   {
     inst->timeout = 0;
     ControlAction_setAddCause(action, ADD_CAUSE_POSITION_REACHED);
+    pulseOp(inst, inst->currentValue, false); // unset signal for OPEN or CLOSE
     return CONTROL_RESULT_OK;
   }
   if (inst->currentValue == DBPOS_BAD_STATE) // if desired state is not reached in time;
   {
     inst->timeout = 0;
     ControlAction_setAddCause(action, ADD_CAUSE_INVALID_POSITION);
+    pulseOp(inst, DBPOS_ON, false); // unset signal for OPEN AND CLOSE
+    pulseOp(inst, DBPOS_OFF, false); // unset signal for OPEN AND CLOSE
     return CONTROL_RESULT_FAILED;
   }
 
@@ -134,6 +175,8 @@ static ControlHandlerResult controlHandlerForBinaryOutput(ControlAction action, 
   }
   inst->timeout = 0;
   ControlAction_setAddCause(action, ADD_CAUSE_INVALID_POSITION); // ControlAddCause addCause
+  pulseOp(inst, DBPOS_ON, false); // unset signal for OPEN AND CLOSE
+  pulseOp(inst, DBPOS_OFF, false); // unset signal for OPEN AND CLOSE
   return CONTROL_RESULT_FAILED;
 }
 
@@ -150,8 +193,10 @@ void * CSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
   inst->Pos_t = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Pos.t");         // the node to operate on when a operate is triggered
   inst->Pos_stVal_callback = _findAttributeValueEx(inst->Pos_stVal, allInputValues);   // find node that this element was subscribed to, so that it will be called during an update
 
-  inst->opOk = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Pos.opOk");
-  inst->opOk_callback = _findAttributeValueEx(inst->opOk, allInputValues);
+  inst->OpOpn = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "OpOpn.general");
+  inst->OpOpn_callback = _findAttributeValueEx(inst->OpOpn, allInputValues);
+  inst->OpCls = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "OpCls.general");
+  inst->OpCls_callback = _findAttributeValueEx(inst->OpCls, allInputValues);
 
   // find extref for the last SMV, using the intaddr
   if (input != NULL)
@@ -161,7 +206,7 @@ void * CSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
     while (extRef != NULL)
     {
       // receive status of associated XCBR
-      if (strcmp(extRef->intAddr, "xcbr_stval") == 0)
+      if (strcmp(extRef->intAddr, "stval") == 0)
       {
         extRef->callBack = (callBackFunction)CSWI_currentValue_callback;
         extRef->callBackParam = inst;

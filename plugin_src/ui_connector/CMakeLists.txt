@@ -1,6 +1,7 @@
 
 set(ui_connector_SRCS
    main.c
+   config_parser.c
 )
 
 include_directories(

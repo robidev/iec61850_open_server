@@ -22,19 +22,6 @@ typedef struct sPTOC
   DSP *dspI;
 } PTOC;
 
-// callback when GOOSE is received
-void PTOC_callback_GOOSE(InputEntry *extRef)
-{
-  PTOC *inst = extRef->callBackParam;
-
-  if (extRef->value != NULL)
-  {
-    // char printBuf[1024];
-
-    // MmsValue_printToBuffer(extRef->value, printBuf, 1024);
-    // printf("PTOC: Received Breaker position: %s\n", printBuf);
-  }
-}
 
 // callback when SMV is received
 void PTOC_callback_SMV(void *ptoc_inst)
@@ -52,31 +39,32 @@ void PTOC_callback_SMV(void *ptoc_inst)
     // TODO: get values from settings
     if (current > 500)
     {
-      printf("PTOC: treshold reached by immediate overcurrent\n");
-      MmsValue *tripValue = MmsValue_newBoolean(true);
-
-      IedServer_updateAttributeValue(inst->server, inst->Op_general, tripValue);
-      InputValueHandleExtensionCallbacks(inst->Op_general_callback); // update the associated callbacks with this Data Element
-
-      MmsValue_delete(tripValue);
-      inst->tripTimer = 0;
-      inst->trip = true;
-      // if so send to internal PTRC
+      if(inst->trip != true)
+      {
+        printf("PTOC: treshold reached by immediate overcurrent\n");
+        MmsValue *tripValue = MmsValue_newBoolean(true);
+        IedServer_updateAttributeValue(inst->server, inst->Op_general, tripValue);
+        InputValueHandleExtensionCallbacks(inst->Op_general_callback); // update the associated callbacks with this Data Element
+        MmsValue_delete(tripValue);
+        inst->trip = true;
+      }
+      inst->tripTimer = 0;// trip ongoing
     }
     else if (current> 400 )// lineair time overcurrent
     {
       inst->overCurrent += (current - 400) * delta_t;
       if( inst->overCurrent > 100 )
       {
-        printf("PTOC: treshold reached by time overcurrent\n");
-        MmsValue *tripValue = MmsValue_newBoolean(true);
-
-        IedServer_updateAttributeValue(inst->server, inst->Op_general, tripValue);
-        InputValueHandleExtensionCallbacks(inst->Op_general_callback); // update the associated callbacks with this Data Element
-
-        MmsValue_delete(tripValue);
-        inst->tripTimer = 0;
-        inst->trip = true;
+        if(inst->trip != true)
+        {
+          printf("PTOC: treshold reached by time overcurrent\n");
+          MmsValue *tripValue = MmsValue_newBoolean(true);
+          IedServer_updateAttributeValue(inst->server, inst->Op_general, tripValue);
+          InputValueHandleExtensionCallbacks(inst->Op_general_callback); // update the associated callbacks with this Data Element
+          MmsValue_delete(tripValue);
+          inst->trip = true;
+        }
+        inst->tripTimer = 0; // trip ongoing
       }
     }
     else if(inst->overCurrent > 0)//cooldown
@@ -127,15 +115,10 @@ void * PTOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
         inst->dspI = init_dsp_I(server, extRef);//this is to reference the first extref
         DSP_add_callback_on_update(inst->dspI,PTOC_callback_SMV, inst);//called when DSP has processed data
       }
-      if (strcmp(extRef->intAddr, "PTOC_Amp4") == 0) // find extref for the last SMV phase, using the intaddr, so that all values are updated, we ignore nutral in case we have 3 phase, and neutral is calculated
+      if (strcmp(extRef->intAddr, "PTOC_Amp3") == 0) // find extref for the last SMV phase, using the intaddr, so that all values are updated, we ignore nutral in case we have 3 phase, and neutral is calculated
       {
         extRef->callBack = (callBackFunction)get_DSP_processing_callback(inst->dspI);
         extRef->callBackParam = inst->dspI;
-      }
-      if (strcmp(extRef->intAddr, "PTOC_xcbr_stval") == 0)
-      {
-        extRef->callBack = (callBackFunction)PTOC_callback_GOOSE; // TODO: replace GOOSE with status
-        extRef->callBackParam = inst;
       }
       extRef = extRef->sibling;
     }

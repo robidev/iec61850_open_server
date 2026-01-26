@@ -36,6 +36,7 @@ void attachLogicalNodes(IedServer server, IedModel *model, IedModel_extensions *
     else if (strcmp(lnInstance->lnClass, "LPHD") == 0)
     {
       printf("Found mandatory Class LPHD\n");
+      //LPHD.PhyHealth.stVal (Ok=1, Warn=2, Alarm=3)
     }
     // simulated
     else if (strcmp(lnInstance->lnClass, "XSWI") == 0)

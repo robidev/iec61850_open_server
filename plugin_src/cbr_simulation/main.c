@@ -26,9 +26,9 @@ void callback_from_LN(void *inst, bool state)
 {;
     // trigger for simulated servo/relay move
     Thread thread;
-    if (state == true)
+    if (state == true) // state == true means close switch (set to ON)
         thread = Thread_create((ThreadExecutionFunction)simulate_switch_close, inst, true);
-    else
+    else // state == false means open switch (set to OFF)
         thread = Thread_create((ThreadExecutionFunction)simulate_switch_open, inst, true);
     Thread_start(thread);
 }

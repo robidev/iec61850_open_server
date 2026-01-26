@@ -25,6 +25,11 @@ void *init_rms()
     return inst;
 }
 
+void destroy_rms()
+{
+  //TODO
+}
+
 void CALC_RMS(void * dsp)
 {
   DSP *dsp_inst = dsp;

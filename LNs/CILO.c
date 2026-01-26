@@ -25,15 +25,15 @@ void CILO_currentValue_callback(InputEntry *extRef)
     MmsValue *open;
     MmsValue *close;
 
-    if (inst->currentValue == DBPOS_ON) // XCBR is closed
-    {
-      open = MmsValue_newBoolean(false);  // XSWI cannot open
-      close = MmsValue_newBoolean(false); // XSWI cannot open
-    }
-    else // XCBR is open
+    if (inst->currentValue == DBPOS_OFF) // XCBR is open
     {
       open = MmsValue_newBoolean(true);  // XSWI can open
       close = MmsValue_newBoolean(true); // XSWI can close
+    }
+    else // XCBR is closed or intermediate
+    {
+      open = MmsValue_newBoolean(false);  // XSWI cannot open
+      close = MmsValue_newBoolean(false); // XSWI cannot open
     }
 
     IedServer_updateAttributeValue(inst->server, inst->EnaOpn, open);

@@ -22,21 +22,6 @@ typedef struct sPDIF
 } PDIF;
 
 
-
-// callback when GOOSE is received
-void PDIF_callback_GOOSE(InputEntry *extRef)
-{
-  PDIF *inst = extRef->callBackParam;
-
-  if (extRef->value != NULL)
-  {
-    // char printBuf[1024];
-
-    // MmsValue_printToBuffer(extRef->value, printBuf, 1024);
-    // printf("PDIF: Received Breaker position: %s\n", printBuf);
-  }
-}
-
 // callback when SMV is received
 void PDIF_callback_SMV(void *pdif_inst)
 {
@@ -118,12 +103,6 @@ void * PDIF_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
       {
         extRef->callBack = (callBackFunction)get_DSP_processing_callback(inst->dspI2);
         extRef->callBackParam = inst->dspI2;
-      }
-
-      if (strcmp(extRef->intAddr, "PDIF_xcbr_stval") == 0)
-      {
-        extRef->callBack = (callBackFunction)PDIF_callback_GOOSE; // TODO: replace GOOSE with status
-        extRef->callBackParam = inst;
       }
       extRef = extRef->sibling;
     }

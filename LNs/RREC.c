@@ -12,6 +12,7 @@ AutoRecSt ENS Auto reclosing status
 #define RREC_Timeout 10000
 #define RREC_Timer 1000
 #define RREC_RearmTimer 60000
+#define RREC_MAX_TripCnt 4
 
 typedef struct sRREC
 {
@@ -69,7 +70,7 @@ void RREC_xcbr_callback(InputEntry *extRef)
     {
       inst->tripstate = 2;
       //check tripcount
-      if(inst->tripCount < 4)
+      if(inst->tripCount < RREC_MAX_TripCnt)
       {
         //set timer, if trip is not cleared by then, operate to close
         Thread thread = Thread_create((ThreadExecutionFunction)RREC_recloser_timer, extRef, true);
@@ -78,7 +79,7 @@ void RREC_xcbr_callback(InputEntry *extRef)
       else // lock state
       {
         printf("RREC: Recloser in locked state\n");
-        inst->tripCount++;
+        inst->tripCount = RREC_MAX_TripCnt + 1;
         inst->tripstate = 0;
       }
     }
@@ -127,7 +128,7 @@ void * RREC_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_
   //if trip signal detect, and a set time is passed, check pos, and if still open, close switch, increment tripCount
   //   if trip is solved, go back to normal state
   //check timeout once more, if switch is still closed, reset tripCount.
-  //if again a trip is found, do the same, until tripcount is too high. only re-arm after a timeout after switch closes (60seconsd)
+  //if again a trip is found, do the same, until tripcount is too high. only re-arm after a timeout after switch closes (60 seconds)
 
   RREC *inst = (RREC *)malloc(sizeof(RREC)); // create new instance with MALLOC
   inst->server = server;

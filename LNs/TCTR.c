@@ -5,7 +5,7 @@ void *TCTR_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
 {
   TCTR *inst = (TCTR *)malloc(sizeof(TCTR)); // create new instance with MALLOC
   inst->server = server;
-  inst->da = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Amp.instMag.i"); // the node to operate on
+  inst->da = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "AmpSv.instMag.i"); // the node to operate on
   inst->da_callback = _findAttributeValueEx(inst->da, allInputValues);
 
   return inst;

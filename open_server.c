@@ -61,6 +61,7 @@ int IEC61850_server_timestep_type()
 
 void sigint_handler(int signalId)
 {
+	printf("--- stopping server due to SIGINT ---\n\n");
 	running = 0;
 }
 

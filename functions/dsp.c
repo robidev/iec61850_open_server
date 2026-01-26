@@ -329,3 +329,7 @@ double DSP_get_Average(DSP *dsp)
     return dsp->Average;
 }
 
+void destroy_dsp()
+{
+  //TODO
+}

@@ -8,17 +8,18 @@ DONE:client:     read URCB/BRCB
 DONE:server:     implement CILO
 DONE:client:     reporting instead of polling
 
-server:     implement PDIF ->measure I(*U)-I(*U) > treshold
-server:     implement PDIS ->measure (U*I) > treshold
-server:     implement opOpn/opCls support in xcbr/xswi/cswi
-server:     implement RREC; recloser function
-server:     implement RDRE/RDRS; implement fault recorder(comtrade file generation)
+DONE:server:     implement PDIF ->measure I(*U)-I(*U) > treshold
+DONE:server:     implement PDIS ->measure (U*I) > treshold
+DONE:server:     implement opOpn/opCls support in xcbr/xswi/cswi
+DONE:server:     implement RREC; recloser function
+DONE:server:     implement RDRE/RDRS; implement fault recorder(comtrade file generation)
+DONE:server:     check for 'assumptions' in various LN implementations
+DONE:server:     feature: python based LN implementation
+DONE:server:     feature: file-transfer services
+
+server:     feature: implement other CTL models (enum, int, single-point)
 server:     implement quality+timestamp for most nodes
 server:     improve settings-usage in various models(ptoc, ptrc, cswi)
-server:     check for 'assumptions' in various LN implementations
-server:     feature: implement other CTL models (enum, int, single-point)
-server:     feature: python based LN implementation
-server:     feature: file-transfer services
 server:     feature: mod/beh handling(LLN0, LN)
 server:     profiling certain functions
 server:     detect missed packets(sqnum)

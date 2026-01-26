@@ -21,19 +21,6 @@ typedef struct sPIOC
 } PIOC;
 
 
-// callback when GOOSE is received
-void PIOC_callback_GOOSE(InputEntry *extRef)
-{
-  PIOC *inst = extRef->callBackParam;
-
-  if (extRef->value != NULL)
-  {
-    // char printBuf[1024];
-
-    // MmsValue_printToBuffer(extRef->value, printBuf, 1024);
-    // printf("PIOC: Received Breaker position: %s\n", printBuf);
-  }
-}
 
 // callback when SMV is received
 void PIOC_callback_SMV(void *pioc_inst)
@@ -103,11 +90,6 @@ void * PIOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
       {
         extRef->callBack = (callBackFunction)get_DSP_processing_callback(inst->dspI);
         extRef->callBackParam = inst->dspI;
-      }
-      if (strcmp(extRef->intAddr, "PIOC_xcbr_stval") == 0)
-      {
-        extRef->callBack = (callBackFunction)PIOC_callback_GOOSE; // TODO: replace GOOSE with status
-        extRef->callBackParam = inst;
       }
       extRef = extRef->sibling;
     }
