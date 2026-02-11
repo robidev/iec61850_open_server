@@ -145,6 +145,9 @@ int main(int argc, char **argv)
 
 	openServer.server = IedServer_create(openServer.Model);
 
+	// By default we deny writing to SP elements, unless we have explicitly installed a write handler inside the LN init. example: PTOC installs this for StrVal
+	IedServer_setWriteAccessPolicy(openServer.server, IEC61850_FC_SP, ACCESS_POLICY_DENY);
+
 	GooseReceiver GSEreceiver = GooseReceiver_create();
 	SVReceiver SMVreceiver = SVReceiver_create();
 
@@ -253,6 +256,7 @@ int main(int argc, char **argv)
 	IedServer_setFilestoreBasepath(openServer.server, "./vmd-filestore/");
 	/* Set a callback handler to control file accesses */
 	MmsServer_installFileAccessHandler(IedServer_getMmsServer(openServer.server), fileAccessHandler, NULL);
+
 
 
 	signal(SIGINT, sigint_handler);

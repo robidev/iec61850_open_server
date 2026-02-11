@@ -27,11 +27,19 @@ void CSWI_currentValue_callback(InputEntry *extRef)
 
   if (extRef->value != NULL)
   {
+    Dbpos oldvalue = inst->currentValue;
     inst->currentValue = Dbpos_fromMmsValue(extRef->value);
+
+    if(oldvalue != inst->currentValue)
+    {
+      uint64_t timestamp = Hal_getTimeInMs();
+      IedServer_updateUTCTimeAttributeValue(inst->server, inst->Pos_t, timestamp);
+      IedServer_updateAttributeValue(inst->server, inst->Pos_stVal, extRef->value);
+      InputValueHandleExtensionCallbacks(inst->Pos_stVal_callback); // update the associated callbacks with this Data Element
+    }
   }
 }
 
-// receive status from circuit breaker
 void CSWI_EnaOpn_callback(InputEntry *extRef)
 {
   CSWI *inst = extRef->callBackParam;
@@ -46,7 +54,6 @@ void CSWI_EnaOpn_callback(InputEntry *extRef)
   }
 }
 
-// receive status from circuit breaker
 void CSWI_EnaCls_callback(InputEntry *extRef)
 {
   CSWI *inst = extRef->callBackParam;
@@ -140,9 +147,6 @@ static ControlHandlerResult controlHandlerForBinaryOutput(ControlAction action, 
     printf("control handler called with value: %i\n", state);
     printf("  ctlNum: %i\n", ControlAction_getCtlNum(action));
 
-    uint64_t timestamp = Hal_getTimeInMs();
-    IedServer_updateUTCTimeAttributeValue(inst->server, inst->Pos_t, timestamp);
-
     if(state == true) // True is closed, i.e. on
       pulseOp(inst, DBPOS_ON, true); // set signal for OPEN
     else // False is open, i.e. off
@@ -228,7 +232,7 @@ void * CSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
   }
   // initialise control logic
   IedServer_setControlHandler(server, (DataObject *)ModelNode_getChild((ModelNode *)ln, "Pos"), (ControlHandler)controlHandlerForBinaryOutput, inst);
-  // during an operate, a certain element will need to update in the CSWI model(opOk element? ctlVal is not subscribable), to which the XCBR is subscribed (goose or directly)
+  // during an operate, OpOpn, OpCls will need to update in the CSWI model,to which the XCBR is subscribed (goose or directly)
   IedServer_setPerformCheckHandler(server, (DataObject *)ModelNode_getChild((ModelNode *)ln, "Pos"), checkHandler, inst);
   return inst;
 }

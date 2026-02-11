@@ -108,7 +108,7 @@ cd into the server project
 `$ cd iec61850_open_server`  
   
 Generate the config files from the scd-file; (you need libiec61850 for this located in the parent directory)  
-`$ ./make_model.sh`  
+`$ ./make_model_simulator.sh`  
   
 Generate the compose file from the scd-file;  
 `$ ./make_compose.sh`  

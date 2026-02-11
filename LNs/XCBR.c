@@ -30,6 +30,10 @@ void XCBR_callback_OpOpn(InputEntry *extRef)
 
   if (state == true)
   {
+    if(inst->BlkOpn == true){
+      printf("XCBR: Open command blocked by BlkOpn\n");
+      return;
+    }
     inst->XSWI_callback_ln(inst, false);// false means open (not conducting)
   }
 }
@@ -45,6 +49,10 @@ void XCBR_callback_OpCls(InputEntry *extRef)
 
   if (state == true)
   {
+    if(inst->BlkCls == true){
+      printf("XCBR: Close command blocked by BlkCls\n");
+      return;
+    }
     inst->XSWI_callback_ln(inst, true);// true means closed (conducting)
   }
 }
@@ -57,6 +65,14 @@ void *XCBR_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
   inst->Pos_stVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Pos.stVal");
   inst->Pos_t = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Pos.t");       // the node to operate on when a operate is triggered
   inst->Pos_stVal_callback = _findAttributeValueEx(inst->Pos_stVal, allInputValues); // find node that this element was subscribed to, so that it will be called during an update
+
+  inst->BlkOpn = false;
+  inst->BlkOpn_stVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "BlkOpn.stVal");
+  inst->BlkOpn_stVal_callback = _findAttributeValueEx(inst->BlkOpn_stVal, allInputValues); // find node that this element was subscribed to, so that it will be called during an update
+  inst->BlkCls = false;
+  inst->BlkCls_stVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "BlkCls.stVal");
+  inst->BlkCls_stVal_callback = _findAttributeValueEx(inst->BlkCls_stVal, allInputValues); // find node that this element was subscribed to, so that it will be called during an update
+
   inst->XSWI_callback_ln = NULL;
   inst->config = NULL;
   inst->sem = Semaphore_create(1);
@@ -79,6 +95,19 @@ void *XCBR_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
       if (extref->intAddr != NULL && strncmp(extref->intAddr, "OpCls", 5) == 0) // close from CSWI or recloser
       {
         extref->callBack = (callBackFunction)XCBR_callback_OpCls;
+        extref->callBackParam = inst; // pass instance in param
+      }
+
+      if (strcmp(extref->intAddr, "EnaOpn") == 0)
+      {
+        // register callbacks for CILO subscription
+        extref->callBack = (callBackFunction)XSWI_EnaOpn_callback;
+        extref->callBackParam = inst; // pass instance in param
+      }
+      if (strcmp(extref->intAddr, "EnaCls") == 0)
+      {
+        // register callbacks for CILO subscription
+        extref->callBack = (callBackFunction)XSWI_EnaCls_callback;
         extref->callBackParam = inst; // pass instance in param
       }
 

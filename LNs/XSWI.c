@@ -3,16 +3,49 @@
 #include "XSWI.h"
 
 
+
+void XSWI_EnaOpn_callback(InputEntry *extRef)
+{
+  XSWI *inst = extRef->callBackParam;
+
+  if (extRef->value != NULL)
+  {
+    inst->BlkOpn = !MmsValue_getBoolean(extRef->value);
+    if (inst->BlkOpn) 
+      printf("XSWI: BlkOpn: true\n");
+    else
+      printf("XSWI: BlkOpn: false\n");
+
+    IedServer_updateBooleanAttributeValue(inst->server, inst->BlkOpn_stVal, inst->BlkOpn);
+    InputValueHandleExtensionCallbacks(inst->BlkOpn_stVal_callback); // update the associated callbacks with this Data Element
+  }
+}
+
+void XSWI_EnaCls_callback(InputEntry *extRef)
+{
+  XSWI *inst = extRef->callBackParam;
+
+  if (extRef->value != NULL)
+  {
+
+    inst->BlkCls = !MmsValue_getBoolean(extRef->value);
+    if (inst->BlkCls)
+      printf("XSWI: BlkCls: true\n");
+    else
+      printf("XSWI: BlkCls: false\n");
+
+    IedServer_updateBooleanAttributeValue(inst->server, inst->BlkCls_stVal, inst->BlkCls_stVal);
+    InputValueHandleExtensionCallbacks(inst->BlkCls_stVal_callback); // update the associated callbacks with this Data Element
+  }
+}
+
 // callback for open signal from input-> will trigger process 
 void XSWI_callback_Opn(InputEntry *extRef)
 {
   XSWI * inst = extRef->callBackParam;
-  if(inst->XSWI_callback_ln == NULL)
-    return;
-
   if(MmsValue_getBoolean(extRef->value))
   {
-    inst->XSWI_callback_ln(inst, false); // false means open (not conducting)
+    XSWI_Opn(inst);
   }
 }
 
@@ -20,12 +53,9 @@ void XSWI_callback_Opn(InputEntry *extRef)
 void XSWI_callback_Cls(InputEntry *extRef)
 {
   XSWI * inst = extRef->callBackParam;
-  if(inst->XSWI_callback_ln == NULL)
-    return;
-
   if(MmsValue_getBoolean(extRef->value))
   {
-    inst->XSWI_callback_ln(inst, true);// true means closed (conducting)
+    XSWI_Cls(inst);
   }
 }
 
@@ -48,6 +78,15 @@ void *XSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
   inst->Pos_stVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Pos.stVal");
   inst->Pos_t = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Pos.t");       // the node to operate on when a operate is triggered
   inst->Pos_stVal_callback = _findAttributeValueEx(inst->Pos_stVal, allInputValues); // find node that this element was subscribed to, so that it will be called during an update
+
+  inst->BlkOpn = false;
+  inst->BlkOpn_stVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "BlkOpn.stVal");
+  inst->BlkOpn_stVal_callback = _findAttributeValueEx(inst->BlkOpn_stVal, allInputValues); // find node that this element was subscribed to, so that it will be called during an update
+  inst->BlkCls = false;
+  inst->BlkCls_stVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "BlkCls.stVal");
+  inst->BlkCls_stVal_callback = _findAttributeValueEx(inst->BlkCls_stVal, allInputValues); // find node that this element was subscribed to, so that it will be called during an update
+
+
   inst->XSWI_callback_ln = NULL;
   inst->config = NULL;
   inst->sem = Semaphore_create(1);
@@ -68,11 +107,49 @@ void *XSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
         extref->callBack = (callBackFunction)XSWI_callback_Cls;
         extref->callBackParam = inst; // pass instance in param
       }
+
+      if (strcmp(extref->intAddr, "EnaOpn") == 0)
+      {
+        // register callbacks for CILO subscription
+        extref->callBack = (callBackFunction)XSWI_EnaOpn_callback;
+        extref->callBackParam = inst; // pass instance in param
+      }
+      if (strcmp(extref->intAddr, "EnaCls") == 0)
+      {
+        // register callbacks for CILO subscription
+        extref->callBack = (callBackFunction)XSWI_EnaCls_callback;
+        extref->callBackParam = inst; // pass instance in param
+      }
+
       extref = extref->sibling;
     }
   }
 
   return inst;
+}
+
+void XSWI_Opn(XSWI * inst)
+{
+  if(inst->XSWI_callback_ln == NULL)
+    return;
+
+  if(inst->BlkOpn == true) {
+    printf("XSWI: Open command blocked by BlkOpn\n");
+    return;
+  }
+  inst->XSWI_callback_ln(inst, false); // false means open (not conducting)    
+}
+
+void XSWI_Cls(XSWI * inst)
+{
+  if(inst->XSWI_callback_ln == NULL)
+    return;
+
+  if(inst->BlkCls == true) {
+    printf("XSWI: Close command blocked by BlkCls\n");
+    return;
+  }
+  inst->XSWI_callback_ln(inst, true);// true means closed (conducting)
 }
 
 void XSWI_change_switch(XSWI *inst, Dbpos value)
@@ -83,4 +160,3 @@ void XSWI_change_switch(XSWI *inst, Dbpos value)
   IedServer_updateUTCTimeAttributeValue(inst->server, inst->Pos_t, timestamp);
   InputValueHandleExtensionCallbacks(inst->Pos_stVal_callback); // update the associated callbacks with this Data Element
 }
-

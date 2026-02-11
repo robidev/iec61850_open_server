@@ -1,27 +1,7 @@
 #include "iec61850_model_extensions.h"
 #include "inputs_api.h"
 #include "dsp.h"
-
-typedef struct sMMXU
-{
-  IedServer server;
-  Input *input;
-
-  void *da_A;
-  void *da_V;
-
-  void *da_A_callback;
-  void *da_V_callback;
-
-  void *da_A_phsAng[4];
-
-  void *da_A_phs[4];
-  void *da_A_phs_callback[4];
-  void *da_V_phs[4];
-  void *da_V_phs_callback[4];
-
-} MMXU;
-
+#include "MMXU.h"
 
 void *MMXU_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
@@ -81,6 +61,7 @@ void *MMXU_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
         dspU = init_dsp_U(server, extRef);
         DSP_add_value_update_Average(dspU, inst->da_V, inst->da_V_callback);
         DSP_add_value_update_Phs(dspU, inst->da_V_phs, inst->da_V_phs_callback);
+        DSP_add_value_update_PhsAng(dspU, inst->da_A_phsAng);//no callback
       }
       if (strcmp(extRef->intAddr, "MMXU_Vol3") == 0) // find extref for the last SMV, using the intaddr, so that all values are updated
       {

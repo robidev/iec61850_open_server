@@ -33,27 +33,30 @@
 typedef struct sHwConfig
 {
     int hwindex;
-    int socket;
     void *inst;
     struct sHwConfig *sibling;
 } HwConfig;
 
-HwConfig *HwConfigListSwitch_head = NULL;
-HwConfig *HwConfigListMeas_head = NULL;
+static HwConfig *HwConfigListSwitch_head = NULL;
+static HwConfig *HwConfigListMeas_head = NULL;
 
-int sockfd = -1;
-bool shutdown_flag = true;
-int analog_channels[HW_MAX_ANALOG_CHANNELS];
 
-int initSocket(const char *sock_path);
-void send_cmd(int sockfd, char * send_buf);
+static int analog_channels[HW_MAX_ANALOG_CHANNELS];
+
+static const char *socket_path = NULL;
+static int socket_fd = -1;
+static bool shutdown_flag = true;
+
+static int initSocket(const char *sock_path);
+static void send_cmd(int sockfd, char * send_buf);
 static void hw_connector_SMV_Thread(void *parameter);
+static void hw_connector_socket_Thread();
 
 // possible timestep call from socket to all clients?(to pace and sync the ieds?)
 // possible dsp-override: if so, when a dsp-processing call is made, we just provide the rms-value the sine was calced from in the first place
 
 
-void * getInstViaHwIndex(int index)
+static void * getInstViaHwIndex(int index)
 {
     HwConfig *hwconf = HwConfigListSwitch_head;
     while(hwconf)
@@ -67,17 +70,19 @@ void * getInstViaHwIndex(int index)
     return NULL;
 }
 
-void XSWIcallback(void *inst, bool state)
+static void XSWIcallback(void *inst, bool state)
 {
     char buffer[64];
     XSWI *instance = inst;
     HwConfig *conf = instance->config;
     sprintf(buffer, "SET %d %d\n",conf->hwindex, state);
-    send_cmd(conf->socket, buffer);
+    if(socket_fd != -1) {
+        send_cmd(socket_fd, buffer);
+    }
 }
 
 
-void send_cmd(int sockfd, char * send_buf)
+static void send_cmd(int sockfd, char * send_buf)
 {
     // Send command with newline
     if(shutdown_flag)
@@ -118,13 +123,6 @@ int init(OpenServerInstance *srv)
         return 1;
     }
 
-    const char *socket_path = config_get_value(section, "socket");
-    int socket = initSocket(socket_path);
-    if(socket == 0)
-    {
-        printf("ERROR: issue while opening socket: %s\n", socket_path);
-    }
-
     /* Iterate through all key-value pairs */
     printf("\n settings for %s \n", section->section);
     for (int i = 0; i < section->entry_count; i++) {
@@ -133,6 +131,25 @@ int init(OpenServerInstance *srv)
         if(strcmp(section->entries[i].key,"socket") == 0)
         {
             printf("socket found\n");
+            if(socket_path != NULL)
+            {
+                printf("WARNING: socket path already set to: %s! this second socket path definition is ignored: %s \n",socket_path,config_get_value(section, "socket"));
+                continue;
+            }
+            const char *tmpsocket = config_get_value(section, "socket");
+            const int socketln = strlen(tmpsocket);
+            if(socketln > 256) {
+                printf("ERROR: invalid socket path\n");
+                continue;
+            }
+
+            char *socket_path_t = malloc(socketln+1);
+            strcpy(socket_path_t,tmpsocket);
+            socket_path = socket_path_t;
+
+            Thread thread = Thread_create((ThreadExecutionFunction)hw_connector_socket_Thread, NULL, true);
+            Thread_start(thread);
+
             continue;
         }
         //if not a known key, try it as an object-reference
@@ -151,7 +168,6 @@ int init(OpenServerInstance *srv)
             XSWI *item = ln->instance;
             HwConfig *conf = (HwConfig *)malloc(sizeof(HwConfig));
             conf->hwindex = (int)strtol(section->entries[i].values[0], NULL, 10);
-            conf->socket = socket;
             conf->inst = item;
             //place conf in linked list
             conf->sibling = HwConfigListSwitch_head;
@@ -160,6 +176,7 @@ int init(OpenServerInstance *srv)
             item->config = conf;
             setXSWI_Callback(item, XSWIcallback);
             printf("XSWI: set callback and hw index to %d\n", conf->hwindex);
+            continue;
         }
         if(strcmp(ln->lnClass,"XCBR") == 0)
         {
@@ -170,7 +187,6 @@ int init(OpenServerInstance *srv)
             XSWI *item = ln->instance;
             HwConfig *conf = (HwConfig *)malloc(sizeof(HwConfig));
             conf->hwindex = (int)strtol(section->entries[i].values[0], NULL, 10);
-            conf->socket = socket;
             conf->inst = item;
             //place conf in linked list
             conf->sibling = HwConfigListSwitch_head;
@@ -179,6 +195,7 @@ int init(OpenServerInstance *srv)
             item->config = conf;
             setXSWI_Callback(item, XSWIcallback);
             printf("XCBR: set callback and hw index to %d\n", conf->hwindex);
+            continue;
         }
         if(strcmp(ln->lnClass,"TCTR") == 0)
         {
@@ -189,12 +206,12 @@ int init(OpenServerInstance *srv)
             TCTR *item = ln->instance;
             HwConfig *conf = (HwConfig *)malloc(sizeof(HwConfig));
             conf->hwindex = (int)strtol(section->entries[i].values[0], NULL, 10);
-            conf->socket = socket;
             conf->inst = item;
             //place conf in linked list
             conf->sibling = HwConfigListMeas_head;
             HwConfigListMeas_head = conf;
             printf("TCTR: set hw index to %d\n", conf->hwindex);
+            continue;
         }
         if(strcmp(ln->lnClass,"TVTR") == 0)
         {
@@ -205,12 +222,13 @@ int init(OpenServerInstance *srv)
             TVTR *item = ln->instance;
             HwConfig *conf = (HwConfig *)malloc(sizeof(HwConfig));
             conf->hwindex = (int)strtol(section->entries[i].values[0], NULL, 10);
-            conf->socket = socket;
             conf->inst = item;
             //place conf in linked list
             conf->sibling = HwConfigListMeas_head;
             HwConfigListMeas_head = conf;
-            printf("TVTR: set hw index to %d\n", conf->hwindex);
+            
+            printf("TVTR: %s set hw index to %d\n", section->entries[i].key, conf->hwindex);
+            continue;
         }
     }
 
@@ -226,10 +244,29 @@ int init(OpenServerInstance *srv)
     return 0; // 0 means success
 }
 
+static void hw_connector_socket_Thread() {
+    while(open_server_running())
+    {
+        int _socket = initSocket(socket_path);
+        if(_socket != 0)
+        {
+            printf("INFO: socket (re)opened: %s\n", socket_path);
+            while(!shutdown_flag) {
+                Thread_sleep(1000);
+            }
+            socket_fd = -1;
+        }
+        else
+        {
+            printf("ERROR: issue while opening socket: %s\n", socket_path);
+        }
+        Thread_sleep(5000);
+    }
+}
 
-void *receiver_thread(int * arg) {
+
+static void *receiver_thread(int * arg) {
     int sockfd_threat = *arg;
-    shutdown_flag = false;
     char buffer[BUFFER_SIZE];
     char line_buffer[LINE_BUFFER_SIZE] = {0};
     int line_pos = 0;
@@ -344,10 +381,10 @@ void *receiver_thread(int * arg) {
     return NULL;
 }
 
-int initSocket(const char *sock_path) {
+static int initSocket(const char *sock_path) {
     
     // Create socket
-    sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
+    int sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (sockfd < 0) {
         perror("socket");
         return 0;
@@ -374,9 +411,11 @@ int initSocket(const char *sock_path) {
         close(sockfd);
         return 0;
     }
-    
+    // we-re good to go, so assign the socket
+    socket_fd = sockfd;
+    shutdown_flag = false;
     // Start receiver thread
-    Thread thread = Thread_create((ThreadExecutionFunction)receiver_thread, &sockfd, true);
+    Thread thread = Thread_create((ThreadExecutionFunction)receiver_thread, &socket_fd, true);
     Thread_start(thread);
         
     return sockfd;
@@ -400,7 +439,7 @@ static void hw_connector_SMV_Thread(void *parameter) // TODO: sync with the thre
             const double magnitude = analog_channels[hwconf->hwindex];
             const double freq = 50.0;
             const double angle = (hwconf->hwindex % 3) * 120.0;
-            const double scale = 1000;
+            const double scale = hwconf->hwindex < 12? 0.1 : 10.0;
             if (magnitude > 0.001)
             {
                 double amp = magnitude * sqrt(2); // RMS to peak

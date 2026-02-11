@@ -1,0 +1,179 @@
+MODEL(FEED1){
+LD(LD1){
+LN(LLN0){
+CL(LLN0);
+}
+LN(LPHD1){
+CL(LPHD);
+}
+LN(TCTR1){
+CL(TCTR);
+}
+LN(TCTR2){
+CL(TCTR);
+}
+LN(TCTR3){
+CL(TCTR);
+}
+LN(TCTR4){
+CL(TCTR);
+}
+LN(B1TVTR1){
+CL(TVTR);
+}
+LN(B1TVTR2){
+CL(TVTR);
+}
+LN(B1TVTR3){
+CL(TVTR);
+}
+LN(B1TVTR4){
+CL(TVTR);
+}
+LN(B2TVTR1){
+CL(TVTR);
+}
+LN(B2TVTR2){
+CL(TVTR);
+}
+LN(B2TVTR3){
+CL(TVTR);
+}
+LN(B2TVTR4){
+CL(TVTR);
+}
+LN(PTOC1){
+CL(PTOC);
+IN{
+ER(sample_a1 FEED1LD1/TCTR1.AmpSv.instMag.i PTOC_Amp1 Poll FEED1/);
+ER(sample_a2 FEED1LD1/TCTR2.AmpSv.instMag.i PTOC_Amp2 Poll FEED1/);
+ER(sample_a3 FEED1LD1/TCTR3.AmpSv.instMag.i PTOC_Amp3 Poll FEED1/);
+ER(sample_a4 FEED1LD1/TCTR4.AmpSv.instMag.i PTOC_Amp4 Poll FEED1/);
+}
+}
+LN(CSWI1){
+CL(CSWI);
+IN{
+ER(xcbr_status FEED1LD1/XCBR1.Pos.stVal stval Poll FEED1/);
+}
+}
+LN(CSWI2){
+CL(CSWI);
+IN{
+ER(xcbr_status FEED1LD1/XSWI2.Pos.stVal stval Poll FEED1/);
+ER(interlock_open FEED1LD1/CILO1.EnaOpn.stVal EnaOpn Poll FEED1/);
+ER(interlock_close FEED1LD1/CILO1.EnaCls.stVal EnaCls Poll FEED1/);
+}
+}
+LN(CSWI3){
+CL(CSWI);
+IN{
+ER(xcbr_status FEED1LD1/XSWI3.Pos.stVal stval Poll FEED1/);
+ER(interlock_open FEED1LD1/CILO1.EnaOpn.stVal EnaOpn Poll FEED1/);
+ER(interlock_close FEED1LD1/CILO1.EnaCls.stVal EnaCls Poll FEED1/);
+}
+}
+LN(CSWI4){
+CL(CSWI);
+IN{
+ER(xcbr_status FEED1LD1/XSWI4.Pos.stVal stval Poll FEED1/);
+ER(interlock_open FEED1LD1/CILO1.EnaOpn.stVal EnaOpn Poll FEED1/);
+ER(interlock_close FEED1LD1/CILO1.EnaCls.stVal EnaCls Poll FEED1/);
+}
+}
+LN(PTRC1){
+CL(PTRC);
+IN{
+ER(null BUS1LD1/PDIF1.Op.general Op1 GOOSE BUS1LD1/LLN0.Bus1TripEventCn);
+ER(null BUS2LD1/PDIF1.Op.general Op2 GOOSE BUS2LD1/LLN0.Bus2TripEventCn);
+ER(PTOC_trip FEED1LD1/PTOC1.Op.general Op3 Poll FEED1/);
+}
+}
+LN(XCBR1){
+CL(XCBR);
+IN{
+ER(Trip FEED1LD1/PTRC1.Tr.general Tr Poll FEED1/);
+ER(Operate FEED1LD1/CSWI1.OpOpn.general OpOpn Poll FEED1/);
+ER(Operate FEED1LD1/CSWI1.OpCls.general OpCls Poll FEED1/);
+}
+}
+LN(CILO1){
+CL(CILO);
+IN{
+ER(xcbr_status FEED1LD1/XCBR1.Pos.stVal stval Poll FEED1/);
+}
+}
+LN(XSWI2){
+CL(XSWI);
+IN{
+ER(Operate FEED1LD1/CSWI2.OpOpn.general OpOpn Poll FEED1/);
+ER(Operate FEED1LD1/CSWI2.OpCls.general OpCls Poll FEED1/);
+ER(interlock_open FEED1LD1/CILO1.EnaOpn.stVal EnaOpn Poll FEED1/);
+ER(interlock_close FEED1LD1/CILO1.EnaCls.stVal EnaCls Poll FEED1/);
+}
+}
+LN(XSWI3){
+CL(XSWI);
+IN{
+ER(Operate FEED1LD1/CSWI3.OpOpn.general OpOpn Poll FEED1/);
+ER(Operate FEED1LD1/CSWI3.OpCls.general OpCls Poll FEED1/);
+ER(interlock_open FEED1LD1/CILO1.EnaOpn.stVal EnaOpn Poll FEED1/);
+ER(interlock_close FEED1LD1/CILO1.EnaCls.stVal EnaCls Poll FEED1/);
+}
+}
+LN(XSWI4){
+CL(XSWI);
+IN{
+ER(Operate FEED1LD1/CSWI4.OpOpn.general OpOpn Poll FEED1/);
+ER(Operate FEED1LD1/CSWI4.OpCls.general OpCls Poll FEED1/);
+ER(interlock_open FEED1LD1/CILO1.EnaOpn.stVal EnaOpn Poll FEED1/);
+ER(interlock_close FEED1LD1/CILO1.EnaCls.stVal EnaCls Poll FEED1/);
+}
+}
+LN(MMXU1){
+CL(MMXU);
+IN{
+ER(sample_a1 FEED1LD1/TCTR1.AmpSv.instMag.i MMXU_Amp1 Poll FEED1/);
+ER(sample_a2 FEED1LD1/TCTR2.AmpSv.instMag.i MMXU_Amp2 Poll FEED1/);
+ER(sample_a3 FEED1LD1/TCTR3.AmpSv.instMag.i MMXU_Amp3 Poll FEED1/);
+ER(sample_a4 FEED1LD1/TCTR4.AmpSv.instMag.i MMXU_Amp4 Poll FEED1/);
+}
+}
+LN(MMXU2){
+CL(MMXU);
+IN{
+ER(sample_v1 FEED1LD1/B1TVTR1.VolSv.instMag.i MMXU_Vol1 Poll FEED1/);
+ER(sample_v2 FEED1LD1/B1TVTR2.VolSv.instMag.i MMXU_Vol2 Poll FEED1/);
+ER(sample_v3 FEED1LD1/B1TVTR3.VolSv.instMag.i MMXU_Vol3 Poll FEED1/);
+ER(sample_v4 FEED1LD1/B1TVTR4.VolSv.instMag.i MMXU_Vol4 Poll FEED1/);
+}
+}
+LN(MMXU3){
+CL(MMXU);
+IN{
+ER(sample_v1 FEED1LD1/B2TVTR1.VolSv.instMag.i MMXU_Vol1 Poll FEED1/);
+ER(sample_v2 FEED1LD1/B2TVTR2.VolSv.instMag.i MMXU_Vol2 Poll FEED1/);
+ER(sample_v3 FEED1LD1/B2TVTR3.VolSv.instMag.i MMXU_Vol3 Poll FEED1/);
+ER(sample_v4 FEED1LD1/B2TVTR4.VolSv.instMag.i MMXU_Vol4 Poll FEED1/);
+}
+}
+}
+SD(FEED1LD1/XCBR1.Pos.stVal Feed1SwiPos 0 010ccd010020 FEED1LD1/LLN0$GO$Feed1SwiPosCtl FEED1/LD1/LLN0/Feed1SwiPosAppId);
+SD(FEED1LD1/XSWI2.Pos.stVal Feed1SwiPos 0 010ccd010020 FEED1LD1/LLN0$GO$Feed1SwiPosCtl FEED1/LD1/LLN0/Feed1SwiPosAppId);
+SD(FEED1LD1/XSWI3.Pos.stVal Feed1SwiPos 0 010ccd010020 FEED1LD1/LLN0$GO$Feed1SwiPosCtl FEED1/LD1/LLN0/Feed1SwiPosAppId);
+SD(FEED1LD1/XSWI4.Pos.stVal Feed1SwiPos 0 010ccd010020 FEED1LD1/LLN0$GO$Feed1SwiPosCtl FEED1/LD1/LLN0/Feed1SwiPosAppId);
+SD(FEED2LD1/XCBR1.Pos.stVal Feed2SwiPos 1 010ccd010021 FEED2LD1/LLN0$GO$Feed2SwiPosCtl FEED2/LD1/LLN0/Feed2SwiPosAppID);
+SD(FEED2LD1/XSWI2.Pos.stVal Feed2SwiPos 1 010ccd010021 FEED2LD1/LLN0$GO$Feed2SwiPosCtl FEED2/LD1/LLN0/Feed2SwiPosAppID);
+SD(FEED2LD1/XSWI3.Pos.stVal Feed2SwiPos 1 010ccd010021 FEED2LD1/LLN0$GO$Feed2SwiPosCtl FEED2/LD1/LLN0/Feed2SwiPosAppID);
+SD(FEED2LD1/XSWI4.Pos.stVal Feed2SwiPos 1 010ccd010021 FEED2LD1/LLN0$GO$Feed2SwiPosCtl FEED2/LD1/LLN0/Feed2SwiPosAppID);
+SD(BUS1LD1/PDIF1.Op.general Bus1TripEvent 4 010ccd010030 BUS1LD1/LLN0$GO$Bus1TripEventCb BUS1/LD1/LLN0/Bus1TripEventAppId);
+SD(BUS2LD1/PDIF1.Op.general Bus2TripEvent 5 010ccd010031 BUS2LD1/LLN0$GO$Bus2TripEventCn BUS2/LD1/LLN0/Bus2TripEventAppId);
+SD(TR1LD1/XCBR1.Pos.stVal Tr1SwiPos 2 010ccd010040 TR1LD1/LLN0$GO$Tr1SwiPosCtl TR1/LD1/LLN0/Tr1SwiPosAppId);
+SD(TR1LD1/XSWI1.Pos.stVal Tr1SwiPos 2 010ccd010040 TR1LD1/LLN0$GO$Tr1SwiPosCtl TR1/LD1/LLN0/Tr1SwiPosAppId);
+SD(TR1LD1/XSWI2.Pos.stVal Tr1SwiPos 2 010ccd010040 TR1LD1/LLN0$GO$Tr1SwiPosCtl TR1/LD1/LLN0/Tr1SwiPosAppId);
+SD(TR1LD1/XSWI3.Pos.stVal Tr1SwiPos 2 010ccd010040 TR1LD1/LLN0$GO$Tr1SwiPosCtl TR1/LD1/LLN0/Tr1SwiPosAppId);
+SD(TR2LD1/XCBR1.Pos.stVal Tr2SwiPos 3 010ccd010041 TR2LD1/LLN0$GO$Tr2SwiPosCtl TR2/LD1/LLN0/Tr2SwiPosAppId);
+SD(TR2LD1/XSWI1.Pos.stVal Tr2SwiPos 3 010ccd010041 TR2LD1/LLN0$GO$Tr2SwiPosCtl TR2/LD1/LLN0/Tr2SwiPosAppId);
+SD(TR2LD1/XSWI2.Pos.stVal Tr2SwiPos 3 010ccd010041 TR2LD1/LLN0$GO$Tr2SwiPosCtl TR2/LD1/LLN0/Tr2SwiPosAppId);
+SD(TR2LD1/XSWI3.Pos.stVal Tr2SwiPos 3 010ccd010041 TR2LD1/LLN0$GO$Tr2SwiPosCtl TR2/LD1/LLN0/Tr2SwiPosAppId);
+}
