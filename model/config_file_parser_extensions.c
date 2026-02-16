@@ -21,8 +21,9 @@ static uint8_t lineBuffer[READ_BUFFER_MAX_SIZE];
 IedModel_extensions *
 ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle, IedModel *iedModel);
 
+
 static int
-readLine(FileHandle fileHandle, uint8_t *buffer, int maxSize)
+readLine(FileHandle fileHandle, uint8_t* buffer, int maxSize)
 {
     int bytesRead = 0;
     int bufPos = 0;
@@ -32,13 +33,14 @@ readLine(FileHandle fileHandle, uint8_t *buffer, int maxSize)
     /* eat up leading cr or lf */
     while (fileReadResult > 0)
     {
+        if (bytesRead == maxSize)
+            break;
+
         fileReadResult = FileSystem_readFile(fileHandle, buffer + bufPos, 1);
 
         if (fileReadResult == 1)
         {
-
-            if (!((buffer[bufPos] == '\n') || (buffer[bufPos] == '\r')))
-            {
+            if (!((buffer[bufPos] == '\n') || (buffer[bufPos] == '\r'))) {
                 bufPos++;
                 bytesRead++;
                 break;
@@ -50,15 +52,16 @@ readLine(FileHandle fileHandle, uint8_t *buffer, int maxSize)
     {
         while (fileReadResult > 0)
         {
+            if (bytesRead == maxSize)
+                break;
+
             fileReadResult = FileSystem_readFile(fileHandle, buffer + bufPos, 1);
 
             if (fileReadResult == 1)
             {
-
                 if ((buffer[bufPos] == '\n') || (buffer[bufPos] == '\r'))
                     break;
-                else
-                {
+                else {
                     bufPos++;
                     bytesRead++;
                 }
@@ -118,10 +121,10 @@ ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle, IedMode
     LogicalDevice *currentLD = NULL;
     LogicalNode *currentLN = NULL;
     ModelNode *currentModelNode = NULL;
-    DataSet *currentDataSet = NULL;
+    //DataSet *currentDataSet = NULL;
     Input *currentInput = NULL;
-    GSEControlBlock *currentGoCB = NULL;
-    SVControlBlock *currentSvCB = NULL;
+    //GSEControlBlock *currentGoCB = NULL;
+    //SVControlBlock *currentSvCB = NULL;
 
     char nameString[130];
     char nameString2[130];
@@ -208,7 +211,7 @@ ConfigFileParser_createModelFromConfigFile_inputs(FileHandle fileHandle, IedMode
                         if (StringUtils_createBufferFromHexString(nameString3, ethAddr) != 6)
                             goto exit_error;
 
-                        SubscriberEntry_create(model, nameString, nameString2, appid, nameString4, nameString5, ethAddr);
+                        SubscriberEntry_create(model, nameString, nameString2, (u_int16_t)appid, nameString4, nameString5, ethAddr);
                     }
                     else
                         goto exit_error;

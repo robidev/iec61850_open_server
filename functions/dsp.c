@@ -12,9 +12,9 @@ DSP *dsp_consumer_list_U;
 
 // assign default processing functions
 DSP_ProcessFunc dsp_current_processor = CALC_DFT;
-DSP_ProcessFunc dsp_voltage_processor = CALC_RMS;
+DSP_ProcessFunc dsp_voltage_processor = CALC_DFT;//CALC_RMS;
 DSP_InitFunc dsp_current_init = init_dft;
-DSP_InitFunc dsp_voltage_init = init_rms;
+DSP_InitFunc dsp_voltage_init = init_dft;//init_rms;
 
 // FUNCTIONS CALLABLE BY PLUGINS TO OVERWRITE DSP PROCESSING
 //overwrite the used callback
@@ -271,10 +271,10 @@ void updateDataValues_Average(DSP * dsp, double amplitude)
 {
     dsp->Average = amplitude;
     //printf("DSP: update Average reached: %f\n", amplitude);
-
+    //printf("AVG: %f\n", amplitude);
     ValueUpdateEntry *current = dsp->da_Average_list;
     while (current != NULL) {
-        IedServer_updateFloatAttributeValue(dsp->server, current->dataAttribute, amplitude);
+        IedServer_updateFloatAttributeValue(dsp->server, current->dataAttribute, (float)amplitude);
         InputValueHandleExtensionCallbacks(current->callback);
         current = current->next;
     }  
@@ -284,10 +284,10 @@ void updateDataValues_Amp(DSP * dsp, uint32_t i, double amplitude)
 {
     if(i > 4) return;
     dsp->phs[i] = amplitude;
-
+    //printf("phs%d: %f\n", i, amplitude);
     ValueUpdateEntryArray *current = dsp->da_phs_list;
     while (current != NULL) {
-        IedServer_updateFloatAttributeValue(dsp->server, current->dataAttributeArray[i], amplitude);
+        IedServer_updateFloatAttributeValue(dsp->server, current->dataAttributeArray[i], (float)amplitude);
         if(current->callbackArray[i] != NULL)
             InputValueHandleExtensionCallbacks(current->callbackArray[i]);
         current = current->next;
@@ -297,11 +297,11 @@ void updateDataValues_Amp(DSP * dsp, uint32_t i, double amplitude)
 void updateDataValues_Angle(DSP * dsp, uint32_t i, double angle)
 {
     if(i > 4) return;
+    //printf("ang%d: %f\n", i, angle);
     dsp->phsAng[i] = angle;
-
     ValueUpdateEntryArray *current = dsp->da_phsAng_list;
     while (current != NULL) {
-        IedServer_updateFloatAttributeValue(dsp->server, current->dataAttributeArray[i], angle);
+        IedServer_updateFloatAttributeValue(dsp->server, current->dataAttributeArray[i], (float)angle);
         if(current->callbackArray[i] != NULL)
             InputValueHandleExtensionCallbacks(current->callbackArray[i]);
         current = current->next;

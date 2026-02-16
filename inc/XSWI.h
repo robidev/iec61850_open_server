@@ -18,6 +18,11 @@ typedef struct sXSWI
   DataAttribute* Pos_t;
   void * Pos_stVal_callback;
 
+  DataAttribute * Loc_stVal;
+  DataAttribute * Loc_t;
+  void * Loc_stVal_callback;
+  bool Loc;
+
   DataAttribute* BlkOpn_stVal;
   void * BlkOpn_stVal_callback;
   bool BlkOpn;
@@ -36,9 +41,11 @@ int setXSWI_Callback(XSWI *instance, XSWICallback callback);
 
 void XSWI_EnaOpn_callback(InputEntry *extRef);
 void XSWI_EnaCls_callback(InputEntry *extRef);
+void XSWI_Loc_callback(InputEntry *extRef);
 
 void XSWI_Opn(XSWI * inst);
 void XSWI_Cls(XSWI * inst);
+
 void XSWI_change_switch(XSWI *inst, Dbpos value);
 
 #ifdef __cplusplus

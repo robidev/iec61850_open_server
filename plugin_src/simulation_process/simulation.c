@@ -38,7 +38,7 @@ typedef struct sLNStruct
 	processFunction call_process;
 } LNStruct;
 
-int simulation_thread(void);
+static void *simulation_thread(void *);
 
 int init(OpenServerInstance *srv)
 {
@@ -87,7 +87,7 @@ void sim_TCTR_updateValue(int sd, char *buffer, void *param)
 	char ref[130];
 	int i = 0;
 
-	int matchedItems = sscanf(buffer, "s %s %d", ref, &i);
+	sscanf(buffer, "s %s %d", ref, &i);
 	// printf("TCTR buf= %s, val=%i\n",buffer, i);
 
 	IedServer_updateInt32AttributeValue(inst->server, inst->da, i);
@@ -106,7 +106,7 @@ void sim_TVTR_updateValue(int sd, char *buffer, void *param)
 	char ref[130];
 	int i = 0;
 
-	int matchedItems = sscanf(buffer, "s %s %d", ref, &i);
+	sscanf(buffer, "s %s %d", ref, &i);
 	// printf("TCTR buf= %s, val=%i\n",buffer, i);
 
 	IedServer_updateInt32AttributeValue(inst->server, inst->da, i);
@@ -118,7 +118,7 @@ void sim_TVTR_updateValue(int sd, char *buffer, void *param)
 	}
 }
 
-int simulation_thread()
+static void *simulation_thread(void *)
 {
 	printf(" simulation thread started\n");
 	int opt = 1;
@@ -136,7 +136,7 @@ int simulation_thread()
 	int max_sd;
 	struct sockaddr_in address;
 
-	char *message = "init\n";
+	//char *message = "init\n";
 
 	char buffer[1025]; // data buffer of 1K
 
@@ -154,14 +154,14 @@ int simulation_thread()
 	if ((master_socket = socket(AF_INET, SOCK_STREAM, 0)) == 0)
 	{
 		perror(" socket failed");
-		return -1;
+		return NULL;
 	}
 
 	// set master socket to allow multiple connections ,
 	if (setsockopt(master_socket, SOL_SOCKET, SO_REUSEADDR, (char *)&opt, sizeof(opt)) < 0)
 	{
 		perror(" setsockopt");
-		return -1;
+		return NULL;
 	}
 
 	// type of socket created
@@ -173,14 +173,14 @@ int simulation_thread()
 	if (bind(master_socket, (struct sockaddr *)&address, sizeof(address)) < 0)
 	{
 		perror(" bind failed");
-		return -1;
+		return NULL;
 	}
 
 	// try to specify maximum of 3 pending connections for the master socket
 	if (listen(master_socket, 3) < 0)
 	{
 		perror(" listen");
-		return -1;
+		return NULL;
 	}
 	addrlen = sizeof(address);
 
@@ -223,7 +223,7 @@ int simulation_thread()
 									 (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0)
 			{
 				perror(" accept");
-				return -1;
+				return NULL;
 			}
 
 			// add new socket to array of sockets
@@ -245,7 +245,7 @@ int simulation_thread()
 			if (FD_ISSET(sd, &readfds))
 			{
 				// Check if it was for closing , and also read the incoming message
-				if ((valread = read(sd, buffer, 1024)) == 0)
+				if ((valread = (int)read(sd, buffer, 1024)) == 0)
 				{
 					printf(" Client disconnected\n");
 					// Close the socket and mark as 0 in list for reuse
@@ -333,5 +333,5 @@ int simulation_thread()
 		}
 	}
 	printf(" simulation thread stopped\n");
-	return 0;
+	return NULL;
 }

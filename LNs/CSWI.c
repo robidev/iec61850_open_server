@@ -18,6 +18,7 @@ typedef struct sCSWI
   int timeout;
   bool EnaOpn;
   bool EnaCls;
+  bool Loc;
 } CSWI;
 
 // receive status from circuit breaker
@@ -69,6 +70,18 @@ void CSWI_EnaCls_callback(InputEntry *extRef)
   }
 }
 
+void CSWI_Loc_callback(InputEntry *extRef)
+{
+  CSWI *inst = extRef->callBackParam;
+
+  if (extRef->value != NULL)
+  {
+    bool value = MmsValue_getBoolean(extRef->value);
+    printf("CSWI received Loc status: %d from %s\n", value, extRef->Ref);
+    inst->Loc = value;
+  }
+}
+
 static CheckHandlerResult checkHandler(ControlAction action, void *parameter, MmsValue *ctlVal, bool test, bool interlockCheck)
 {
   if (ControlAction_isSelect(action))
@@ -86,6 +99,12 @@ static CheckHandlerResult checkHandler(ControlAction action, void *parameter, Mm
   CSWI *inst = parameter;
   if (inst != NULL)
   {
+    if (inst->Loc == true) // we are in local operation
+    {
+      ControlAction_setAddCause(action, ADD_CAUSE_BLOCKED_BY_SWITCHING_HIERARCHY); // ControlAddCause addCause
+      return CONTROL_OBJECT_ACCESS_DENIED;
+    }
+
     // check interlocking
     bool state = MmsValue_getBoolean(ctlVal);
     if (state == false && inst->EnaOpn == true) // if we try to open(ctlVal==false) the switch, and opOpen allows it
@@ -193,6 +212,7 @@ void * CSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
   inst->timeout = 0;
   inst->EnaOpn = true;
   inst->EnaCls = true;
+  inst->Loc = false;
   inst->Pos_stVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Pos.stVal"); // the node to operate on when a operate is triggered
   inst->Pos_t = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Pos.t");         // the node to operate on when a operate is triggered
   inst->Pos_stVal_callback = _findAttributeValueEx(inst->Pos_stVal, allInputValues);   // find node that this element was subscribed to, so that it will be called during an update
@@ -225,6 +245,12 @@ void * CSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
       {
         // register callbacks for GOOSE-subscription
         extRef->callBack = (callBackFunction)CSWI_EnaCls_callback;
+        extRef->callBackParam = inst; // pass instance in param
+      }
+      if (strcmp(extRef->intAddr, "Loc") == 0)
+      {
+        // register callbacks for CILO subscription
+        extRef->callBack = (callBackFunction)CSWI_Loc_callback;
         extRef->callBackParam = inst; // pass instance in param
       }
       extRef = extRef->sibling;

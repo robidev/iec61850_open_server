@@ -1,6 +1,6 @@
 
 set(local_sample_simulation_SRCS
-   main.c
+   local_sample_simulation.c
 )
 
 include_directories(
@@ -10,6 +10,14 @@ include_directories(
 
 add_library(local_sample_simulation SHARED
   ${local_sample_simulation_SRCS}
+)
+
+target_compile_options(local_sample_simulation PRIVATE
+    -Wall
+    -Wextra
+    -Wshadow
+    -Wconversion
+    -Wno-unused-parameter
 )
 
 target_link_libraries(local_sample_simulation

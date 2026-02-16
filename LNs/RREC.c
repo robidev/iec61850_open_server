@@ -24,7 +24,7 @@ typedef struct sRREC
 } RREC;
 
 
-void RREC_reenable_timer(InputEntry *extRef)
+void *RREC_reenable_timer(InputEntry *extRef)
 {
   Thread_sleep(RREC_RearmTimer);
   RREC *inst = extRef->callBackParam;
@@ -37,9 +37,10 @@ void RREC_reenable_timer(InputEntry *extRef)
       inst->tripCount = 0;
     }
   }
+  return NULL;
 }
 
-void RREC_recloser_timer(InputEntry *extRef)
+void *RREC_recloser_timer(InputEntry *extRef)
 {
   Thread_sleep(RREC_Timer);
   RREC *inst = extRef->callBackParam;
@@ -57,6 +58,7 @@ void RREC_recloser_timer(InputEntry *extRef)
       inst->tripstate = 0;
     }
   }  
+  return NULL;
 }
 
 // reveice status from circuit breaker
@@ -94,7 +96,7 @@ void RREC_xcbr_callback(InputEntry *extRef)
   }
 }
 
-void RREC_timeout(InputEntry *extRef)
+void *RREC_timeout(InputEntry *extRef)
 {
   Thread_sleep(RREC_Timeout);
   RREC *inst = extRef->callBackParam;
@@ -103,6 +105,7 @@ void RREC_timeout(InputEntry *extRef)
     inst->tripstate = 0;
     printf("RREC: Recloser timeout during time between trip and switch response\n");
   }
+  return NULL;
 }
 
 void RREC_input_callback(InputEntry *extRef)

@@ -23,7 +23,7 @@ typedef struct sLSMS
     void *sibling;
 } LSMS;
 
-static void local_SMV_Thread(void *parameter);
+static void *local_SMV_Thread(void *parameter);
 static void SMV_Callback(int samplecount, void *parameter);
 
 static LSMS* lsms_list = NULL;
@@ -72,7 +72,7 @@ int init(OpenServerInstance *srv)
     FILE *fp;
     char *line = NULL;
     size_t len = 0;
-    int read;
+    ssize_t read;
 
     fp = fopen("./plugin/local_sample_simulator.config", "r");
     if (fp == NULL)
@@ -83,7 +83,7 @@ int init(OpenServerInstance *srv)
     printf(" opened local_sample_simulator.config\n");
 
     int state = 0;
-    uint8_t type = 0;
+    int8_t type = 0;
     char svcb[130] = "";
     LSMS *head = NULL;
     LSMS *tail = NULL;
@@ -210,7 +210,7 @@ static void SMV_Callback(int sampleCount, void *parameter)
     }
 }
 
-static void local_SMV_Thread(void *parameter)
+static void *local_SMV_Thread(void *parameter)
 {
     printf(" smv thread started\n");
     int sampleCount = 0;
@@ -256,4 +256,5 @@ static void local_SMV_Thread(void *parameter)
             nextCycleStart = nextCycleStart + 100;
         }
     }
+    return NULL;
 }

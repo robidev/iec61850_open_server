@@ -892,7 +892,7 @@
 					<P type="VLAN-ID">100</P>
 					<P type="VLAN-PRIORITY">4</P>
 				</Address>
-				<GSE ldInst="LD1" cbName="Bus2TripEventCn">
+				<GSE ldInst="LD1" cbName="Bus2TripEventCb">
 					<Address>
 						<P type="MAC-Address">01-0C-CD-01-00-31</P>
 						<P type="APPID">0005</P>
@@ -913,7 +913,7 @@
 					<P type="VLAN-ID">100</P>
 					<P type="VLAN-PRIORITY">4</P>
 				</Address>
-				<GSE ldInst="LD1" cbName="Tr1SwiPosCtl">
+				<GSE ldInst="LD1" cbName="Trafo1SwiPosCtl">
 					<Address>
 						<P type="MAC-Address">01-0C-CD-01-00-40</P>
 						<P type="APPID">0002</P>
@@ -934,7 +934,7 @@
 					<P type="VLAN-ID">100</P>
 					<P type="VLAN-PRIORITY">4</P>
 				</Address>
-				<GSE ldInst="LD1" cbName="Tr2SwiPosCtl">
+				<GSE ldInst="LD1" cbName="Trafo2SwiPosCtl">
 					<Address>
 						<P type="MAC-Address">01-0C-CD-01-00-41</P>
 						<P type="APPID">0003</P>
@@ -981,7 +981,7 @@
 							<OptFields seqNum="true" timeStamp="true" dataSet="true" reasonCode="true" configRef="true"/>
 							<RptEnabled max="1"/>
 						</ReportControl>
-						<GSEControl name="Feed1SwiPosCtl" confRev="0" type="GOOSE" appID="FEED1/LD1/LLN0/Feed1SwiPosAppId" datSet="Feed1SwiPos"/>
+						<GSEControl name="Feed1SwiPosCtl" confRev="0" type="GOOSE" appID="0001" datSet="Feed1SwiPos"/>
 					</LN0>
 					<LN lnClass="LPHD" lnType="LPHD$oscd$_8ca3cb769327538e" inst="1" prefix=""/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="1" prefix=""/>
@@ -1000,7 +1000,7 @@
 						<DOI name="StrVal">
 							<SDI name="setMag">
 								<DAI name="f">
-									<Val>42.3</Val>
+									<Val>10000.3</Val>
 								</DAI>
 							</SDI>
 						</DOI>
@@ -1019,6 +1019,7 @@
 						</DOI>
 						<Inputs>
 							<ExtRef intAddr="stval" desc="xcbr_status" iedName="FEED1" ldInst="LD1" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED1" ldInst="LD1" lnClass="XCBR" lnInst="1" doName="Loc" daName="stVal" serviceType="Poll"/>
 						</Inputs>
 					</LN>
 					<LN lnClass="CSWI" lnType="CSWI$oscd$_a89dcc3919082155" inst="2" prefix="">
@@ -1029,6 +1030,7 @@
 						</DOI>
 						<Inputs>
 							<ExtRef intAddr="stval" desc="xcbr_status" iedName="FEED1" ldInst="LD1" lnClass="XSWI" lnInst="2" doName="Pos" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED1" ldInst="LD1" lnClass="XSWI" lnInst="2" doName="Loc" daName="stVal" serviceType="Poll"/>
 							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="FEED1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
 							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="FEED1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
 						</Inputs>
@@ -1041,6 +1043,7 @@
 						</DOI>
 						<Inputs>
 							<ExtRef intAddr="stval" desc="xcbr_status" iedName="FEED1" ldInst="LD1" lnClass="XSWI" lnInst="3" doName="Pos" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED1" ldInst="LD1" lnClass="XSWI" lnInst="3" doName="Loc" daName="stVal" serviceType="Poll"/>
 							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="FEED1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
 							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="FEED1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
 						</Inputs>
@@ -1053,19 +1056,21 @@
 						</DOI>
 						<Inputs>
 							<ExtRef intAddr="stval" desc="xcbr_status" iedName="FEED1" ldInst="LD1" lnClass="XSWI" lnInst="4" doName="Pos" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED1" ldInst="LD1" lnClass="XSWI" lnInst="4" doName="Loc" daName="stVal" serviceType="Poll"/>
 							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="FEED1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
 							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="FEED1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
 						</Inputs>
 					</LN>
 					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="1" prefix="">
 						<Inputs>
-							<ExtRef intAddr="Op1" serviceType="GOOSE" iedName="BUS1" ldInst="LD1" lnClass="PDIF" lnInst="1" prefix="" doName="Op" daName="general" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Bus1TripEventCn"/>
-							<ExtRef intAddr="Op2" serviceType="GOOSE" iedName="BUS2" ldInst="LD1" lnClass="PDIF" lnInst="1" prefix="" doName="Op" daName="general" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Bus2TripEventCn"/>
+							<ExtRef intAddr="Op1" serviceType="GOOSE" iedName="BUS1" ldInst="LD1" lnClass="PTRC" lnInst="1" prefix="" doName="Tr" daName="general" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Bus1TripEventCn"/>
+							<ExtRef intAddr="Op2" serviceType="GOOSE" iedName="BUS2" ldInst="LD1" lnClass="PTRC" lnInst="1" prefix="" doName="Tr" daName="general" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Bus2TripEventCn"/>
 							<ExtRef intAddr="Op3" desc="PTOC_trip" iedName="FEED1" ldInst="LD1" lnClass="PTOC" lnInst="1" doName="Op" daName="general" serviceType="Poll"/>
 						</Inputs>
 					</LN>
 					<LN lnClass="XCBR" lnType="XCBR$oscd$_420e2f9e111e8bf2" inst="1" prefix="">
 						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED1" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
 							<ExtRef intAddr="Tr" desc="Trip" iedName="FEED1" ldInst="LD1" lnClass="PTRC" lnInst="1" doName="Tr" daName="general" serviceType="Poll"/>
 							<ExtRef intAddr="OpOpn" desc="Operate" iedName="FEED1" ldInst="LD1" lnClass="CSWI" lnInst="1" doName="OpOpn" daName="general" serviceType="Poll"/>
 							<ExtRef intAddr="OpCls" desc="Operate" iedName="FEED1" ldInst="LD1" lnClass="CSWI" lnInst="1" doName="OpCls" daName="general" serviceType="Poll"/>
@@ -1078,6 +1083,7 @@
 					</LN>
 					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="2" prefix="">
 						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED1" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
 							<ExtRef intAddr="OpOpn" desc="Operate" iedName="FEED1" ldInst="LD1" lnClass="CSWI" lnInst="2" doName="OpOpn" daName="general" serviceType="Poll"/>
 							<ExtRef intAddr="OpCls" desc="Operate" iedName="FEED1" ldInst="LD1" lnClass="CSWI" lnInst="2" doName="OpCls" daName="general" serviceType="Poll"/>
 							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="FEED1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
@@ -1086,6 +1092,7 @@
 					</LN>
 					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="3" prefix="">
 						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED1" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
 							<ExtRef intAddr="OpOpn" desc="Operate" iedName="FEED1" ldInst="LD1" lnClass="CSWI" lnInst="3" doName="OpOpn" daName="general" serviceType="Poll"/>
 							<ExtRef intAddr="OpCls" desc="Operate" iedName="FEED1" ldInst="LD1" lnClass="CSWI" lnInst="3" doName="OpCls" daName="general" serviceType="Poll"/>
 							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="FEED1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
@@ -1094,6 +1101,7 @@
 					</LN>
 					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="4" prefix="">
 						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED1" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
 							<ExtRef intAddr="OpOpn" desc="Operate" iedName="FEED1" ldInst="LD1" lnClass="CSWI" lnInst="4" doName="OpOpn" daName="general" serviceType="Poll"/>
 							<ExtRef intAddr="OpCls" desc="Operate" iedName="FEED1" ldInst="LD1" lnClass="CSWI" lnInst="4" doName="OpCls" daName="general" serviceType="Poll"/>
 							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="FEED1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
@@ -1138,6 +1146,7 @@
 			<ConfDataSet max="10" maxAttributes="50"/>
 			<DynDataSet max="10"/>
 			<ReadWrite/>
+			<ConfReportControl max="10" bufMode="both" bufConf="true"/>
 			<GetCBValues/>
 			<ConfLNs fixPrefix="true" fixLnInst="true"/>
 			<GOOSE max="5"/>
@@ -1156,7 +1165,12 @@
 							<FCDA ldInst="LD1" prefix="" lnClass="XSWI" lnInst="3" doName="Pos" daName="stVal" fc="ST"/>
 							<FCDA ldInst="LD1" prefix="" lnClass="XSWI" lnInst="4" doName="Pos" daName="stVal" fc="ST"/>
 						</DataSet>
-						<GSEControl name="Feed2SwiPosCtl" confRev="0" type="GOOSE" appID="FEED2/LD1/LLN0/Feed2SwiPosAppID" datSet="Feed2SwiPos"/>
+						<ReportControl name="ReportControl_001" buffered="true" rptID="Feed2Swi" bufTime="100" confRev="1" datSet="Feed2SwiPos" intgPd="2000">
+							<TrgOps dchg="true" period="true" gi="true"/>
+							<OptFields seqNum="true" timeStamp="true" dataSet="true" reasonCode="true" configRef="true"/>
+							<RptEnabled max="1"/>
+						</ReportControl>
+						<GSEControl name="Feed2SwiPosCtl" confRev="0" type="GOOSE" appID="0002" datSet="Feed2SwiPos"/>
 					</LN0>
 					<LN lnClass="LPHD" lnType="LPHD$oscd$_8ca3cb769327538e" inst="1" prefix=""/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="1" prefix=""/>
@@ -1171,7 +1185,141 @@
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="2" prefix="B2"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="3" prefix="B2"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="4" prefix="B2"/>
+					<LN lnClass="PTOC" lnType="PTOC$oscd$_72a47fe03fb65b2f" inst="1" prefix="">
+						<DOI name="StrVal">
+							<SDI name="setMag">
+								<DAI name="f">
+									<Val>42.3</Val>
+								</DAI>
+							</SDI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="PTOC_Amp1" desc="sample_a1" iedName="FEED2" ldInst="LD1" lnClass="TCTR" lnInst="1" doName="AmpSv" serviceType="Poll" daName="instMag.i"/>
+							<ExtRef intAddr="PTOC_Amp2" desc="sample_a2" iedName="FEED2" ldInst="LD1" lnClass="TCTR" lnInst="2" doName="AmpSv" serviceType="Poll" daName="instMag.i"/>
+							<ExtRef intAddr="PTOC_Amp3" desc="sample_a3" iedName="FEED2" ldInst="LD1" lnClass="TCTR" lnInst="3" doName="AmpSv" serviceType="Poll" daName="instMag.i"/>
+							<ExtRef intAddr="PTOC_Amp4" desc="sample_a4" iedName="FEED2" ldInst="LD1" lnClass="TCTR" lnInst="4" doName="AmpSv" serviceType="Poll" daName="instMag.i"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CSWI" lnType="CSWI$oscd$_a89dcc3919082155" inst="1" prefix="">
+						<DOI name="Pos">
+							<DAI name="ctlModel">
+								<Val>sbo-with-enhanced-security</Val>
+							</DAI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED2" ldInst="LD1" lnClass="XCBR" lnInst="1" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="FEED2" ldInst="LD1" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CSWI" lnType="CSWI$oscd$_a89dcc3919082155" inst="2" prefix="">
+						<DOI name="Pos">
+							<DAI name="ctlModel">
+								<Val>sbo-with-enhanced-security</Val>
+							</DAI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED2" ldInst="LD1" lnClass="XSWI" lnInst="2" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="FEED2" ldInst="LD1" lnClass="XSWI" lnInst="2" doName="Pos" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="FEED2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="FEED2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CSWI" lnType="CSWI$oscd$_a89dcc3919082155" inst="3" prefix="">
+						<DOI name="Pos">
+							<DAI name="ctlModel">
+								<Val>sbo-with-enhanced-security</Val>
+							</DAI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED2" ldInst="LD1" lnClass="XSWI" lnInst="3" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="FEED2" ldInst="LD1" lnClass="XSWI" lnInst="3" doName="Pos" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="FEED2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="FEED2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CSWI" lnType="CSWI$oscd$_a89dcc3919082155" inst="4" prefix="">
+						<DOI name="Pos">
+							<DAI name="ctlModel">
+								<Val>sbo-with-enhanced-security</Val>
+							</DAI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED2" ldInst="LD1" lnClass="XSWI" lnInst="4" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="FEED2" ldInst="LD1" lnClass="XSWI" lnInst="4" doName="Pos" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="FEED2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="FEED2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Op1" serviceType="GOOSE" iedName="BUS1" ldInst="LD1" lnClass="PTRC" lnInst="2" prefix="" doName="Tr" daName="general" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Bus1TripEventCn"/>
+							<ExtRef intAddr="Op2" serviceType="GOOSE" iedName="BUS2" ldInst="LD1" lnClass="PTRC" lnInst="2" prefix="" doName="Tr" daName="general" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Bus2TripEventCn"/>
+							<ExtRef intAddr="Op3" desc="PTOC_trip" iedName="FEED2" ldInst="LD1" lnClass="PTOC" lnInst="1" doName="Op" daName="general" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="XCBR" lnType="XCBR$oscd$_420e2f9e111e8bf2" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED2" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="Tr" desc="Trip" iedName="FEED2" ldInst="LD1" lnClass="PTRC" lnInst="1" doName="Tr" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpOpn" desc="Operate" iedName="FEED2" ldInst="LD1" lnClass="CSWI" lnInst="1" doName="OpOpn" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpCls" desc="Operate" iedName="FEED2" ldInst="LD1" lnClass="CSWI" lnInst="1" doName="OpCls" daName="general" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="FEED2" ldInst="LD1" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="2" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED2" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="OpOpn" desc="Operate" iedName="FEED2" ldInst="LD1" lnClass="CSWI" lnInst="2" doName="OpOpn" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpCls" desc="Operate" iedName="FEED2" ldInst="LD1" lnClass="CSWI" lnInst="2" doName="OpCls" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="FEED2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="FEED2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="3" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED2" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="OpOpn" desc="Operate" iedName="FEED2" ldInst="LD1" lnClass="CSWI" lnInst="3" doName="OpOpn" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpCls" desc="Operate" iedName="FEED2" ldInst="LD1" lnClass="CSWI" lnInst="3" doName="OpCls" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="FEED2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="FEED2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="4" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="FEED2" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="OpOpn" desc="Operate" iedName="FEED2" ldInst="LD1" lnClass="CSWI" lnInst="4" doName="OpOpn" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpCls" desc="Operate" iedName="FEED2" ldInst="LD1" lnClass="CSWI" lnInst="4" doName="OpCls" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="FEED2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="FEED2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="FEED2" ldInst="LD1" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="FEED2" ldInst="LD1" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="FEED2" ldInst="LD1" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="FEED2" ldInst="LD1" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="2" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Vol1" desc="sample_v1" iedName="FEED2" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="1" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol2" desc="sample_v2" iedName="FEED2" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="2" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol3" desc="sample_v3" iedName="FEED2" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="3" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol4" desc="sample_v4" iedName="FEED2" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="4" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
 					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="3" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Vol1" desc="sample_v1" iedName="FEED2" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="1" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol2" desc="sample_v2" iedName="FEED2" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="2" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol3" desc="sample_v3" iedName="FEED2" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="3" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol4" desc="sample_v4" iedName="FEED2" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="4" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
 					</LN>
 				</LDevice>
 			</Server>
@@ -1201,8 +1349,12 @@
 					<LN0 lnClass="LLN0" inst="" lnType="LLN0$oscd$_86a723959df7af2e">
 						<DataSet name="Bus1TripEvent">
 							<FCDA ldInst="LD1" prefix="" lnClass="PDIF" lnInst="1" doName="Op" daName="general" fc="ST"/>
+							<FCDA ldInst="LD1" prefix="" lnClass="PTRC" lnInst="1" doName="Tr" daName="general" fc="ST"/>
+							<FCDA ldInst="LD1" prefix="" lnClass="PTRC" lnInst="2" doName="Tr" daName="general" fc="ST"/>
+							<FCDA ldInst="LD1" prefix="" lnClass="PTRC" lnInst="3" doName="Tr" daName="general" fc="ST"/>
+							<FCDA ldInst="LD1" prefix="" lnClass="PTRC" lnInst="4" doName="Tr" daName="general" fc="ST"/>
 						</DataSet>
-						<GSEControl name="Bus1TripEventCb" confRev="0" type="GOOSE" appID="BUS1/LD1/LLN0/Bus1TripEventAppId" datSet="Bus1TripEvent"/>
+						<GSEControl name="Bus1TripEventCb" confRev="0" type="GOOSE" appID="0003" datSet="Bus1TripEvent"/>
 					</LN0>
 					<LN lnClass="LPHD" lnType="LPHD$oscd$_8ca3cb769327538e" inst="1" prefix=""/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="1" prefix="F1"/>
@@ -1221,18 +1373,124 @@
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="2" prefix="TR2"/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="3" prefix="TR2"/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="4" prefix="TR2"/>
-					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="1" prefix=""/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="1" prefix="B1"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="2" prefix="B1"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="3" prefix="B1"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="4" prefix="B1"/>
-					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="1" prefix="B2"/>
-					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="2" prefix="B2"/>
-					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="3" prefix="B2"/>
-					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="4" prefix="B2"/>
-					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="1" prefix=""/>
-					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="1" prefix=""/>
-					<LN lnClass="PDIF" lnType="PDIF$oscd$_ab16057220381a95" inst="1" prefix=""/>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="BUS1" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="BUS1" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="BUS1" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="BUS1" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="2" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="BUS1" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="BUS1" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="BUS1" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="BUS1" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="3" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="BUS1" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="BUS1" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="BUS1" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="BUS1" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="4" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="BUS1" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="BUS1" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="BUS1" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="BUS1" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="5" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Vol1" desc="sample_v1" iedName="BUS1" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="1" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol2" desc="sample_v2" iedName="BUS1" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="2" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol3" desc="sample_v3" iedName="BUS1" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="3" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol4" desc="sample_v4" iedName="BUS1" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="4" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+
+					<LN lnClass="PDIF" lnType="PDIF$oscd$_ab16057220381a95" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="PDIF_in_Amp1_0" desc="sample_a1" iedName="BUS1" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp2_0" desc="sample_a2" iedName="BUS1" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp3_0" desc="sample_a3" iedName="BUS1" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp4_0" desc="sample_a4" iedName="BUS1" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp1_1" desc="sample_a1" iedName="BUS1" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp2_1" desc="sample_a2" iedName="BUS1" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp3_1" desc="sample_a3" iedName="BUS1" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp4_1" desc="sample_a4" iedName="BUS1" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp1_0" desc="sample_a1" iedName="BUS1" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp2_0" desc="sample_a2" iedName="BUS1" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp3_0" desc="sample_a3" iedName="BUS1" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp4_0" desc="sample_a4" iedName="BUS1" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp1_1" desc="sample_a1" iedName="BUS1" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp2_1" desc="sample_a2" iedName="BUS1" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp3_1" desc="sample_a3" iedName="BUS1" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp4_1" desc="sample_a4" iedName="BUS1" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+
+							<ExtRef intAddr="PDIF_in_swi_0" serviceType="GOOSE" iedName="FEED1" ldInst="LD1" lnClass="XSWI" lnInst="3" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Feed1SwiPosCtl"/>
+							<ExtRef intAddr="PDIF_in_swi_1" serviceType="GOOSE" iedName="FEED2" ldInst="LD1" lnClass="XSWI" lnInst="3" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Feed2SwiPosCtl"/>
+							<ExtRef intAddr="PDIF_out_swi_0" serviceType="GOOSE" iedName="TR1" ldInst="LD1" lnClass="XSWI" lnInst="3" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Trafo1SwiPosCtl"/>
+							<ExtRef intAddr="PDIF_out_swi_1" serviceType="GOOSE" iedName="TR2" ldInst="LD1" lnClass="XSWI" lnInst="3" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Trafo2SwiPosCtl"/>
+
+						</Inputs>
+					</LN>
+
+					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="in_nor_0" serviceType="GOOSE" iedName="FEED1" ldInst="LD1" lnClass="XSWI" lnInst="3" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Feed1SwiPosCtl"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="2" prefix="">
+						<Inputs>
+							<ExtRef intAddr="in_nor_0" serviceType="GOOSE" iedName="FEED2" ldInst="LD1" lnClass="XSWI" lnInst="3" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Feed2SwiPosCtl"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="3" prefix="">
+						<Inputs>
+							<ExtRef intAddr="in_nor_0" serviceType="GOOSE" iedName="TR1" ldInst="LD1" lnClass="XSWI" lnInst="3" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Trafo1SwiPosCtl"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="4" prefix="">
+						<Inputs>
+							<ExtRef intAddr="in_nor_0" serviceType="GOOSE" iedName="TR2" ldInst="LD1" lnClass="XSWI" lnInst="3" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Trafo2SwiPosCtl"/>
+						</Inputs>
+					</LN>
+
+					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Op1" desc="PDIF_trip" iedName="BUS1" ldInst="LD1" lnClass="PDIF" lnInst="1" doName="Op" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="CILO_EnaOpn" iedName="BUS1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="2" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Op1" desc="PDIF_trip" iedName="BUS1" ldInst="LD1" lnClass="PDIF" lnInst="1" doName="Op" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="CILO_EnaOpn" iedName="BUS1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="3" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Op1" desc="PDIF_trip" iedName="BUS1" ldInst="LD1" lnClass="PDIF" lnInst="1" doName="Op" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="CILO_EnaOpn" iedName="BUS1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="4" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Op1" desc="PDIF_trip" iedName="BUS1" ldInst="LD1" lnClass="PDIF" lnInst="1" doName="Op" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="CILO_EnaOpn" iedName="BUS1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+
 				</LDevice>
 			</Server>
 		</AccessPoint>
@@ -1261,8 +1519,12 @@
 					<LN0 lnClass="LLN0" inst="" lnType="LLN0$oscd$_86a723959df7af2e">
 						<DataSet name="Bus2TripEvent">
 							<FCDA ldInst="LD1" prefix="" lnClass="PDIF" lnInst="1" doName="Op" daName="general" fc="ST"/>
+							<FCDA ldInst="LD1" prefix="" lnClass="PTRC" lnInst="1" doName="Tr" daName="general" fc="ST"/>
+							<FCDA ldInst="LD1" prefix="" lnClass="PTRC" lnInst="2" doName="Tr" daName="general" fc="ST"/>
+							<FCDA ldInst="LD1" prefix="" lnClass="PTRC" lnInst="3" doName="Tr" daName="general" fc="ST"/>
+							<FCDA ldInst="LD1" prefix="" lnClass="PTRC" lnInst="4" doName="Tr" daName="general" fc="ST"/>
 						</DataSet>
-						<GSEControl name="Bus2TripEventCn" confRev="1" type="GOOSE" appID="BUS2/LD1/LLN0/Bus2TripEventAppId" datSet="Bus2TripEvent"/>
+						<GSEControl name="Bus2TripEventCb" confRev="0" type="GOOSE" appID="0003" datSet="Bus2TripEvent"/>
 					</LN0>
 					<LN lnClass="LPHD" lnType="LPHD$oscd$_8ca3cb769327538e" inst="1" prefix=""/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="1" prefix="F1"/>
@@ -1281,18 +1543,123 @@
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="2" prefix="TR2"/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="3" prefix="TR2"/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="4" prefix="TR2"/>
-					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="1" prefix=""/>
-					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="1" prefix="B1"/>
-					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="2" prefix="B1"/>
-					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="3" prefix="B1"/>
-					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="4" prefix="B1"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="1" prefix="B2"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="2" prefix="B2"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="3" prefix="B2"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="4" prefix="B2"/>
-					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="1" prefix=""/>
-					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="1" prefix=""/>
-					<LN lnClass="PDIF" lnType="PDIF$oscd$_ab16057220381a95" inst="1" prefix=""/>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="BUS2" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="BUS2" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="BUS2" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="BUS2" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="2" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="BUS2" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="BUS2" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="BUS2" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="BUS2" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="3" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="BUS2" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="BUS2" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="BUS2" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="BUS2" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="4" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="BUS2" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="BUS2" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="BUS2" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="BUS2" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="5" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Vol1" desc="sample_v1" iedName="BUS2" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="1" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol2" desc="sample_v2" iedName="BUS2" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="2" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol3" desc="sample_v3" iedName="BUS2" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="3" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol4" desc="sample_v4" iedName="BUS2" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="4" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+
+					<LN lnClass="PDIF" lnType="PDIF$oscd$_ab16057220381a95" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="PDIF_in_Amp1_0" desc="sample_a1" iedName="BUS2" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp2_0" desc="sample_a2" iedName="BUS2" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp3_0" desc="sample_a3" iedName="BUS2" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp4_0" desc="sample_a4" iedName="BUS2" ldInst="LD1" prefix="F1" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp1_1" desc="sample_a1" iedName="BUS2" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp2_1" desc="sample_a2" iedName="BUS2" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp3_1" desc="sample_a3" iedName="BUS2" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_in_Amp4_1" desc="sample_a4" iedName="BUS2" ldInst="LD1" prefix="F2" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp1_0" desc="sample_a1" iedName="BUS2" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp2_0" desc="sample_a2" iedName="BUS2" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp3_0" desc="sample_a3" iedName="BUS2" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp4_0" desc="sample_a4" iedName="BUS2" ldInst="LD1" prefix="TR1" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp1_1" desc="sample_a1" iedName="BUS2" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp2_1" desc="sample_a2" iedName="BUS2" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp3_1" desc="sample_a3" iedName="BUS2" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="PDIF_out_Amp4_1" desc="sample_a4" iedName="BUS2" ldInst="LD1" prefix="TR2" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+
+							<ExtRef intAddr="PDIF_in_swi_0" serviceType="GOOSE" iedName="FEED1" ldInst="LD1" lnClass="XSWI" lnInst="4" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Feed1SwiPosCtl"/>
+							<ExtRef intAddr="PDIF_in_swi_1" serviceType="GOOSE" iedName="FEED2" ldInst="LD1" lnClass="XSWI" lnInst="4" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Feed2SwiPosCtl"/>
+							<ExtRef intAddr="PDIF_out_swi_0" serviceType="GOOSE" iedName="TR1" ldInst="LD1" lnClass="XSWI" lnInst="4" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Trafo1SwiPosCtl"/>
+							<ExtRef intAddr="PDIF_out_swi_1" serviceType="GOOSE" iedName="TR2" ldInst="LD1" lnClass="XSWI" lnInst="4" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Trafo2SwiPosCtl"/>
+						</Inputs>
+					</LN>
+
+					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="in_nor_0" serviceType="GOOSE" iedName="FEED1" ldInst="LD1" lnClass="XSWI" lnInst="4" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Feed1SwiPosCtl"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="2" prefix="">
+						<Inputs>
+							<ExtRef intAddr="in_nor_0" serviceType="GOOSE" iedName="FEED2" ldInst="LD1" lnClass="XSWI" lnInst="4" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Feed2SwiPosCtl"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="3" prefix="">
+						<Inputs>
+							<ExtRef intAddr="in_nor_0" serviceType="GOOSE" iedName="TR1" ldInst="LD1" lnClass="XSWI" lnInst="4" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Trafo1SwiPosCtl"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="4" prefix="">
+						<Inputs>
+							<ExtRef intAddr="in_nor_0" serviceType="GOOSE" iedName="TR2" ldInst="LD1" lnClass="XSWI" lnInst="4" prefix="" doName="Pos" daName="stVal" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Trafo2SwiPosCtl"/>
+						</Inputs>
+					</LN>
+
+					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Op1" desc="PDIF_trip" iedName="BUS2" ldInst="LD1" lnClass="PDIF" lnInst="1" doName="Op" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="CILO_EnaOpn" iedName="BUS2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="2" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Op1" desc="PDIF_trip" iedName="BUS2" ldInst="LD1" lnClass="PDIF" lnInst="1" doName="Op" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="CILO_EnaOpn" iedName="BUS2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="3" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Op1" desc="PDIF_trip" iedName="BUS2" ldInst="LD1" lnClass="PDIF" lnInst="1" doName="Op" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="CILO_EnaOpn" iedName="BUS2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="4" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Op1" desc="PDIF_trip" iedName="BUS2" ldInst="LD1" lnClass="PDIF" lnInst="1" doName="Op" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="CILO_EnaOpn" iedName="BUS2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+
 				</LDevice>
 			</Server>
 		</AccessPoint>
@@ -1307,6 +1674,7 @@
 			<ConfDataSet max="10" maxAttributes="50"/>
 			<DynDataSet max="10"/>
 			<ReadWrite/>
+			<ConfReportControl max="10" bufMode="both" bufConf="true"/>
 			<GetCBValues/>
 			<ConfLNs fixPrefix="true" fixLnInst="true"/>
 			<GOOSE max="5"/>
@@ -1319,27 +1687,23 @@
 				<Authentication/>
 				<LDevice inst="LD1">
 					<LN0 lnClass="LLN0" inst="" lnType="LLN0$oscd$_86a723959df7af2e">
-						<DataSet name="Tr1SwiPos">
+						<DataSet name="Trafo1SwiPos">
 							<FCDA ldInst="LD1" prefix="" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" fc="ST"/>
-							<FCDA ldInst="LD1" prefix="" lnClass="XSWI" lnInst="1" doName="Pos" daName="stVal" fc="ST"/>
 							<FCDA ldInst="LD1" prefix="" lnClass="XSWI" lnInst="2" doName="Pos" daName="stVal" fc="ST"/>
 							<FCDA ldInst="LD1" prefix="" lnClass="XSWI" lnInst="3" doName="Pos" daName="stVal" fc="ST"/>
 						</DataSet>
-						<GSEControl name="Tr1SwiPosCtl" confRev="0" type="GOOSE" appID="TR1/LD1/LLN0/Tr1SwiPosAppId" datSet="Tr1SwiPos"/>
+						<ReportControl name="ReportControl_001" buffered="true" rptID="Trafo1Swi" bufTime="100" confRev="1" datSet="Trafo1SwiPos" intgPd="2000">
+							<TrgOps dchg="true" period="true" gi="true"/>
+							<OptFields seqNum="true" timeStamp="true" dataSet="true" reasonCode="true" configRef="true"/>
+							<RptEnabled max="1"/>
+						</ReportControl>
+						<GSEControl name="Trafo1SwiPosCtl" confRev="0" type="GOOSE" appID="0005" datSet="Trafo1SwiPos"/>
 					</LN0>
 					<LN lnClass="LPHD" lnType="LPHD$oscd$_8ca3cb769327538e" inst="1" prefix=""/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="1" prefix=""/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="2" prefix=""/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="3" prefix=""/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="4" prefix=""/>
-					<LN lnClass="PTOC" lnType="PTOC$oscd$_72a47fe03fb65b2f" inst="1" prefix=""/>
-					<LN lnClass="XCBR" lnType="XCBR$oscd$_420e2f9e111e8bf2" inst="1" prefix=""/>
-					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="1" prefix=""/>
-					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="1" prefix=""/>
-					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="1" prefix=""/>
-					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="2" prefix=""/>
-					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="3" prefix=""/>
-					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="1" prefix=""/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="1" prefix="B1"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="2" prefix="B1"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="3" prefix="B1"/>
@@ -1348,7 +1712,120 @@
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="2" prefix="B2"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="3" prefix="B2"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="4" prefix="B2"/>
-					<LN lnClass="PDIF" lnType="PDIF$oscd$_ab16057220381a95" inst="1" prefix=""/>
+					<LN lnClass="PTOC" lnType="PTOC$oscd$_72a47fe03fb65b2f" inst="1" prefix="">
+						<DOI name="StrVal">
+							<SDI name="setMag">
+								<DAI name="f">
+									<Val>10000.3</Val>
+								</DAI>
+							</SDI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="PTOC_Amp1" desc="sample_a1" iedName="TR1" ldInst="LD1" lnClass="TCTR" lnInst="1" doName="AmpSv" serviceType="Poll" daName="instMag.i"/>
+							<ExtRef intAddr="PTOC_Amp2" desc="sample_a2" iedName="TR1" ldInst="LD1" lnClass="TCTR" lnInst="2" doName="AmpSv" serviceType="Poll" daName="instMag.i"/>
+							<ExtRef intAddr="PTOC_Amp3" desc="sample_a3" iedName="TR1" ldInst="LD1" lnClass="TCTR" lnInst="3" doName="AmpSv" serviceType="Poll" daName="instMag.i"/>
+							<ExtRef intAddr="PTOC_Amp4" desc="sample_a4" iedName="TR1" ldInst="LD1" lnClass="TCTR" lnInst="4" doName="AmpSv" serviceType="Poll" daName="instMag.i"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CSWI" lnType="CSWI$oscd$_a89dcc3919082155" inst="1" prefix="">
+						<DOI name="Pos">
+							<DAI name="ctlModel">
+								<Val>sbo-with-enhanced-security</Val>
+							</DAI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="TR1" ldInst="LD1" lnClass="XCBR" lnInst="1" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="TR1" ldInst="LD1" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CSWI" lnType="CSWI$oscd$_a89dcc3919082155" inst="2" prefix="">
+						<DOI name="Pos">
+							<DAI name="ctlModel">
+								<Val>sbo-with-enhanced-security</Val>
+							</DAI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="TR1" ldInst="LD1" lnClass="XSWI" lnInst="2" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="TR1" ldInst="LD1" lnClass="XSWI" lnInst="2" doName="Pos" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="TR1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="TR1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CSWI" lnType="CSWI$oscd$_a89dcc3919082155" inst="3" prefix="">
+						<DOI name="Pos">
+							<DAI name="ctlModel">
+								<Val>sbo-with-enhanced-security</Val>
+							</DAI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="TR1" ldInst="LD1" lnClass="XSWI" lnInst="3" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="TR1" ldInst="LD1" lnClass="XSWI" lnInst="3" doName="Pos" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="TR1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="TR1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Op1" serviceType="GOOSE" iedName="BUS1" ldInst="LD1" lnClass="PTRC" lnInst="3" prefix="" doName="Tr" daName="general" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Bus1TripEventCn"/>
+							<ExtRef intAddr="Op2" serviceType="GOOSE" iedName="BUS2" ldInst="LD1" lnClass="PTRC" lnInst="3" prefix="" doName="Tr" daName="general" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Bus2TripEventCn"/>
+							<ExtRef intAddr="Op3" desc="PTOC_trip" iedName="TR1" ldInst="LD1" lnClass="PTOC" lnInst="1" doName="Op" daName="general" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="XCBR" lnType="XCBR$oscd$_420e2f9e111e8bf2" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="TR1" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="Tr" desc="Trip" iedName="TR1" ldInst="LD1" lnClass="PTRC" lnInst="1" doName="Tr" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpOpn" desc="Operate" iedName="TR1" ldInst="LD1" lnClass="CSWI" lnInst="1" doName="OpOpn" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpCls" desc="Operate" iedName="TR1" ldInst="LD1" lnClass="CSWI" lnInst="1" doName="OpCls" daName="general" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="TR1" ldInst="LD1" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="2" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="TR1" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="OpOpn" desc="Operate" iedName="TR1" ldInst="LD1" lnClass="CSWI" lnInst="2" doName="OpOpn" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpCls" desc="Operate" iedName="TR1" ldInst="LD1" lnClass="CSWI" lnInst="2" doName="OpCls" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="TR1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="TR1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="3" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="TR1" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="OpOpn" desc="Operate" iedName="TR1" ldInst="LD1" lnClass="CSWI" lnInst="3" doName="OpOpn" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpCls" desc="Operate" iedName="TR1" ldInst="LD1" lnClass="CSWI" lnInst="3" doName="OpCls" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="TR1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="TR1" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="TR1" ldInst="LD1" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="TR1" ldInst="LD1" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="TR1" ldInst="LD1" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="TR1" ldInst="LD1" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="2" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Vol1" desc="sample_v1" iedName="TR1" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="1" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol2" desc="sample_v2" iedName="TR1" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="2" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol3" desc="sample_v3" iedName="TR1" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="3" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol4" desc="sample_v4" iedName="TR1" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="4" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="3" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Vol1" desc="sample_v1" iedName="TR1" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="1" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol2" desc="sample_v2" iedName="TR1" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="2" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol3" desc="sample_v3" iedName="TR1" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="3" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol4" desc="sample_v4" iedName="TR1" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="4" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
 				</LDevice>
 			</Server>
 		</AccessPoint>
@@ -1363,6 +1840,7 @@
 			<ConfDataSet max="10" maxAttributes="50"/>
 			<DynDataSet max="10"/>
 			<ReadWrite/>
+			<ConfReportControl max="10" bufMode="both" bufConf="true"/>
 			<GetCBValues/>
 			<ConfLNs fixPrefix="true" fixLnInst="true"/>
 			<GOOSE max="5"/>
@@ -1375,27 +1853,23 @@
 				<Authentication/>
 				<LDevice inst="LD1">
 					<LN0 lnClass="LLN0" inst="" lnType="LLN0$oscd$_86a723959df7af2e">
-						<DataSet name="Tr2SwiPos">
+						<DataSet name="Trafo2SwiPos">
 							<FCDA ldInst="LD1" prefix="" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" fc="ST"/>
-							<FCDA ldInst="LD1" prefix="" lnClass="XSWI" lnInst="1" doName="Pos" daName="stVal" fc="ST"/>
 							<FCDA ldInst="LD1" prefix="" lnClass="XSWI" lnInst="2" doName="Pos" daName="stVal" fc="ST"/>
 							<FCDA ldInst="LD1" prefix="" lnClass="XSWI" lnInst="3" doName="Pos" daName="stVal" fc="ST"/>
 						</DataSet>
-						<GSEControl name="Tr2SwiPosCtl" confRev="0" type="GOOSE" appID="TR2/LD1/LLN0/Tr2SwiPosAppId" datSet="Tr2SwiPos"/>
+						<ReportControl name="ReportControl_001" buffered="true" rptID="Trafo2Swi" bufTime="100" confRev="1" datSet="Trafo2SwiPos" intgPd="2000">
+							<TrgOps dchg="true" period="true" gi="true"/>
+							<OptFields seqNum="true" timeStamp="true" dataSet="true" reasonCode="true" configRef="true"/>
+							<RptEnabled max="1"/>
+						</ReportControl>
+						<GSEControl name="Trafo2SwiPosCtl" confRev="0" type="GOOSE" appID="0006" datSet="Trafo2SwiPos"/>
 					</LN0>
 					<LN lnClass="LPHD" lnType="LPHD$oscd$_8ca3cb769327538e" inst="1" prefix=""/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="1" prefix=""/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="2" prefix=""/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="3" prefix=""/>
 					<LN lnClass="TCTR" lnType="TCTR$oscd$_5b652afdf7c13340" inst="4" prefix=""/>
-					<LN lnClass="PTOC" lnType="PTOC$oscd$_72a47fe03fb65b2f" inst="1" prefix=""/>
-					<LN lnClass="XCBR" lnType="XCBR$oscd$_420e2f9e111e8bf2" inst="1" prefix=""/>
-					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="1" prefix=""/>
-					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="1" prefix=""/>
-					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="1" prefix=""/>
-					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="2" prefix=""/>
-					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="3" prefix=""/>
-					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="1" prefix=""/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="1" prefix="B1"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="2" prefix="B1"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="3" prefix="B1"/>
@@ -1404,7 +1878,120 @@
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="2" prefix="B2"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="3" prefix="B2"/>
 					<LN lnClass="TVTR" lnType="TVTR$oscd$_e990c540f6cd3155" inst="4" prefix="B2"/>
-					<LN lnClass="PDIF" lnType="PDIF$oscd$_ab16057220381a95" inst="1" prefix=""/>
+					<LN lnClass="PTOC" lnType="PTOC$oscd$_72a47fe03fb65b2f" inst="1" prefix="">
+						<DOI name="StrVal">
+							<SDI name="setMag">
+								<DAI name="f">
+									<Val>42.3</Val>
+								</DAI>
+							</SDI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="PTOC_Amp1" desc="sample_a1" iedName="TR2" ldInst="LD1" lnClass="TCTR" lnInst="1" doName="AmpSv" serviceType="Poll" daName="instMag.i"/>
+							<ExtRef intAddr="PTOC_Amp2" desc="sample_a2" iedName="TR2" ldInst="LD1" lnClass="TCTR" lnInst="2" doName="AmpSv" serviceType="Poll" daName="instMag.i"/>
+							<ExtRef intAddr="PTOC_Amp3" desc="sample_a3" iedName="TR2" ldInst="LD1" lnClass="TCTR" lnInst="3" doName="AmpSv" serviceType="Poll" daName="instMag.i"/>
+							<ExtRef intAddr="PTOC_Amp4" desc="sample_a4" iedName="TR2" ldInst="LD1" lnClass="TCTR" lnInst="4" doName="AmpSv" serviceType="Poll" daName="instMag.i"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CSWI" lnType="CSWI$oscd$_a89dcc3919082155" inst="1" prefix="">
+						<DOI name="Pos">
+							<DAI name="ctlModel">
+								<Val>sbo-with-enhanced-security</Val>
+							</DAI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="TR2" ldInst="LD1" lnClass="XCBR" lnInst="1" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="TR2" ldInst="LD1" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CSWI" lnType="CSWI$oscd$_a89dcc3919082155" inst="2" prefix="">
+						<DOI name="Pos">
+							<DAI name="ctlModel">
+								<Val>sbo-with-enhanced-security</Val>
+							</DAI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="TR2" ldInst="LD1" lnClass="XSWI" lnInst="2" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="TR2" ldInst="LD1" lnClass="XSWI" lnInst="2" doName="Pos" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="TR2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="TR2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CSWI" lnType="CSWI$oscd$_a89dcc3919082155" inst="3" prefix="">
+						<DOI name="Pos">
+							<DAI name="ctlModel">
+								<Val>sbo-with-enhanced-security</Val>
+							</DAI>
+						</DOI>
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="TR2" ldInst="LD1" lnClass="XSWI" lnInst="3" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="TR2" ldInst="LD1" lnClass="XSWI" lnInst="3" doName="Pos" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="TR2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="TR2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="PTRC" lnType="PTRC$oscd$_a60344357bbc2c12" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Op1" serviceType="GOOSE" iedName="BUS1" ldInst="LD1" lnClass="PTRC" lnInst="4" prefix="" doName="Tr" daName="general" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Bus1TripEventCn"/>
+							<ExtRef intAddr="Op2" serviceType="GOOSE" iedName="BUS2" ldInst="LD1" lnClass="PTRC" lnInst="4" prefix="" doName="Tr" daName="general" srcLDInst="LD1" srcPrefix="" srcLNClass="LLN0" srcCBName="Bus2TripEventCn"/>
+							<ExtRef intAddr="Op3" desc="PTOC_trip" iedName="TR2" ldInst="LD1" lnClass="PTOC" lnInst="1" doName="Op" daName="general" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="XCBR" lnType="XCBR$oscd$_420e2f9e111e8bf2" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="TR2" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="Tr" desc="Trip" iedName="TR2" ldInst="LD1" lnClass="PTRC" lnInst="1" doName="Tr" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpOpn" desc="Operate" iedName="TR2" ldInst="LD1" lnClass="CSWI" lnInst="1" doName="OpOpn" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpCls" desc="Operate" iedName="TR2" ldInst="LD1" lnClass="CSWI" lnInst="1" doName="OpCls" daName="general" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="CILO" lnType="CILO$oscd$_aa7ec79ef27309b1" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="stval" desc="xcbr_status" iedName="TR2" ldInst="LD1" lnClass="XCBR" lnInst="1" doName="Pos" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="2" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="TR2" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="OpOpn" desc="Operate" iedName="TR2" ldInst="LD1" lnClass="CSWI" lnInst="2" doName="OpOpn" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpCls" desc="Operate" iedName="TR2" ldInst="LD1" lnClass="CSWI" lnInst="2" doName="OpCls" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="TR2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="TR2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="XSWI" lnType="XSWI$oscd$_430901aa6c264cc1" inst="3" prefix="">
+						<Inputs>
+							<ExtRef intAddr="Loc" desc="Local_Remote" iedName="TR2" ldInst="LD1" lnClass="LLN0" lnInst="" doName="Loc" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="OpOpn" desc="Operate" iedName="TR2" ldInst="LD1" lnClass="CSWI" lnInst="3" doName="OpOpn" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="OpCls" desc="Operate" iedName="TR2" ldInst="LD1" lnClass="CSWI" lnInst="3" doName="OpCls" daName="general" serviceType="Poll"/>
+							<ExtRef intAddr="EnaOpn" desc="interlock_open" iedName="TR2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaOpn" daName="stVal" serviceType="Poll"/>
+							<ExtRef intAddr="EnaCls" desc="interlock_close" iedName="TR2" ldInst="LD1" lnClass="CILO" lnInst="1" doName="EnaCls" daName="stVal" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="1" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Amp1" desc="sample_a1" iedName="TR2" ldInst="LD1" lnClass="TCTR" lnInst="1" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp2" desc="sample_a2" iedName="TR2" ldInst="LD1" lnClass="TCTR" lnInst="2" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp3" desc="sample_a3" iedName="TR2" ldInst="LD1" lnClass="TCTR" lnInst="3" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Amp4" desc="sample_a4" iedName="TR2" ldInst="LD1" lnClass="TCTR" lnInst="4" doName="AmpSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="2" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Vol1" desc="sample_v1" iedName="TR2" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="1" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol2" desc="sample_v2" iedName="TR2" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="2" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol3" desc="sample_v3" iedName="TR2" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="3" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol4" desc="sample_v4" iedName="TR2" ldInst="LD1" prefix="B1" lnClass="TVTR" lnInst="4" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
+					<LN lnClass="MMXU" lnType="MMXU$oscd$_3abca1c29963576c" inst="3" prefix="">
+						<Inputs>
+							<ExtRef intAddr="MMXU_Vol1" desc="sample_v1" iedName="TR2" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="1" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol2" desc="sample_v2" iedName="TR2" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="2" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol3" desc="sample_v3" iedName="TR2" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="3" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+							<ExtRef intAddr="MMXU_Vol4" desc="sample_v4" iedName="TR2" ldInst="LD1" prefix="B2" lnClass="TVTR" lnInst="4" doName="VolSv" daName="instMag.i" serviceType="Poll"/>
+						</Inputs>
+					</LN>
 				</LDevice>
 			</Server>
 		</AccessPoint>
@@ -1511,6 +2098,7 @@
 		</LNodeType>
 		<LNodeType lnClass="LLN0" desc="LN0_1" id="LLN0$oscd$_86a723959df7af2e">
 			<DO name="Beh" type="Beh$oscd$_c6ed035c8137b35a"/>
+			<DO name="Loc" type="Loc$oscd$_d915d66d9e42a575"/>
 		</LNodeType>
 		<LNodeType lnClass="LPHD" desc="LPHD_1" id="LPHD$oscd$_8ca3cb769327538e">
 			<DO name="PhyHealth" type="PhyHealth$oscd$_f60d28fe398302cb"/>

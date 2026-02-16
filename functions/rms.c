@@ -36,7 +36,7 @@ void CALC_RMS(void * dsp)
   RMS * inst = dsp_inst->dsp_data;
 
   InputEntry *extRef = dsp_inst->extRefs; // start from the first extref, and check all values, we assume there are 8!
-  int i = 0;
+  uint32_t i = 0;
   float a;
   int peakval[4] = {0, 0, 0, 0};
   while (extRef != NULL)
@@ -69,9 +69,9 @@ void CALC_RMS(void * dsp)
         if ((inst->RMS_samplecount % 80) == 79) // we calculate the average after 80 samples
         {
           inst->RMS[i] /= 80;
-          inst->RMS[i] = sqrt(inst->RMS[i]);
+          inst->RMS[i] = (float)sqrt(inst->RMS[i]);
 
-          updateDataValues_Amp(dsp, i, inst->RMS[i]);
+          updateDataValues_Amp(dsp, i, (double)inst->RMS[i]);
 
           if (i == 3)
           {

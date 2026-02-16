@@ -31,7 +31,7 @@ void attachLogicalNodes(IedServer server, IedModel *model, IedModel_extensions *
     if (strcmp(lnInstance->lnClass, "LLN0") == 0)
     {
       printf("Found mandatory Class LLN0\n");
-      LLN0_init(server, lnInstance->parent);
+      lnInstance->instance = LLN0_init(server, lnInstance->parent,input, allInputValues);
     }
     else if (strcmp(lnInstance->lnClass, "LPHD") == 0)
     {

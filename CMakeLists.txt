@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.10)
+#cmake_minimum_required(VERSION 2.8.12)
 
 #cmake   -DCMAKE_BUILD_TYPE=Debug   -DCMAKE_INSTALL_PREFIX=$HOME/libiec61850/stage ..
 #cmake -DIEC61850_ROOT=$HOME/libiec61850/stage -DCMAKE_BUILD_TYPE=Debug ..
@@ -112,6 +113,14 @@ set(open_server_SRCS
 # ------------------------------------------------------------------------------
 add_executable(open_server ${open_server_SRCS})
 
+target_compile_options(open_server PRIVATE
+    -Wall
+    -Wextra
+    -Wshadow
+    -Wconversion
+    -Wno-unused-parameter
+)
+
 target_include_directories(open_server PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/inc
     ${IEC61850_INCLUDE_DIR}
@@ -123,6 +132,8 @@ target_link_libraries(open_server
     dl
     m
 )
+
+target_link_options(open_server PRIVATE -rdynamic)
 
 # ------------------------------------------------------------------------------
 # Runtime library search path (no install needed)

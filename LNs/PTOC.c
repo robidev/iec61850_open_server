@@ -98,10 +98,10 @@ void PTOC_callback_SMV(void *ptoc_inst)
 
   bool local_trip = false;
   bool local_trip_reset = false;
-  for(int i=0; i < 4; i++) // only read on amps.
+  for(uint32_t i=0; i < 4; i++) // only read on amps.
   {
-    float current =  DSP_get_phs(ptoc->dspI, i); // get absolute current from dsp
-    PTOC_Result result = PTOC_Update_algorithm(ptoc, i, current, (float)delta_t);
+    float current =  (float)DSP_get_phs(ptoc->dspI, i); // get absolute current from dsp
+    PTOC_Result result = PTOC_Update_algorithm(ptoc, (int)i, current, (float)delta_t);
     if(result == PTOC_TRIP)
     {
       local_trip = true;
@@ -177,19 +177,19 @@ void * PTOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
   inst->dspI = NULL;
 
   IecDataPoint dataPoints[8] = {
-      {"TmACrv.setCharact", IEC_TYPE_INT32},// 0 Operating curve type (IEC Standard Inverse), value is ignored
-      {"StrVal.setMag.f", IEC_TYPE_FLOAT},  // 1 Start value
-      {"TmMult.setMag.f", IEC_TYPE_FLOAT},  // 2 Time dial multiplier
-      {"MinOpTmms.setVal", IEC_TYPE_INT32}, // 3 Minimum operate time
-      {"MaxOpTmms.setVal", IEC_TYPE_INT32}, // 4 Maximum operate time
-      {"OpDlTmms.setVal" , IEC_TYPE_INT32}, // 5 Operate delay time
-      {"TypRsCrv.setVal" , IEC_TYPE_INT32}, // 6 Type of reset curve, assume lineair, value is ignored
-      {"RsDlTmms.setVal" , IEC_TYPE_INT32}  // 7 Reset delay time
+      {"TmACrv.setCharact", IEC_TYPE_INT32,{0},false},// 0 Operating curve type (IEC Standard Inverse), value is ignored
+      {"StrVal.setMag.f", IEC_TYPE_FLOAT,{0.0},false},  // 1 Start value
+      {"TmMult.setMag.f", IEC_TYPE_FLOAT,{0.0},false},  // 2 Time dial multiplier
+      {"MinOpTmms.setVal", IEC_TYPE_INT32,{0},false}, // 3 Minimum operate time
+      {"MaxOpTmms.setVal", IEC_TYPE_INT32,{0},false}, // 4 Maximum operate time
+      {"OpDlTmms.setVal" , IEC_TYPE_INT32,{0},false}, // 5 Operate delay time
+      {"TypRsCrv.setVal" , IEC_TYPE_INT32,{0},false}, // 6 Type of reset curve, assume lineair, value is ignored
+      {"RsDlTmms.setVal" , IEC_TYPE_INT32,{0},false}  // 7 Reset delay time
   };
 
   // some sane defaults
-  inst->StrVal = 100; // 100 Amps
-  inst->TmMult = 0.1; // multiplier 0.1
+  inst->StrVal = 200; // 100 Amps
+  inst->TmMult = 0.1f; // multiplier 0.1
   inst->MinOpTmms = 200; // 200 ms
   inst->MaxOpTmms = 800; // 800 ms 
   inst->OpDlTmms = 100;  // 100 ms operate delay
@@ -201,7 +201,7 @@ void * PTOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
     IedServer_handleWriteAccess(server, inst->DA_StrVal, PTOC_writeAccessHandler, inst);
 
   // Retrieve all values (if defined in the datamodel)
-  int retrieved = IecServer_getDataPoints(server, ln, dataPoints, 8);
+  IecServer_getDataPoints(server, ln, dataPoints, 8);
 
   // assign them in the ptoc, or copy the values back in the datamodel
   if (dataPoints[1].success  && dataPoints[1].value.floatVal > 0.0) {

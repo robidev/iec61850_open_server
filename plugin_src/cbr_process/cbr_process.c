@@ -34,7 +34,7 @@ int init(OpenServerInstance *srv)
     FILE *fp;
     char *line = NULL;
     size_t len = 0;
-    int read;
+    ssize_t read;
     char logical_node[130];
 
     fp = fopen("./plugin/cbr_process.config", "r");

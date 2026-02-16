@@ -21,11 +21,11 @@ int strcmp_p(const char *str1, const char *str2)
   if (str1 == NULL || str2 == NULL)
     return -1;
 
-  int s1 = strlen(str1);
-  int s2 = strlen(str2);
+  size_t s1 = strlen(str1);
+  size_t s2 = strlen(str2);
   if (s1 == s2 && s1 != 0 && s1 < 140)
   {
-    return strcmp(str1, str2);
+    return (int)strcmp(str1, str2);
   }
   return -1;
 }
@@ -309,12 +309,12 @@ void subscriber_callback_inputs_GOOSE(GooseSubscriber subscriber, void *paramete
     MmsValue *values = GooseSubscriber_getDataSetValues(subscriber);
     if (MmsValue_getType(values) == MMS_STRUCTURE || MmsValue_getType(values) == MMS_ARRAY)
     {
-      int arraySize = MmsValue_getArraySize(values);
-      int arrayIndex;
+      uint32_t arraySize = MmsValue_getArraySize(values);
+      uint32_t arrayIndex;
       for (arrayIndex = 0; arrayIndex < arraySize; arrayIndex++)
       {
         // find all extrefs for this index
-        while (inputVal->index == arrayIndex)
+        while ((uint32_t)inputVal->index == arrayIndex)
         {
           MmsValue *value = MmsValue_getElement(values, inputVal->index);
           if (value == NULL)
@@ -357,6 +357,7 @@ void subscriber_callback_inputs_GOOSE(GooseSubscriber subscriber, void *paramete
 // called for subscribed SMV data
 void subscriber_callback_inputs_SMV(SVSubscriber subscriber, void *parameter, SVSubscriber_ASDU asdu)
 {
+  (void)subscriber;//silence the unused warning
   uint64_t tm = SVSubscriber_ASDU_getRefrTmAsMs(asdu); // Hal_getTimeInMs();
 
   InputValue *inputVal = (InputValue *)parameter;
@@ -398,7 +399,7 @@ void subscriber_callback_inputs_SMV(SVSubscriber subscriber, void *parameter, SV
           MmsValue *stVal = MmsValue_newIntegerFromInt32(val[(arrayIndex * 2)]);
           MmsValue_setElement(value, 0, stVal);
 
-          MmsValue *q = MmsValue_newUnsignedFromUint32(val[(arrayIndex * 2) + 1]);
+          MmsValue *q = MmsValue_newUnsignedFromUint32((uint32_t)val[(arrayIndex * 2) + 1]);
           MmsValue_setElement(value, 1, q);
 
           MmsValue *t = MmsValue_newUtcTimeByMsTime(tm);

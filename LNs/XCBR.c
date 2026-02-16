@@ -2,7 +2,7 @@
 #include "iec61850_model_extensions.h"
 #include "XCBR.h"
 #include "XSWI.h"
-
+#include "LLN0.h"
 
 // callback for trip signal -> will trigger process
 void XCBR_callback_Tr(InputEntry *extRef)
@@ -66,6 +66,11 @@ void *XCBR_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
   inst->Pos_t = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Pos.t");       // the node to operate on when a operate is triggered
   inst->Pos_stVal_callback = _findAttributeValueEx(inst->Pos_stVal, allInputValues); // find node that this element was subscribed to, so that it will be called during an update
 
+  inst->Loc_stVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Loc.stVal");
+  inst->Loc_t = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Loc.t");       // the node to operate on when a operate is triggered
+  inst->Loc_stVal_callback = _findAttributeValueEx(inst->Loc_stVal, allInputValues); // find node that this element was subscribed to, so that it will be called during an update
+  inst->Loc = false;
+
   inst->BlkOpn = false;
   inst->BlkOpn_stVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "BlkOpn.stVal");
   inst->BlkOpn_stVal_callback = _findAttributeValueEx(inst->BlkOpn_stVal, allInputValues); // find node that this element was subscribed to, so that it will be called during an update
@@ -108,6 +113,13 @@ void *XCBR_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
       {
         // register callbacks for CILO subscription
         extref->callBack = (callBackFunction)XSWI_EnaCls_callback;
+        extref->callBackParam = inst; // pass instance in param
+      }
+
+      if (strcmp(extref->intAddr, "Loc") == 0)
+      {
+        // register callbacks for CILO subscription
+        extref->callBack = (callBackFunction)XSWI_Loc_callback;
         extref->callBackParam = inst; // pass instance in param
       }
 

@@ -26,6 +26,7 @@
 
 #include "XSWI.h"
 #include "MMXU.h"
+#include "LLN0.h"
 
 #define BUFFER_SIZE 1024
 
@@ -43,6 +44,9 @@ typedef struct JsonNode {
     DataAttribute* DA_ref;
     JsonValueType type;
     struct JsonNode *next;
+    bool diagramvalue;
+    bool measurementvalue;
+    bool generalvalue;
 } JsonNode;
 
 static const char *socket_path = NULL;
@@ -50,9 +54,9 @@ static JsonNode *UIConfigList = NULL;
 
 JsonNode* create_node(JsonNode **head, const char *name, JsonValueType type, IedServer server, void * inst, DataAttribute* DA_ref);
 void free_json_list(JsonNode *head);
-char* to_json_string(JsonNode *head);
+char* to_json_string(JsonNode *head, bool measurements_enable, bool diagram_enable);
 
-static void UI_connector_socket_Thread(void * parameter);
+static void *UI_connector_socket_Thread(void * parameter);
 
 
 int init(OpenServerInstance *srv)
@@ -84,7 +88,7 @@ int init(OpenServerInstance *srv)
     /* Iterate through all key-value pairs */
     printf("\n settings for %s \n", section->section);
     for (int i = 0; i < section->entry_count; i++) {
-        //printf("  %s = ", section->entries[i].key);
+        printf("  %s = ", section->entries[i].key);
          // known keys
         if(strcmp(section->entries[i].key,"socket") == 0)
         {
@@ -94,7 +98,7 @@ int init(OpenServerInstance *srv)
                 continue;
             }
             const char *tmpsocket = config_get_value(section, "socket");
-            const int socketln = strlen(tmpsocket);
+            const size_t socketln = strlen(tmpsocket);
             if(socketln > 256) {
                 printf("ERROR: invalid socket path\n");
                 continue;
@@ -120,6 +124,9 @@ int init(OpenServerInstance *srv)
             }
             XSWI *item = ln->instance;
             create_node(&UIConfigList,section->entries[i].key,JSON_TYPE_BITSTRING,srv->server, item, item->Pos_stVal);
+            UIConfigList->diagramvalue = true;
+            UIConfigList->measurementvalue = false;
+            UIConfigList->generalvalue = true;
             continue;
         }
         if(strncmp(section->entries[i].key,"cbr",3) == 0) // CBR[index], publish state, accept commands
@@ -132,6 +139,9 @@ int init(OpenServerInstance *srv)
             }
             XSWI *item = ln->instance;
             create_node(&UIConfigList,section->entries[i].key,JSON_TYPE_BITSTRING,srv->server, item, item->Pos_stVal);
+            UIConfigList->diagramvalue = true;
+            UIConfigList->measurementvalue = false;
+            UIConfigList->generalvalue = true;
             continue;
         }
         if(strncmp(section->entries[i].key,"ctr",3) == 0) // CTR[index], publish value
@@ -144,6 +154,9 @@ int init(OpenServerInstance *srv)
             }
             MMXU *item = ln->instance;
             create_node(&UIConfigList,section->entries[i].key,JSON_TYPE_FLOAT,srv->server, item, item->da_A);
+            UIConfigList->diagramvalue = true;
+            UIConfigList->measurementvalue = false;
+            UIConfigList->generalvalue = false;
             continue;
         }
         if(strncmp(section->entries[i].key,"vtr",3) == 0) // VTR[index], publish value
@@ -156,9 +169,27 @@ int init(OpenServerInstance *srv)
             }
             MMXU *item = ln->instance;
             create_node(&UIConfigList,section->entries[i].key,JSON_TYPE_FLOAT,srv->server, item, item->da_V);
+            UIConfigList->diagramvalue = true;
+            UIConfigList->measurementvalue = false;
+            UIConfigList->generalvalue = false;
             continue;
         }
-        if(strncmp(section->entries[i].key,"set",3) == 0) // Setting[index]_[Name], publish value, accept write
+        if(strncmp(section->entries[i].key,"loc",3) == 0) // VTR[index], publish value
+        {
+            LogicalNodeClass *ln = getLNClass(model, model_ex, section->entries[i].values[0]);
+            if (ln == NULL)
+            {
+                printf("ERROR: could not parse or find an LN entry with key: %s\n", section->entries[i].values[0]);
+                continue; //if not, give up
+            }
+            LLN0 *item = ln->instance;
+            create_node(&UIConfigList,section->entries[i].key,JSON_TYPE_BOOLEAN,srv->server, item, item->Loc_stVal);
+            UIConfigList->diagramvalue = true;
+            UIConfigList->measurementvalue = false;
+            UIConfigList->generalvalue = true;
+            continue;
+        }
+        if(strncmp(section->entries[i].key,"s_",2) == 0) // Setting[index]_[Name], publish value, accept write
         {
             LogicalNodeClass *ln = getLNClass(model, model_ex, section->entries[i].values[0]);
             if (ln == NULL)
@@ -186,16 +217,20 @@ int init(OpenServerInstance *srv)
                 {
                     case MMS_BOOLEAN:
                         create_node(&UIConfigList,section->entries[i].key,JSON_TYPE_BOOLEAN,srv->server, NULL, attr);
+                        UIConfigList->diagramvalue = false; UIConfigList->measurementvalue = false; UIConfigList->generalvalue = true;
                     break;
                     case MMS_INTEGER:
                     case MMS_UNSIGNED:
                         create_node(&UIConfigList,section->entries[i].key,JSON_TYPE_INTEGER,srv->server, NULL, attr);
+                        UIConfigList->diagramvalue = false; UIConfigList->measurementvalue = false; UIConfigList->generalvalue = true;
                     break;
                     case MMS_BIT_STRING:
                         create_node(&UIConfigList,section->entries[i].key,JSON_TYPE_BITSTRING,srv->server, NULL, attr);
+                        UIConfigList->diagramvalue = false; UIConfigList->measurementvalue = false; UIConfigList->generalvalue = true;
                     break;
                     case MMS_FLOAT:
                         create_node(&UIConfigList,section->entries[i].key,JSON_TYPE_FLOAT,srv->server, NULL, attr);
+                        UIConfigList->diagramvalue = false; UIConfigList->measurementvalue = false; UIConfigList->generalvalue = true;
                     break;
                     default:
                         printf("ERROR: unsupported MMS type for setting ref %s, type is %d", section->entries[i].values[1], mmsType);
@@ -208,11 +243,53 @@ int init(OpenServerInstance *srv)
 
             continue;
         }
+        if(strncmp(section->entries[i].key,"m_",2) == 0) // Setting[index]_[Name], publish value, accept write
+        {
+            LogicalNodeClass *ln = getLNClass(model, model_ex, section->entries[i].values[0]);
+            if (ln == NULL)
+            {
+                printf("ERROR: could not parse or find an LN entry with key: %s\n", section->entries[i].values[0]);
+                continue; //if not, give up
+            }
+            if(section->entries[i].value_count > 1)
+            {
+                printf("INFO: DA for setting is %s\n",section->entries[i].values[1]);
+                DataAttribute* attr = (DataAttribute*)ModelNode_getChild((ModelNode*)ln->parent, section->entries[i].values[1]);
+                if (attr == NULL) {
+                    printf("ERROR: failed to get DataAttribute for %s in %s\n",section->entries[i].values[1], section->entries[i].values[0]);
+                    continue;  // Failed to get value
+                }
+                // Get the value
+                MmsValue* mmsValue = IedServer_getAttributeValue(srv->server, attr);
+                
+                if (mmsValue == NULL) {
+                    printf("ERROR: failed to get MmsValue for %s\n",section->entries[i].values[1]);
+                    continue;  // Failed to get value
+                }
+                MmsType mmsType = MmsValue_getType(mmsValue);
+                switch(mmsType)
+                {
+                    case MMS_FLOAT:
+                        create_node(&UIConfigList,section->entries[i].key,JSON_TYPE_FLOAT,srv->server, NULL, attr);
+                        UIConfigList->diagramvalue = false;
+                        UIConfigList->measurementvalue = true;
+                        UIConfigList->generalvalue = false;
+                    break;
+                    default:
+                        printf("ERROR: unsupported MMS type for measurement ref %s, type is %d", section->entries[i].values[1], mmsType);
+                }
+            }
+            else
+            {
+                printf("ERROR: missing DA for measurement %s\n",section->entries[i].key);
+            }
+            continue;
+        }
     }
 
     config_free(&config);
 
-    char * jj = to_json_string(UIConfigList);
+    char * jj = to_json_string(UIConfigList, true, true);
     printf("%s\n",jj);
     free(jj);
     printf("ui_connector module initialised\n");
@@ -304,7 +381,7 @@ int extract_json_string(const char *json, const char *field, char *value, size_t
         const char *value_end = strchr(value_start, '"');
         if (!value_end) return 0;
         
-        size_t len = value_end - value_start;
+        size_t len = (size_t)(value_end - value_start);
         if (len >= value_size) len = value_size - 1;
         
         strncpy(value, value_start, len);
@@ -327,7 +404,7 @@ bool write_setting(DataAttribute * da,const char * arg2)
     return false;
 }
 
-static void UI_connector_socket_Thread(void * parameter) {
+static void *UI_connector_socket_Thread(void * parameter) {
     int server_fd, client_fd;
     struct sockaddr_un addr;
 
@@ -337,7 +414,7 @@ static void UI_connector_socket_Thread(void * parameter) {
     server_fd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (server_fd < 0) {
         printf("ERROR: cannot create socket\n");
-        return;
+        return NULL;
     }
     
     /* Remove existing socket file */
@@ -351,7 +428,7 @@ static void UI_connector_socket_Thread(void * parameter) {
     if (bind(server_fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
         printf("ERROR: cannot bind to path: %s\n", socket_path);
         close(server_fd);
-        return;
+        return NULL;
     }
     
     /* Listen for connections */
@@ -359,7 +436,7 @@ static void UI_connector_socket_Thread(void * parameter) {
         printf("ERROR: cannot listen on socket\n");
         close(server_fd);
         unlink(socket_path);
-        return;
+        return NULL;
     }
 
     while(open_server_running())
@@ -395,8 +472,17 @@ static void UI_connector_socket_Thread(void * parameter) {
             
             /* Process command and build response */ 
             char * response = NULL;        
-            if (is_command(buffer, "get_measurements")) {
-                response = to_json_string(UIConfigList);
+            if (is_command(buffer, "get_values")) {
+                char arg2[64] = "";
+                bool measurements_enable = false;
+                bool diagram_enable = false;
+                if (extract_json_string(buffer, "measurements", arg, sizeof(arg)) && arg[0]) {
+                    measurements_enable = arg[0] == 'T'; // check if string starts with T for True
+                }
+                if (extract_json_string(buffer, "diagram", arg2, sizeof(arg2)) && arg2[0]) {
+                    diagram_enable = arg2[0] == 'T'; // check if string starts with T for True
+                }
+                response = to_json_string(UIConfigList, measurements_enable, diagram_enable);
             }
             else if (is_command(buffer, "open_switch")) {
                 // Try to extract argument 
@@ -426,6 +512,31 @@ static void UI_connector_socket_Thread(void * parameter) {
                     xasprintf(&response, "{\"status\":\"error\",\"message\":\"close_switch missing argument\",\"command\":\"%s\"}\n", buffer);
                 }
             }
+            else if (is_command(buffer, "write_loc")) {
+                // Try to extract argument 
+                JsonNode *node = find_node("loc");
+                if(node && node->inst && node->server) {
+                    char arg2[64] = "";
+                    if (extract_json_string(buffer, "value", arg2, sizeof(arg2)) && arg2[0]) {
+                            
+                        if( arg2[0] == 'T' ) {
+                            LLN0_SetLoc(node->inst,true);
+                            xasprintf(&response, "{\"status\":\"ok\",\"action\":\"write_loc\",\"value\":\"%s\"}\n", arg2);
+                        }
+                        else if( arg2[0] == 'F' ) {
+                            LLN0_SetLoc(node->inst,false);
+                            xasprintf(&response, "{\"status\":\"ok\",\"action\":\"write_loc\",\"value\":\"%s\"}\n", arg2);
+                        }
+                        else
+                            xasprintf(&response, "{\"status\":\"error\",\"message\":\"write_loc_failed\",\"value\":\"%s\"}\n", arg2);
+
+                    } else {
+                        xasprintf(&response, "{\"status\":\"error\",\"message\":\"value_missing\"}\n");
+                    }
+                } else {
+                    xasprintf(&response, "{\"status\":\"error\",\"message\":\"loc not found or invalid\"}\n");
+                }
+            }
             else if (is_command(buffer, "write_setting")) {
                 // Try to extract argument 
                 if (extract_json_string(buffer, "element", arg, sizeof(arg)) && arg[0]) {
@@ -433,10 +544,12 @@ static void UI_connector_socket_Thread(void * parameter) {
                     if(node && node->DA_ref && node->server) {
                         char arg2[64] = "";
                         if (extract_json_string(buffer, "value", arg2, sizeof(arg2)) && arg2[0]) {
+
                             if( IecServer_setDataPointFromString(node->server, node->DA_ref, arg2) )
                                 xasprintf(&response, "{\"status\":\"ok\",\"action\":\"write_setting\",\"element\":\"%s\",\"value\":\"%s\"}\n", arg, arg2);
                             else
                                 xasprintf(&response, "{\"status\":\"error\",\"message\":\"write_setting_failed\",\"element\":\"%s\",\"value\":\"%s\"}\n", arg, arg2);
+
                         } else {
                             xasprintf(&response, "{\"status\":\"error\",\"message\":\"value_missing\",\"element\":\"%s\"}\n", arg);
                         }
@@ -469,11 +582,11 @@ static void UI_connector_socket_Thread(void * parameter) {
     unlink(socket_path);
     
     printf("Server shutdown\n");
-    return;
+    return NULL;
 }
 
 /* Main function to convert linked list to JSON string */
-char* to_json_string(JsonNode *head) {
+char* to_json_string(JsonNode *head, bool measurements_enable, bool diagram_enable) {
     if (!head) {
         /* Empty list returns empty JSON object */
         char *result = malloc(4);
@@ -485,8 +598,15 @@ char* to_json_string(JsonNode *head) {
     size_t total_size = 4; /* For opening and closing braces, plus newline */
     JsonNode *current = head;
     int count = 0;
-    
+        
     while (current) {
+        if(!current->generalvalue)
+        {
+            if( ! ((measurements_enable == true && current->measurementvalue == true) || (diagram_enable == true && current->diagramvalue == true))) {
+                current = current->next; // skip if not selected]
+                continue;
+            }
+        }
         /* Add size for "name": */
         total_size += strlen(current->name) + 4; /* quotes + colon + space */
         
@@ -523,6 +643,13 @@ char* to_json_string(JsonNode *head) {
     current = head;
     
     while (current) {
+        if(!current->generalvalue)
+        {
+            if( ! ((measurements_enable == true && current->measurementvalue == true) || (diagram_enable == true && current->diagramvalue == true))) {
+                current = current->next; // skip if not selected]
+                continue;
+            }
+        }
         /* Add name */
         strcat(json, "\"");
         strcat(json, current->name);

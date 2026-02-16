@@ -35,14 +35,15 @@ typedef struct sComtradeTimestamp
 } ComtradeTimestamp;
 
 
-void recorder_delay(RDRE *inst)
+void *recorder_delay(RDRE *inst)
 {
   Thread_sleep(TRIP_RECORD_DELAY_MS);//record a little after the trip
   if(inst->recording != 1)// we are already recording, or were just finished
   {
-    return;
+    return NULL;
   }
   inst->recording = 2;
+  return NULL;
 }
 
 void RDRE_callback_trip(InputEntry *extRef)
@@ -100,8 +101,8 @@ void write_comtrade(RDRE *inst)
     inst->recording = 0;
     return;
   }
-  int32_t bufindex = (inst->sample_index +1) % RDRE_MAX_SAMPLES; //start at the oldest sample
-  for(int i = 0; i < RDRE_MAX_SAMPLES; i++)
+  uint32_t bufindex = (inst->sample_index +1) % RDRE_MAX_SAMPLES; //start at the oldest sample
+  for(uint32_t i = 0; i < RDRE_MAX_SAMPLES; i++)
   {
     fprintf(fp,"%d,%d",i,time);
     uint32_t radr_index = 0;
@@ -163,7 +164,7 @@ void write_comtrade(RDRE *inst)
   inst->recording = 0;
 }
 
-void recorder_callback(RDRE *inst)
+void *recorder_callback(RDRE *inst)
 {
   struct timespec begintime;
   struct timespec curtime;
@@ -174,7 +175,7 @@ void recorder_callback(RDRE *inst)
   if(inst == NULL || inst->analogbuffers == NULL || inst->digitalbuffers == NULL)
   {
     printf("RDRE: ERROR could not allocate recording buffers");
-    return;
+    return NULL;
   }
 
   while(open_server_running())
@@ -219,10 +220,11 @@ void recorder_callback(RDRE *inst)
     do
     {
       clock_gettime(CLOCK_MONOTONIC_RAW, &curtime);
-      timediff_ns = ((curtime.tv_sec - begintime.tv_sec)*1000000000) + (curtime.tv_nsec - begintime.tv_nsec);
+      timediff_ns = (uint64_t)((curtime.tv_sec - begintime.tv_sec)*1000000000) + (uint64_t)(curtime.tv_nsec - begintime.tv_nsec);
     } while(timediff_ns < 250000);//wait for 250 microseconds
     begintime = curtime;
   }
+  return NULL;
 }
 
 void * RDRE_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_extensions * model_ex,Input *input, LinkedList allInputValues)
@@ -252,9 +254,9 @@ void * RDRE_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_
           //this should work if the input ref is the logical node instance instead of a DA, is this allowed?
           //this could be called before radr extension is initialised based on the order in the SCL file!!!!!!!!!!!!!!!!!!!!!!!!
           //CFG should ignore ., or SCL file should be fixed, and parent should be retrieved here....
-          LogicalNodeClass *ln = getLNClass(model, model_ex, extRef->Ref);
-          if (ln != NULL){
-            LinkedList_add(inst->analog, ln);
+          LogicalNodeClass *lninst = getLNClass(model, model_ex, extRef->Ref);
+          if (lninst != NULL){
+            LinkedList_add(inst->analog, lninst);
             inst->analogbuffer_size++;
           }
       }
@@ -262,9 +264,9 @@ void * RDRE_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_
       if (strcmp(extRef->intAddr, "RDRE_digital") == 0)
       {
           //this should work if the input ref is the logical node instance instead of a DA, is this allowed?
-          LogicalNodeClass *ln = getLNClass(model, model_ex, extRef->Ref);
-          if (ln != NULL){
-            LinkedList_add(inst->digital, ln);
+          LogicalNodeClass *lninst = getLNClass(model, model_ex, extRef->Ref);
+          if (lninst != NULL){
+            LinkedList_add(inst->digital, lninst);
             inst->digitalbuffer_size++;
           }
       }
@@ -279,7 +281,7 @@ void * RDRE_init(IedServer server, LogicalNode *ln, IedModel * model , IedModel_
 
 
   inst->analogbuffers =  (int32_t **)malloc(sizeof(int32_t *) * inst->analogbuffer_size);
-  int i = 0;
+  uint32_t i = 0;
   for(i = 0; i < inst->analogbuffer_size; i++)
       inst->analogbuffers[i] = malloc(sizeof(int32_t) * RDRE_MAX_SAMPLES);
 

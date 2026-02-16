@@ -1,6 +1,6 @@
 
 set(cbr_simulation_SRCS
-   main.c
+   cbr_simulation.c
 )
 
 include_directories(
@@ -10,6 +10,14 @@ include_directories(
 
 add_library(cbr_simulation SHARED
   ${cbr_simulation_SRCS}
+)
+
+target_compile_options(cbr_simulation PRIVATE
+    -Wall
+    -Wextra
+    -Wshadow
+    -Wconversion
+    -Wno-unused-parameter
 )
 
 target_link_libraries(cbr_simulation

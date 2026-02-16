@@ -19,8 +19,8 @@ typedef struct sSwConfig
 } SwConfig;
 
 // process simulator
-void simulate_switch_close(void *inst);
-void simulate_switch_open(void *inst);
+void *simulate_switch_close(void *inst);
+void *simulate_switch_open(void *inst);
 
 void callback_from_LN(void *inst, bool state)
 {;
@@ -44,7 +44,7 @@ int init(OpenServerInstance *srv)
     FILE *fp;
     char *line = NULL;
     size_t len = 0;
-    int read;
+    ssize_t read;
     char logical_node[130];
 
     fp = fopen("./plugin/cbr_simulator.config", "r");
@@ -91,7 +91,7 @@ int init(OpenServerInstance *srv)
 }
 
 // threath for process-simulation: open/close switch
-void simulate_switch_close(void *inst)
+void *simulate_switch_close(void *inst)
 {
     XSWI *instance = inst;
     Semaphore_wait(instance->sem);
@@ -109,8 +109,9 @@ void simulate_switch_close(void *inst)
         XSWI_change_switch(instance, DBPOS_ON);
     }
     Semaphore_post(instance->sem);
+    return NULL;
 }
-void simulate_switch_open(void *inst)
+void *simulate_switch_open(void *inst)
 {
     XSWI *instance = inst;
     Semaphore_wait(instance->sem);
@@ -128,4 +129,5 @@ void simulate_switch_open(void *inst)
         printf(" SWI: opened\n");
     }
     Semaphore_post(instance->sem);
+    return NULL;
 }

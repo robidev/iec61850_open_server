@@ -32,6 +32,8 @@
 extern "C" {
 #endif
 
+int32_t extract_last_index(const char *str);
+
 LIB61850_INTERNAL char*
 StringUtils_copyString(const char* string);
 

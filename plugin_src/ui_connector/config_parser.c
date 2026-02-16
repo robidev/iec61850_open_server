@@ -78,7 +78,7 @@ static char** parse_csv(const char *value, int *count) {
     int capacity = INITIAL_CAPACITY;
     *count = 0;
     
-    values = malloc(capacity * sizeof(char*));
+    values = malloc((size_t)(capacity) * sizeof(char*));
     if (!values) return NULL;
     
     char *value_copy = strdup(value);
@@ -100,7 +100,7 @@ static char** parse_csv(const char *value, int *count) {
             
             if (*count >= capacity) {
                 capacity *= 2;
-                char **new_values = realloc(values, capacity * sizeof(char*));
+                char **new_values = realloc(values, (size_t)capacity * sizeof(char*));
                 if (!new_values) {
                     for (int i = 0; i < *count; i++) free(values[i]);
                     free(values);
@@ -128,7 +128,7 @@ static char** parse_csv(const char *value, int *count) {
     if (*trimmed) {
         if (*count >= capacity) {
             capacity *= 2;
-            char **new_values = realloc(values, capacity * sizeof(char*));
+            char **new_values = realloc(values, (size_t)capacity * sizeof(char*));
             if (!new_values) {
                 for (int i = 0; i < *count; i++) free(values[i]);
                 free(values);
@@ -164,7 +164,7 @@ static config_section_t* config_add_section(config_t *config, const char *name) 
     if (config->section_count >= config->section_capacity) {
         config->section_capacity *= 2;
         config_section_t *new_sections = realloc(config->sections, 
-            config->section_capacity * sizeof(config_section_t));
+            (size_t)config->section_capacity * sizeof(config_section_t));
         if (!new_sections) return NULL;
         config->sections = new_sections;
     }
@@ -183,7 +183,7 @@ static int section_add_entry(config_section_t *section, const char *key, const c
     if (section->entry_count >= section->entry_capacity) {
         section->entry_capacity *= 2;
         config_entry_t *new_entries = realloc(section->entries,
-            section->entry_capacity * sizeof(config_entry_t));
+            (size_t)section->entry_capacity * sizeof(config_entry_t));
         if (!new_entries) return -1;
         section->entries = new_entries;
     }

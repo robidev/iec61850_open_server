@@ -5,7 +5,7 @@
 #include "timestep_config.h"
 #include "iec61850_model_extensions.h"
 
-void SMV_Thread(SMVP *inst);
+static void *SMV_Thread(void *parameter);
 
 int setSampleCallback(SMVP *instance, SampleCallback callback, void *parameter)
 {
@@ -21,6 +21,7 @@ int setSampleCallback(SMVP *instance, SampleCallback callback, void *parameter)
 
 void sVCBEventHandler(SVControlBlock *svcb, int event, void *parameter)
 {
+    (void)svcb;
     SMVP *inst = (SMVP *)parameter;
     if (event == IEC61850_SVCB_EVENT_ENABLE)
         inst->svcbEnabled = 1;
@@ -30,6 +31,8 @@ void sVCBEventHandler(SVControlBlock *svcb, int event, void *parameter)
 
 void *SMVP_init(SVPublisher SMVPublisher, SVControlBlock *svcb, IedServer server, LinkedList allInputValues)
 {
+    (void)allInputValues;
+    
     if (SMVPublisher == NULL)
     {
         printf("ERROR: could not create sampled value publisher, are you running as root?\n");
@@ -116,12 +119,12 @@ void *SMVP_init(SVPublisher SMVPublisher, SVControlBlock *svcb, IedServer server
         }
         LinkedList_add(inst->dataSetValues, entry);
     
-        DataAttribute *da = IedModel_lookupDataAttributeByMmsValue(model, childEntry);
+        //DataAttribute *da = IedModel_lookupDataAttributeByMmsValue(model, childEntry);
         //TODO check for correct DA type 
         dataSetEntry = dataSetEntry->sibling;
     }
 
-    Thread thread = Thread_create((ThreadExecutionFunction)SMV_Thread, inst, true);
+    Thread thread = Thread_create(SMV_Thread, inst, true);
     Thread_start(thread);
     return inst;
 }
@@ -131,8 +134,9 @@ void SMVP_destroy(SMVP *inst)
     SVPublisher_destroy(inst->svPublisher);
 }
 
-void SMV_Thread(SMVP *inst)
+static void *SMV_Thread(void * parameter)
 {
+    SMVP *inst = (SMVP*)parameter;
     inst->running = true;
 
     int sampleCount = 0;
@@ -145,7 +149,7 @@ void SMV_Thread(SMVP *inst)
         if (inst->getSample != NULL)
             inst->getSample(sampleCount, inst->getSampleParameter); // update samples
 
-        int samplePoint = sampleCount % 80;
+        //int samplePoint = sampleCount % 80;
         if (inst->svcbEnabled)
         {
 
@@ -159,7 +163,7 @@ void SMV_Thread(SMVP *inst)
                     MmsValue *datasetValue = ds->data;
 
                     SVPublisher_ASDU_setINT32(inst->asdu, index, MmsValue_toInt32(MmsValue_getElement(MmsValue_getElement(datasetValue, 0), 0)));
-                    SVPublisher_ASDU_setQuality(inst->asdu, index + 4, MmsValue_toUint32(MmsValue_getElement(datasetValue, 1)));
+                    SVPublisher_ASDU_setQuality(inst->asdu, index + 4, (Quality)MmsValue_toUint32(MmsValue_getElement(datasetValue, 1)));
                     index += 8;
                 }
                 ds = LinkedList_getNext(ds);
@@ -193,4 +197,5 @@ void SMV_Thread(SMVP *inst)
             }
         }
     }
+    return NULL;
 }

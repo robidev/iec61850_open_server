@@ -14,6 +14,7 @@ typedef struct sPTRC
   DataAttribute *Str_general;//Start(fault), agregated from sources
   void *Str_general_callback;
   InputEntry *extRefs;
+  bool EnaOpn;
 } PTRC;
 
 // receive trip command from input LN's
@@ -32,7 +33,7 @@ void PTRC_input_Tr_callback(InputEntry *extRef)
         continue;
       }
 
-      if (MmsValue_getBoolean(firstExtRef->value) == true && inst->tripstate == false)  // if any of the registered Op values is true, and not yet tripped
+      if (MmsValue_getBoolean(firstExtRef->value) == true && inst->tripstate == false && inst->EnaOpn == true)  // if any of the registered Op values is true, and not yet tripped
       {
         printf("PTRC: trip from Op: %s\n", firstExtRef->Ref); //
         MmsValue *tripValue = MmsValue_newBoolean(true);
@@ -101,12 +102,23 @@ void PTRC_input_Str_callback(InputEntry *extRef)
   inst->Strstate = false;
 }
 
+// receive trip command from input LN's
+void PTRC_input_EnaOpn_callback(InputEntry *extRef)
+{
+  PTRC *inst = extRef->callBackParam;
+  if(extRef->value && inst)
+  {
+    inst->EnaOpn = MmsValue_getBoolean(extRef->value);
+  }
+}
+
 void * PTRC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
   PTRC *inst = (PTRC *)malloc(sizeof(PTRC)); // create new instance with MALLOC
   inst->server = server;
   inst->tripstate = false;
   inst->Strstate = false;
+  inst->EnaOpn = true; // default is enabled, for when EnaOpn is not defined
   inst->extRefs = input->extRefs;
 
   inst->Tr_general = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Tr.general"); // the trip value, that is triggered via internal trip conditioning
@@ -136,6 +148,13 @@ void * PTRC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
       {
         extRef->callBack = (callBackFunction)PTRC_input_Str_callback; // callback to trigger when Op_x is set
         extRef->callBackParam = inst;
+      }
+
+      if (extRef->intAddr != NULL && strncmp(extRef->intAddr, "EnaOpn", 6) == 0)
+      {
+        extRef->callBack = (callBackFunction)PTRC_input_EnaOpn_callback; // callback to trigger when EnaOpn is updated
+        extRef->callBackParam = inst;
+        inst->EnaOpn = false; // default is false when EnaOpn input is defined
       }
 
       extRef = extRef->sibling;

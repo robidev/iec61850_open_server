@@ -23,7 +23,7 @@ OpenServerInstance *castOpenServerInstance(void * srv)
 }
 
 
-void Python_threat(void * srv);
+static void *Python_threat(void * srv);
 
 MmsValue * getDataRefFromModel(OpenServerInstance *srv, char *ref)
 {
@@ -259,11 +259,10 @@ PyObject* structToPyObject(void *srv)
     return PyObject_CallFunction(c_void_p, "O", PyLong_FromVoidPtr(srv));
 }
 
-void Python_threat(void * srv)
+void *Python_threat(void * srv)
 {
     PyObject *pName, *pModule, *pFunc;
     PyObject *pValue, *pArgs;
-    int i;
 
     Py_Initialize();
 
@@ -288,7 +287,7 @@ void Python_threat(void * srv)
             if (!pValue) {
                     Py_DECREF(pArgs); Py_DECREF(pModule);
                     printf(" ERROR: Cannot convert argument\n");
-                    return;
+                    return NULL;
             }
             PyTuple_SetItem(pArgs, 0, pValue);
       
@@ -306,7 +305,7 @@ void Python_threat(void * srv)
                 Py_DECREF(pModule);
                 PyErr_Print();
                 printf(" ERROR: Call failed\n");
-                return;
+                return NULL;
             }
         }
         else {
@@ -320,10 +319,11 @@ void Python_threat(void * srv)
     else {
         PyErr_Print();
         printf(" ERROR: Failed to load app.py\n");
-        return;
+        return NULL;
     }
     printf(" Python thread ended normally\n");
     if (Py_FinalizeEx() < 0) {
-        return;
+        return NULL;
     }
+    return NULL;
 }

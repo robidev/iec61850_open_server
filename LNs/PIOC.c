@@ -27,7 +27,7 @@ typedef struct sPIOC
 void PIOC_callback_SMV(void *pioc_inst)
 {
   PIOC *inst = pioc_inst;
-  int i = 0;
+  u_int32_t i = 0;
   while (i < 4) // only trigger on amps. TODO: ensure it only triggers on Amps lnrefs, instead of relying on the order in the SCD file
   {
     double current =  DSP_get_phs(inst->dspI, i); // get absolute current from dsp
@@ -65,14 +65,6 @@ void PIOC_callback_SMV(void *pioc_inst)
   inst->tripTimer++;
 }
 
-static void getPIOCSettings(IedServer server, LogicalNode *ln)
-{
-  DataAttribute * StrVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "StrVal.setMag.f"); // the node to operate on
-  MmsValue* StrValValue = IedServer_getAttributeValue(server,  StrVal);
-  float val = MmsValue_toFloat(StrValValue);
-  printf("PIOC Setting StrVal: %f\n",val);
-}
-
 void * PIOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
   PIOC *inst = (PIOC *)malloc(sizeof(PIOC)); // create new instance with MALLOC
@@ -86,10 +78,10 @@ void * PIOC_init(IedServer server, LogicalNode *ln, Input *input, LinkedList all
   inst->StrVal = 600; // 600 Amps, sane default in relation to a PTOC StrVal of 100 A
 
   IecDataPoint dataPoints[1] = {
-      {"StrVal.setMag.f", IEC_TYPE_DOUBLE},
+      {"StrVal.setMag.f", IEC_TYPE_DOUBLE,{0.0},false},
   };
   // Retrieve settings from datamodel
-  int retrieved = IecServer_getDataPoints(server, ln, dataPoints, 1);
+  IecServer_getDataPoints(server, ln, dataPoints, 1);
   // if found, assign them
   if (dataPoints[0].success) {
       inst->StrVal = dataPoints[0].value.floatVal;

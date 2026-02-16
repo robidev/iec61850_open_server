@@ -1,6 +1,6 @@
 
 set(hw_connector_SRCS
-   main.c
+   hw_connector.c
    config_parser.c
 )
 
@@ -11,6 +11,14 @@ include_directories(
 
 add_library(hw_connector SHARED
   ${hw_connector_SRCS}
+)
+
+target_compile_options(hw_connector PRIVATE
+    -Wall
+    -Wextra
+    -Wshadow
+    -Wconversion
+    -Wno-unused-parameter
 )
 
 target_link_libraries(hw_connector

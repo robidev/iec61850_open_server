@@ -34,7 +34,7 @@ void XSWI_EnaCls_callback(InputEntry *extRef)
     else
       printf("XSWI: BlkCls: false\n");
 
-    IedServer_updateBooleanAttributeValue(inst->server, inst->BlkCls_stVal, inst->BlkCls_stVal);
+    IedServer_updateBooleanAttributeValue(inst->server, inst->BlkCls_stVal, inst->BlkCls);
     InputValueHandleExtensionCallbacks(inst->BlkCls_stVal_callback); // update the associated callbacks with this Data Element
   }
 }
@@ -70,6 +70,21 @@ int setXSWI_Callback(XSWI *instance, XSWICallback callback)
     return 0;
 }
 
+void XSWI_Loc_callback(InputEntry *extRef)
+{
+  XSWI * inst = extRef->callBackParam;
+  if(extRef->value != NULL)
+  {
+    bool value = MmsValue_getBoolean(extRef->value);
+    printf("XSWI received Loc status: %d from %s\n", value, extRef->Ref);
+    inst->Loc = value;
+    uint64_t timestamp = Hal_getTimeInMs();
+    IedServer_updateBooleanAttributeValue(inst->server, inst->Loc_stVal, value);
+    IedServer_updateUTCTimeAttributeValue(inst->server, inst->Loc_t, timestamp);
+    InputValueHandleExtensionCallbacks(inst->Loc_stVal_callback); // update the associated callbacks with this Data Element
+  }
+}
+
 // initialise XSWI instance for process simulation, and publish/subscription of GOOSE
 void *XSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allInputValues)
 {
@@ -78,6 +93,11 @@ void *XSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
   inst->Pos_stVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Pos.stVal");
   inst->Pos_t = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Pos.t");       // the node to operate on when a operate is triggered
   inst->Pos_stVal_callback = _findAttributeValueEx(inst->Pos_stVal, allInputValues); // find node that this element was subscribed to, so that it will be called during an update
+
+  inst->Loc_stVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Loc.stVal");
+  inst->Loc_t = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "Loc.t");       // the node to operate on when a operate is triggered
+  inst->Loc_stVal_callback = _findAttributeValueEx(inst->Loc_stVal, allInputValues); // find node that this element was subscribed to, so that it will be called during an update
+  inst->Loc = false;
 
   inst->BlkOpn = false;
   inst->BlkOpn_stVal = (DataAttribute *)ModelNode_getChild((ModelNode *)ln, "BlkOpn.stVal");
@@ -118,6 +138,13 @@ void *XSWI_init(IedServer server, LogicalNode *ln, Input *input, LinkedList allI
       {
         // register callbacks for CILO subscription
         extref->callBack = (callBackFunction)XSWI_EnaCls_callback;
+        extref->callBackParam = inst; // pass instance in param
+      }
+
+      if (strcmp(extref->intAddr, "Loc") == 0)
+      {
+        // register callbacks for CILO subscription
+        extref->callBack = (callBackFunction)XSWI_Loc_callback;
         extref->callBackParam = inst; // pass instance in param
       }
 

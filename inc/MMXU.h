@@ -21,6 +21,7 @@ typedef struct sMMXU
   void *da_V_callback;
 
   void *da_A_phsAng[4];
+  void *da_V_phsAng[4];
 
   void *da_A_phs[4];
   void *da_A_phs_callback[4];

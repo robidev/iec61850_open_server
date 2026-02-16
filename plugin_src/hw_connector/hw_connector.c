@@ -49,8 +49,8 @@ static bool shutdown_flag = true;
 
 static int initSocket(const char *sock_path);
 static void send_cmd(int sockfd, char * send_buf);
-static void hw_connector_SMV_Thread(void *parameter);
-static void hw_connector_socket_Thread();
+static void *hw_connector_SMV_Thread(void *parameter);
+static void *hw_connector_socket_Thread(void *);
 
 // possible timestep call from socket to all clients?(to pace and sync the ieds?)
 // possible dsp-override: if so, when a dsp-processing call is made, we just provide the rms-value the sine was calced from in the first place
@@ -137,7 +137,7 @@ int init(OpenServerInstance *srv)
                 continue;
             }
             const char *tmpsocket = config_get_value(section, "socket");
-            const int socketln = strlen(tmpsocket);
+            const size_t socketln = strlen(tmpsocket);
             if(socketln > 256) {
                 printf("ERROR: invalid socket path\n");
                 continue;
@@ -244,7 +244,7 @@ int init(OpenServerInstance *srv)
     return 0; // 0 means success
 }
 
-static void hw_connector_socket_Thread() {
+static void *hw_connector_socket_Thread(void *) {
     while(open_server_running())
     {
         int _socket = initSocket(socket_path);
@@ -262,6 +262,7 @@ static void hw_connector_socket_Thread() {
         }
         Thread_sleep(5000);
     }
+    return NULL;
 }
 
 
@@ -315,7 +316,7 @@ static void *receiver_thread(int * arg) {
                                 char *charpos = &event_data[6];
                                 for(int channels = 0; channels < HW_MAX_ANALOG_CHANNELS; channels++)
                                 {
-                                    analog_channels[channels] = strtol(charpos,&charpos, 10);
+                                    analog_channels[channels] = (int)strtol(charpos,&charpos, 10);
                                     if(*charpos == ',')
                                         charpos++;
                                     else if(channels != HW_MAX_ANALOG_CHANNELS -1)
@@ -335,12 +336,12 @@ static void *receiver_thread(int * arg) {
                         if(strncmp(event_data, "IO", 2) == 0){
                             char * endp;
                             printf("recv: %s\n", &event_data[3]);//{channel} {position}
-                            int index = strtol(&event_data[3],&endp,10);
+                            int index = (int)strtol(&event_data[3],&endp,10);
                             // look up XSWI, based on index
                             XSWI * instance = getInstViaHwIndex(index);
                             if(instance != NULL)
                             {                                
-                                int state = strtol(endp,NULL,10);
+                                int state = (int)strtol(endp,NULL,10);
                                 if(state == 00)
                                 {
                                     XSWI_change_switch(instance, DBPOS_INTERMEDIATE_STATE);
@@ -421,7 +422,7 @@ static int initSocket(const char *sock_path) {
     return sockfd;
 }
 
-static void hw_connector_SMV_Thread(void *parameter) // TODO: sync with the threads in other servers connected to the same CTR/VTR
+static void *hw_connector_SMV_Thread(void *parameter) // TODO: sync with the threads in other servers connected to the same CTR/VTR
 {
     printf("hw connector smv thread started\n");
     int sampleCount = 0;
@@ -437,14 +438,17 @@ static void hw_connector_SMV_Thread(void *parameter) // TODO: sync with the thre
         {
             int measurement = 0;
             const double magnitude = analog_channels[hwconf->hwindex];
-            const double freq = 50.0;
-            const double angle = (hwconf->hwindex % 3) * 120.0;
-            const double scale = hwconf->hwindex < 12? 0.1 : 10.0;
+            const double phase_deg = (hwconf->hwindex % 3) * 120.0;
+            const double phase_rad = phase_deg * M_PI / 180.0;
+
+            const double scale = 1.0;//hwconf->hwindex < 12? 0.01 : 10.0;
             if (magnitude > 0.001)
             {
                 double amp = magnitude * sqrt(2); // RMS to peak
-                double angle = ((freq / 25) * M_PI / 80) * samplePoint - (angle * M_PI / 180.0);
-                measurement = (int)((amp * sin(angle)) * scale);
+
+                double omega = 2.0 * M_PI / 80.0; // radians per sample
+                double signal_angle = omega * samplePoint - phase_rad;
+                measurement = (int)((amp * sin(signal_angle)) * scale);
             }
             if(hwconf->hwindex < 12) //select tctr/tvtr based on the index of the related measurement. ugly, but fastest
             {
@@ -478,6 +482,7 @@ static void hw_connector_SMV_Thread(void *parameter) // TODO: sync with the thre
             nextCycleStart = nextCycleStart + 100;
         }
     }
+    return NULL;
 }
 
 void hw_connector_freemem()

@@ -18,30 +18,6 @@ CL(TCTR);
 LN(TCTR4){
 CL(TCTR);
 }
-LN(PTOC1){
-CL(PTOC);
-}
-LN(XCBR1){
-CL(XCBR);
-}
-LN(PTRC1){
-CL(PTRC);
-}
-LN(CILO1){
-CL(CILO);
-}
-LN(XSWI1){
-CL(XSWI);
-}
-LN(XSWI2){
-CL(XSWI);
-}
-LN(XSWI3){
-CL(XSWI);
-}
-LN(MMXU1){
-CL(MMXU);
-}
 LN(B1TVTR1){
 CL(TVTR);
 }
@@ -66,26 +42,133 @@ CL(TVTR);
 LN(B2TVTR4){
 CL(TVTR);
 }
-LN(PDIF1){
-CL(PDIF);
+LN(PTOC1){
+CL(PTOC);
+IN{
+ER(sample_a1 TR1LD1/TCTR1.AmpSv.instMag.i PTOC_Amp1 Poll TR1/);
+ER(sample_a2 TR1LD1/TCTR2.AmpSv.instMag.i PTOC_Amp2 Poll TR1/);
+ER(sample_a3 TR1LD1/TCTR3.AmpSv.instMag.i PTOC_Amp3 Poll TR1/);
+ER(sample_a4 TR1LD1/TCTR4.AmpSv.instMag.i PTOC_Amp4 Poll TR1/);
 }
 }
-SD(FEED1LD1/XCBR1.Pos.stVal Feed1SwiPos 0 010ccd010020 FEED1LD1/LLN0$GO$Feed1SwiPosCtl FEED1/LD1/LLN0/Feed1SwiPosAppId);
-SD(FEED1LD1/XSWI2.Pos.stVal Feed1SwiPos 0 010ccd010020 FEED1LD1/LLN0$GO$Feed1SwiPosCtl FEED1/LD1/LLN0/Feed1SwiPosAppId);
-SD(FEED1LD1/XSWI3.Pos.stVal Feed1SwiPos 0 010ccd010020 FEED1LD1/LLN0$GO$Feed1SwiPosCtl FEED1/LD1/LLN0/Feed1SwiPosAppId);
-SD(FEED1LD1/XSWI4.Pos.stVal Feed1SwiPos 0 010ccd010020 FEED1LD1/LLN0$GO$Feed1SwiPosCtl FEED1/LD1/LLN0/Feed1SwiPosAppId);
-SD(FEED2LD1/XCBR1.Pos.stVal Feed2SwiPos 1 010ccd010021 FEED2LD1/LLN0$GO$Feed2SwiPosCtl FEED2/LD1/LLN0/Feed2SwiPosAppID);
-SD(FEED2LD1/XSWI2.Pos.stVal Feed2SwiPos 1 010ccd010021 FEED2LD1/LLN0$GO$Feed2SwiPosCtl FEED2/LD1/LLN0/Feed2SwiPosAppID);
-SD(FEED2LD1/XSWI3.Pos.stVal Feed2SwiPos 1 010ccd010021 FEED2LD1/LLN0$GO$Feed2SwiPosCtl FEED2/LD1/LLN0/Feed2SwiPosAppID);
-SD(FEED2LD1/XSWI4.Pos.stVal Feed2SwiPos 1 010ccd010021 FEED2LD1/LLN0$GO$Feed2SwiPosCtl FEED2/LD1/LLN0/Feed2SwiPosAppID);
-SD(BUS1LD1/PDIF1.Op.general Bus1TripEvent 4 010ccd010030 BUS1LD1/LLN0$GO$Bus1TripEventCb BUS1/LD1/LLN0/Bus1TripEventAppId);
-SD(BUS2LD1/PDIF1.Op.general Bus2TripEvent 5 010ccd010031 BUS2LD1/LLN0$GO$Bus2TripEventCn BUS2/LD1/LLN0/Bus2TripEventAppId);
-SD(TR1LD1/XCBR1.Pos.stVal Tr1SwiPos 2 010ccd010040 TR1LD1/LLN0$GO$Tr1SwiPosCtl TR1/LD1/LLN0/Tr1SwiPosAppId);
-SD(TR1LD1/XSWI1.Pos.stVal Tr1SwiPos 2 010ccd010040 TR1LD1/LLN0$GO$Tr1SwiPosCtl TR1/LD1/LLN0/Tr1SwiPosAppId);
-SD(TR1LD1/XSWI2.Pos.stVal Tr1SwiPos 2 010ccd010040 TR1LD1/LLN0$GO$Tr1SwiPosCtl TR1/LD1/LLN0/Tr1SwiPosAppId);
-SD(TR1LD1/XSWI3.Pos.stVal Tr1SwiPos 2 010ccd010040 TR1LD1/LLN0$GO$Tr1SwiPosCtl TR1/LD1/LLN0/Tr1SwiPosAppId);
-SD(TR2LD1/XCBR1.Pos.stVal Tr2SwiPos 3 010ccd010041 TR2LD1/LLN0$GO$Tr2SwiPosCtl TR2/LD1/LLN0/Tr2SwiPosAppId);
-SD(TR2LD1/XSWI1.Pos.stVal Tr2SwiPos 3 010ccd010041 TR2LD1/LLN0$GO$Tr2SwiPosCtl TR2/LD1/LLN0/Tr2SwiPosAppId);
-SD(TR2LD1/XSWI2.Pos.stVal Tr2SwiPos 3 010ccd010041 TR2LD1/LLN0$GO$Tr2SwiPosCtl TR2/LD1/LLN0/Tr2SwiPosAppId);
-SD(TR2LD1/XSWI3.Pos.stVal Tr2SwiPos 3 010ccd010041 TR2LD1/LLN0$GO$Tr2SwiPosCtl TR2/LD1/LLN0/Tr2SwiPosAppId);
+LN(CSWI1){
+CL(CSWI);
+IN{
+ER(Local_Remote TR1LD1/XCBR1.Loc.stVal Loc Poll TR1/);
+ER(xcbr_status TR1LD1/XCBR1.Pos.stVal stval Poll TR1/);
+}
+}
+LN(CSWI2){
+CL(CSWI);
+IN{
+ER(Local_Remote TR1LD1/XSWI2.Loc.stVal Loc Poll TR1/);
+ER(xcbr_status TR1LD1/XSWI2.Pos.stVal stval Poll TR1/);
+ER(interlock_open TR1LD1/CILO1.EnaOpn.stVal EnaOpn Poll TR1/);
+ER(interlock_close TR1LD1/CILO1.EnaCls.stVal EnaCls Poll TR1/);
+}
+}
+LN(CSWI3){
+CL(CSWI);
+IN{
+ER(Local_Remote TR1LD1/XSWI3.Loc.stVal Loc Poll TR1/);
+ER(xcbr_status TR1LD1/XSWI3.Pos.stVal stval Poll TR1/);
+ER(interlock_open TR1LD1/CILO1.EnaOpn.stVal EnaOpn Poll TR1/);
+ER(interlock_close TR1LD1/CILO1.EnaCls.stVal EnaCls Poll TR1/);
+}
+}
+LN(PTRC1){
+CL(PTRC);
+IN{
+ER(null BUS1LD1/PTRC3.Tr.general Op1 GOOSE BUS1LD1/LLN0.Bus1TripEventCn);
+ER(null BUS2LD1/PTRC3.Tr.general Op2 GOOSE BUS2LD1/LLN0.Bus2TripEventCn);
+ER(PTOC_trip TR1LD1/PTOC1.Op.general Op3 Poll TR1/);
+}
+}
+LN(XCBR1){
+CL(XCBR);
+IN{
+ER(Local_Remote TR1LD1/LLN0.Loc.stVal Loc Poll TR1/);
+ER(Trip TR1LD1/PTRC1.Tr.general Tr Poll TR1/);
+ER(Operate TR1LD1/CSWI1.OpOpn.general OpOpn Poll TR1/);
+ER(Operate TR1LD1/CSWI1.OpCls.general OpCls Poll TR1/);
+}
+}
+LN(CILO1){
+CL(CILO);
+IN{
+ER(xcbr_status TR1LD1/XCBR1.Pos.stVal stval Poll TR1/);
+}
+}
+LN(XSWI2){
+CL(XSWI);
+IN{
+ER(Local_Remote TR1LD1/LLN0.Loc.stVal Loc Poll TR1/);
+ER(Operate TR1LD1/CSWI2.OpOpn.general OpOpn Poll TR1/);
+ER(Operate TR1LD1/CSWI2.OpCls.general OpCls Poll TR1/);
+ER(interlock_open TR1LD1/CILO1.EnaOpn.stVal EnaOpn Poll TR1/);
+ER(interlock_close TR1LD1/CILO1.EnaCls.stVal EnaCls Poll TR1/);
+}
+}
+LN(XSWI3){
+CL(XSWI);
+IN{
+ER(Local_Remote TR1LD1/LLN0.Loc.stVal Loc Poll TR1/);
+ER(Operate TR1LD1/CSWI3.OpOpn.general OpOpn Poll TR1/);
+ER(Operate TR1LD1/CSWI3.OpCls.general OpCls Poll TR1/);
+ER(interlock_open TR1LD1/CILO1.EnaOpn.stVal EnaOpn Poll TR1/);
+ER(interlock_close TR1LD1/CILO1.EnaCls.stVal EnaCls Poll TR1/);
+}
+}
+LN(MMXU1){
+CL(MMXU);
+IN{
+ER(sample_a1 TR1LD1/TCTR1.AmpSv.instMag.i MMXU_Amp1 Poll TR1/);
+ER(sample_a2 TR1LD1/TCTR2.AmpSv.instMag.i MMXU_Amp2 Poll TR1/);
+ER(sample_a3 TR1LD1/TCTR3.AmpSv.instMag.i MMXU_Amp3 Poll TR1/);
+ER(sample_a4 TR1LD1/TCTR4.AmpSv.instMag.i MMXU_Amp4 Poll TR1/);
+}
+}
+LN(MMXU2){
+CL(MMXU);
+IN{
+ER(sample_v1 TR1LD1/B1TVTR1.VolSv.instMag.i MMXU_Vol1 Poll TR1/);
+ER(sample_v2 TR1LD1/B1TVTR2.VolSv.instMag.i MMXU_Vol2 Poll TR1/);
+ER(sample_v3 TR1LD1/B1TVTR3.VolSv.instMag.i MMXU_Vol3 Poll TR1/);
+ER(sample_v4 TR1LD1/B1TVTR4.VolSv.instMag.i MMXU_Vol4 Poll TR1/);
+}
+}
+LN(MMXU3){
+CL(MMXU);
+IN{
+ER(sample_v1 TR1LD1/B2TVTR1.VolSv.instMag.i MMXU_Vol1 Poll TR1/);
+ER(sample_v2 TR1LD1/B2TVTR2.VolSv.instMag.i MMXU_Vol2 Poll TR1/);
+ER(sample_v3 TR1LD1/B2TVTR3.VolSv.instMag.i MMXU_Vol3 Poll TR1/);
+ER(sample_v4 TR1LD1/B2TVTR4.VolSv.instMag.i MMXU_Vol4 Poll TR1/);
+}
+}
+}
+SD(FEED1LD1/XCBR1.Pos.stVal Feed1SwiPos 0 010ccd010020 FEED1LD1/LLN0$GO$Feed1SwiPosCtl 0001);
+SD(FEED1LD1/XSWI2.Pos.stVal Feed1SwiPos 0 010ccd010020 FEED1LD1/LLN0$GO$Feed1SwiPosCtl 0001);
+SD(FEED1LD1/XSWI3.Pos.stVal Feed1SwiPos 0 010ccd010020 FEED1LD1/LLN0$GO$Feed1SwiPosCtl 0001);
+SD(FEED1LD1/XSWI4.Pos.stVal Feed1SwiPos 0 010ccd010020 FEED1LD1/LLN0$GO$Feed1SwiPosCtl 0001);
+SD(FEED2LD1/XCBR1.Pos.stVal Feed2SwiPos 1 010ccd010021 FEED2LD1/LLN0$GO$Feed2SwiPosCtl 0002);
+SD(FEED2LD1/XSWI2.Pos.stVal Feed2SwiPos 1 010ccd010021 FEED2LD1/LLN0$GO$Feed2SwiPosCtl 0002);
+SD(FEED2LD1/XSWI3.Pos.stVal Feed2SwiPos 1 010ccd010021 FEED2LD1/LLN0$GO$Feed2SwiPosCtl 0002);
+SD(FEED2LD1/XSWI4.Pos.stVal Feed2SwiPos 1 010ccd010021 FEED2LD1/LLN0$GO$Feed2SwiPosCtl 0002);
+SD(BUS1LD1/PDIF1.Op.general Bus1TripEvent 4 010ccd010030 BUS1LD1/LLN0$GO$Bus1TripEventCb 0003);
+SD(BUS1LD1/PTRC1.Tr.general Bus1TripEvent 4 010ccd010030 BUS1LD1/LLN0$GO$Bus1TripEventCb 0003);
+SD(BUS1LD1/PTRC2.Tr.general Bus1TripEvent 4 010ccd010030 BUS1LD1/LLN0$GO$Bus1TripEventCb 0003);
+SD(BUS1LD1/PTRC3.Tr.general Bus1TripEvent 4 010ccd010030 BUS1LD1/LLN0$GO$Bus1TripEventCb 0003);
+SD(BUS1LD1/PTRC4.Tr.general Bus1TripEvent 4 010ccd010030 BUS1LD1/LLN0$GO$Bus1TripEventCb 0003);
+SD(BUS2LD1/PDIF1.Op.general Bus2TripEvent 5 010ccd010031 BUS2LD1/LLN0$GO$Bus2TripEventCb 0003);
+SD(BUS2LD1/PTRC1.Tr.general Bus2TripEvent 5 010ccd010031 BUS2LD1/LLN0$GO$Bus2TripEventCb 0003);
+SD(BUS2LD1/PTRC2.Tr.general Bus2TripEvent 5 010ccd010031 BUS2LD1/LLN0$GO$Bus2TripEventCb 0003);
+SD(BUS2LD1/PTRC3.Tr.general Bus2TripEvent 5 010ccd010031 BUS2LD1/LLN0$GO$Bus2TripEventCb 0003);
+SD(BUS2LD1/PTRC4.Tr.general Bus2TripEvent 5 010ccd010031 BUS2LD1/LLN0$GO$Bus2TripEventCb 0003);
+SD(TR1LD1/XCBR1.Pos.stVal Trafo1SwiPos 2 010ccd010040 TR1LD1/LLN0$GO$Trafo1SwiPosCtl 0005);
+SD(TR1LD1/XSWI2.Pos.stVal Trafo1SwiPos 2 010ccd010040 TR1LD1/LLN0$GO$Trafo1SwiPosCtl 0005);
+SD(TR1LD1/XSWI3.Pos.stVal Trafo1SwiPos 2 010ccd010040 TR1LD1/LLN0$GO$Trafo1SwiPosCtl 0005);
+SD(TR2LD1/XCBR1.Pos.stVal Trafo2SwiPos 3 010ccd010041 TR2LD1/LLN0$GO$Trafo2SwiPosCtl 0006);
+SD(TR2LD1/XSWI2.Pos.stVal Trafo2SwiPos 3 010ccd010041 TR2LD1/LLN0$GO$Trafo2SwiPosCtl 0006);
+SD(TR2LD1/XSWI3.Pos.stVal Trafo2SwiPos 3 010ccd010041 TR2LD1/LLN0$GO$Trafo2SwiPosCtl 0006);
 }

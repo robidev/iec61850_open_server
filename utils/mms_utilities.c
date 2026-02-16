@@ -304,7 +304,7 @@ bool IecServer_setDataPointFromString(IedServer server, DataAttribute *da, const
 
         case MMS_BIT_STRING: {
             int bitStringSize = MmsValue_getBitStringSize(mmsValue);
-            int valueLen = strlen(value);
+            int valueLen = (int)strlen(value);
             
             if (valueLen != bitStringSize) {
                 return false;

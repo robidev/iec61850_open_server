@@ -12,6 +12,14 @@ add_library(simulation SHARED
   ${simulation_SRCS}
 )
 
+target_compile_options(simulation PRIVATE
+    -Wall
+    -Wextra
+    -Wshadow
+    -Wconversion
+    -Wno-unused-parameter
+)
+
 target_link_libraries(simulation
     pthread
 )

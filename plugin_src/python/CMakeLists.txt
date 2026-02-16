@@ -2,7 +2,7 @@
 find_package(Python3 REQUIRED COMPONENTS Development)
 
 set(python_SRCS
-   main.c
+   python.c
 )
 
 include_directories(
@@ -13,6 +13,14 @@ include_directories(
 
 add_library(python SHARED
   ${python_SRCS}
+)
+
+target_compile_options(python PRIVATE
+    -Wall
+    -Wextra
+    -Wshadow
+    -Wconversion
+    -Wno-unused-parameter
 )
 
 target_link_libraries(python

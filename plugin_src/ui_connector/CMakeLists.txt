@@ -1,6 +1,6 @@
 
 set(ui_connector_SRCS
-   main.c
+   ui_connector.c
    config_parser.c
 )
 
@@ -11,6 +11,14 @@ include_directories(
 
 add_library(ui_connector SHARED
   ${ui_connector_SRCS}
+)
+
+target_compile_options(ui_connector PRIVATE
+    -Wall
+    -Wextra
+    -Wshadow
+    -Wconversion
+    -Wno-unused-parameter
 )
 
 target_link_libraries(ui_connector

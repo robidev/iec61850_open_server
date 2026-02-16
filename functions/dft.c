@@ -55,7 +55,7 @@ void CALC_DFT(void * dsp)
   DFT * inst = dsp_inst->dsp_data;
 
   InputEntry *extRef = dsp_inst->extRefs; // start from the first extref, and check all values, we assume there are 8!
-  int i = 0;
+  uint32_t i = 0;
   double Ni=0, Nr=0;
   double AvgAmp=0;
 
@@ -69,15 +69,17 @@ void CALC_DFT(void * dsp)
 
         if(inst->variant == EVERY_WINDOW_SIZE)//calculate dft every WINDOW_SIZE (e.g. 80) cycles. this means low latency, but the values are updated only once per cycle
         {
-          double multiplier = 0.5 * (1 - cos( 2 * M_PI * inst->sample_index / WINDOW_SIZE));//Hanning window
+          double multiplier = 1;//0.5 * (1 - cos( 2 * M_PI * inst->sample_index / WINDOW_SIZE));//Hanning window
 
           double vv = 0;
           getDSPValueFromMMS(dsp, extRef->value,&vv, DOUBLE);
+          //printf("%s: %f\n", extRef->intAddr, vv);
+
           inst->Xr[i] = (inst->Xr[i] +  vv * multiplier * cos(2 * M_PI * k * (double)inst->sample_index / WINDOW_SIZE));
           inst->Xi[i] = (inst->Xi[i] -  vv * multiplier * sin(2 * M_PI * k * (double)inst->sample_index / WINDOW_SIZE));
 
           //k * (SAMPLE_FREQ / WINDOW_SIZE), Xr/WINDOW_SIZE, Xi/WINDOW_SIZE, amplitude/(WINDOW_SIZE)*4, angle);
-          if ((inst->sample_index % WINDOW_SIZE) == WINDOW_SIZE-1) // we calculate the dft vector after WINDOW_SIZE samples
+          if (((uint32_t)inst->sample_index % WINDOW_SIZE) == WINDOW_SIZE-1) // we calculate the dft vector after WINDOW_SIZE samples
           {
             //printf("dft: %s= %d\n",extRef->Ref, MmsValue_toInt32(extRef->value));
             if(i < 3)
@@ -94,6 +96,7 @@ void CALC_DFT(void * dsp)
             if(inst->Xr[i] < 0.0 ) quadrant = 180;
             if(inst->Xr[i] > 0.0 && inst->Xi[i] < 0.0) quadrant = 360;
             double angle = (atan(inst->Xi[i]/inst->Xr[i]) * (180/M_PI)) + quadrant;
+            if (isnan(angle)) angle = 0;
             updateDataValues_Angle(dsp, i, angle);//inst->da_A_phsAng[ i % 4 ]
 
             AvgAmp += amplitude;
@@ -108,15 +111,15 @@ void CALC_DFT(void * dsp)
         else//calculate whole window every cycle
         {
           double Xr =0, Xi = 0;
-            int n;
+            u_int32_t n;
             double vv = 0;
             getValueFromMMS(extRef->value,&vv, DOUBLE);
             inst->xn[i][inst->sample_index] = vv;//MmsValue_toInt32(extRef->value);
         
             for (n = 0; n < WINDOW_SIZE; n++) { //calculate 1 cycle(WINDOW_SIZE samples)
             double multiplier = 0.5 * (1 - cos( 2 * M_PI *n / WINDOW_SIZE));//Hanning window
-            Xr = (Xr + inst->xn[i][(n + inst->sample_index) % WINDOW_SIZE] * multiplier * cos(2 * M_PI * k * (double)n / WINDOW_SIZE));
-            Xi = (Xi - inst->xn[i][(n + inst->sample_index) % WINDOW_SIZE] * multiplier * sin(2 * M_PI * k * (double)n / WINDOW_SIZE));
+            Xr = (Xr + inst->xn[i][(n + (u_int32_t)inst->sample_index) % WINDOW_SIZE] * multiplier * cos(2 * M_PI * k * (double)n / WINDOW_SIZE));
+            Xi = (Xi - inst->xn[i][(n + (u_int32_t)inst->sample_index) % WINDOW_SIZE] * multiplier * sin(2 * M_PI * k * (double)n / WINDOW_SIZE));
             }
             double amplitude = sqrt((Xr*Xr) + (Xi*Xi))/(WINDOW_SIZE)*4;
             /*if(Xr < 0.0 ) quadrant = 180;
@@ -128,6 +131,7 @@ void CALC_DFT(void * dsp)
             if(Xr < 0.0 ) quadrant = 180;
             if(Xr > 0.0 && Xi < 0.0) quadrant = 360;
             double angle = (atan(Xi / Xr) * (180/M_PI)) + quadrant;
+            if (isnan(angle)) angle = 0;
             updateDataValues_Angle(dsp, i, angle);//inst->da_A_phsAng[ i % 4 ]
 
             //calculate neutral
@@ -135,7 +139,7 @@ void CALC_DFT(void * dsp)
             Nr += Xr;
             if (i == 3)
             {
-                float a = sqrt((Nr*Nr) + (Ni*Ni))/(WINDOW_SIZE * 3)*4;
+                double a = sqrt((Nr*Nr) + (Ni*Ni))/(WINDOW_SIZE * 3)*4;
                 updateDataValues_Average(dsp, a * const_dft_Rms);//inst->da_A
             }
         }
@@ -144,5 +148,5 @@ void CALC_DFT(void * dsp)
     }
     extRef = extRef->sibling;
   }
-  inst->sample_index = (inst->sample_index + 1) % WINDOW_SIZE;
+  inst->sample_index = (inst->sample_index + 1) % (int)WINDOW_SIZE;
 }

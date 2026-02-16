@@ -15,6 +15,7 @@
 
 #include <signal.h>
 #include <stdlib.h>
+#include <unistd.h> // for getopt
 #include <stdio.h>
 #include <time.h>
 
@@ -91,7 +92,6 @@ fileAccessHandler (void* parameter, MmsServerConnection connection, MmsFileServi
     return MMS_ERROR_NONE;
 }
 
-
 int main(int argc, char **argv)
 {
 	OpenServerInstance openServer;
@@ -103,47 +103,77 @@ int main(int argc, char **argv)
 	openServer.allInputValues = NULL;
 	openServer.SMVControlInstances = NULL;
 
-	int port = 102;
-	char *ethernetIfcID = "lo";
+    int port = 102;
+    char *ethernetIfcID = NULL; // no default here
+    char *ipAddress = NULL;
+    char *cfgFile = NULL;
+    char *extFile = NULL;
+    char timestep_type = 0;
 
-	if (argc > 1)
-	{
-		ethernetIfcID = argv[1];
+    // Flags to track if option is explicitly set
+    int opt_e_set = 0, opt_p_set = 0, opt_c_set = 0, opt_x_set = 0, opt_t_set = 0;
 
-		printf("Using interface: %s\n", ethernetIfcID);
-	}
-	if (argc > 2)
-	{
-		port = atoi(argv[2]);
-	}
-	if (argc > 3)
-	{
-		openServer.Model = ConfigFileParser_createModelFromConfigFileEx(argv[3]);
-		openServer.Model_ex = ConfigFileParser_createModelFromConfigFileEx_inputs(argv[4], openServer.Model);
+    int opt;
+    while ((opt = getopt(argc, argv, "e:p:i:c:x:t:")) != -1) {
+        switch(opt) {
+            case 'e': ethernetIfcID = optarg; opt_e_set = 1; break;
+            case 'p': port = atoi(optarg); opt_p_set = 1; break;
+            case 'i': ipAddress = optarg; break;
+            case 'c': cfgFile = optarg; opt_c_set = 1; break;
+            case 'x': extFile = optarg; opt_x_set = 1; break;
+            case 't': timestep_type = optarg[0]; opt_t_set = 1; break;
+            default:
+                fprintf(stderr, "Usage: %s [-e ethernet] [-p port] [-i ip] [-c cfgfile] [-x extfile] [-t L|R]\n", argv[0]);
+                exit(EXIT_FAILURE);
+        }
+    }
 
-		if (openServer.Model == NULL || openServer.Model_ex == NULL)
-		{
-			printf("Parsing dynamic config failed! Exit.\n");
-			exit(-1);
-		}
+    // Backwards compatibility with positional arguments if options not set
+    int pos_index = optind;
+    if (!opt_e_set && argc > pos_index) ethernetIfcID = argv[pos_index++];
+    if (!opt_p_set && argc > pos_index) port = atoi(argv[pos_index++]);
+    if (!opt_c_set && argc > pos_index) cfgFile = argv[pos_index++];
+    if (!opt_x_set && argc > pos_index) extFile = argv[pos_index++];
+    if (!opt_t_set && argc > pos_index) timestep_type = argv[pos_index][0];
+
+    // Use default for interface if still NULL
+    if (!ethernetIfcID) ethernetIfcID = "lo";
+
+
+    if (cfgFile && extFile) {
+        openServer.Model = ConfigFileParser_createModelFromConfigFileEx(cfgFile);
+        openServer.Model_ex = ConfigFileParser_createModelFromConfigFileEx_inputs(extFile, openServer.Model);
+
+        if (openServer.Model == NULL || openServer.Model_ex == NULL) {
+            printf("Parsing dynamic config failed! Exit.\n");
+            exit(-1);
+        }
+    } else {
+        printf("No valid model provided! Exit.\n");
+        exit(-1);
+    }
+
+    if (timestep_type == 'L' || timestep_type == 0){
+        global_timestep_type = TIMESTEP_TYPE_LOCAL;
+		timestep_type = 'L';
 	}
-	if (argc > 5)
-	{
-		if (argv[5][0] == 'L')
-			global_timestep_type = TIMESTEP_TYPE_LOCAL;
-		if (argv[5][0] == 'R')
-			global_timestep_type = TIMESTEP_TYPE_REMOTE;
-	}
-	else
-	{
-		if (openServer.Model == NULL || openServer.Model_ex == NULL)
-		{
-			printf("No valid model provided! Exit.\n");
-			exit(-1);
-		}
-	}
+    else if (timestep_type == 'R')
+        global_timestep_type = TIMESTEP_TYPE_REMOTE;
+    else {
+        printf("Invalid timestep type! Use 'L' or 'R'.\n");
+        exit(-1);
+    }
+
 
 	openServer.server = IedServer_create(openServer.Model);
+
+    printf("Using interface: %s\n", ethernetIfcID);
+    if (ipAddress){
+		printf("Using IP address: %s\n", ipAddress);
+		IedServer_setLocalIpAddress(openServer.server,ipAddress);
+	} 
+    printf("Using port: %d\n", port);	
+	
 
 	// By default we deny writing to SP elements, unless we have explicitly installed a write handler inside the LN init. example: PTOC installs this for StrVal
 	IedServer_setWriteAccessPolicy(openServer.server, IEC61850_FC_SP, ACCESS_POLICY_DENY);

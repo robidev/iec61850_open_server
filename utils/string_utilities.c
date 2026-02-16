@@ -23,10 +23,29 @@
 
 #include "libiec61850_platform_includes.h"
 
+int32_t extract_last_index(const char *str) {
+    if (!str) return -1;
+
+    const char *last_underscore = strrchr(str, '_');
+    if (!last_underscore || *(last_underscore + 1) == '\0') return -1;
+
+    // Use atoi for simplicity; it returns 0 for invalid numbers, so we need a check
+    int val = atoi(last_underscore + 1);
+
+    // Check that val matches the digits (prevents atoi silently parsing "2abc" as 2)
+    const char *p = last_underscore + 1;
+    while (*p) {
+        if (*p < '0' || *p > '9') return -1;
+        p++;
+    }
+
+    return val;
+}
+
 char*
 StringUtils_copySubString(char* startPos, char* endPos)
 {
-    int newStringLength = endPos - startPos;
+    size_t newStringLength = (size_t)(endPos - startPos);
 
     char* newString = (char*)GLOBAL_MALLOC(newStringLength + 1);
 
@@ -46,7 +65,7 @@ StringUtils_copyString(const char* str)
     if (str == NULL)
         return NULL;
 
-    int newStringLength = strlen(str) + 1;
+    size_t newStringLength = strlen(str) + 1;
 
     char* newString = (char*)GLOBAL_MALLOC(newStringLength);
 
@@ -59,7 +78,7 @@ StringUtils_copyString(const char* str)
 char*
 StringUtils_copyStringToBuffer(const char* string, char* buffer)
 {
-    int newStringLength = strlen(string) + 1;
+    size_t newStringLength = strlen(string) + 1;
 
     memcpy(buffer, string, newStringLength);
 
@@ -90,11 +109,11 @@ StringUtils_copyStringToBufferAndReplace(const char* str, char* buffer, char old
 char*
 StringUtils_createStringFromBuffer(const uint8_t* buf, int size)
 {
-    char* newStr = (char*)GLOBAL_MALLOC(size + 1);
+    char* newStr = (char*)GLOBAL_MALLOC((size_t)size + 1);
 
     if (newStr)
     {
-        memcpy(newStr, buf, size);
+        memcpy(newStr, buf, (size_t)size);
         newStr[size] = 0;
     }
 
@@ -104,7 +123,7 @@ StringUtils_createStringFromBuffer(const uint8_t* buf, int size)
 char*
 StringUtils_createStringFromBufferInBuffer(char* newString, const uint8_t* buf, int size)
 {
-    memcpy(newString, buf, size);
+    memcpy(newString, buf, (size_t)size);
     newString[size] = 0;
 
     return newString;
@@ -116,7 +135,7 @@ StringUtils_createStringFromBufferInBufferMax(char* newString, const uint8_t* bu
     if (size >= maxBufSize)
         size = maxBufSize - 1;
 
-    memcpy(newString, buf, size);
+    memcpy(newString, buf, (size_t)size);
     newString[size] = 0;
 
     return newString;
@@ -149,7 +168,7 @@ StringUtils_createString(int count, ...)
 {
     va_list ap;
     char* newStr;
-    int newStringLength = 0;
+    size_t newStringLength = 0;
     int i;
 
     /* Calculate new string length */
@@ -187,7 +206,7 @@ StringUtils_concatString(char* dest, int maxBufferSize, const char* str1, const 
     char* res = dest;
 
     if (dest == NULL)
-        res = (char*)GLOBAL_MALLOC(maxBufferSize);
+        res = (char*)GLOBAL_MALLOC((size_t)maxBufferSize);
 
     if (res)
     {
@@ -244,7 +263,7 @@ StringUtils_copyStringMax(char* dest, int maxBufferSize, const char* str1)
         return NULL;
 
     if (dest == NULL)
-        res = (char*)GLOBAL_MALLOC(maxBufferSize);
+        res = (char*)GLOBAL_MALLOC((size_t)maxBufferSize);
 
     if (res)
     {
@@ -336,8 +355,8 @@ StringUtils_appendString(char* dest, int maxBufferSize, const char* str)
 void
 StringUtils_replace(char* string, char oldChar, char newChar)
 {
-    int len = strlen(string);
-    int i;
+    size_t len = strlen(string);
+    size_t i;
 
     for (i = 0; i < len; i++)
     {
@@ -404,8 +423,8 @@ toInt(char c)
 int
 StringUtils_createBufferFromHexString(char* hexString, uint8_t* buffer)
 {
-    int hexStringLen = strlen(hexString);
-    int i;
+    size_t hexStringLen = strlen(hexString);
+    size_t i;
     int bytesCount = 0;
 
     if (hexStringLen % 2 != 0)
@@ -450,8 +469,8 @@ StringUtils_startsWith(const char* string, const char* prefix)
 bool
 StringUtils_endsWith(const char* str, const char* suffix)
 {
-    int stringLength = strlen(str);
-    int suffixLength = strlen(suffix);
+    size_t stringLength = strlen(str);
+    size_t suffixLength = strlen(suffix);
 
     if (stringLength >= suffixLength)
     {
@@ -480,7 +499,7 @@ getCharWeight(int c)
         {
             if (strchr(charOrder, ltIndex))
                 continue;
-            lookupTable[ltIndex] = weight;
+            lookupTable[ltIndex] = (char)weight;
             weight++;
         }
 
@@ -488,7 +507,7 @@ getCharWeight(int c)
 
         for (charIndex = 0; charOrder[charIndex]; charIndex++)
         {
-            lookupTable[(int)charOrder[charIndex]] = weight;
+            lookupTable[(int)charOrder[charIndex]] = (char)weight;
             weight++;
         }
 
@@ -516,7 +535,7 @@ StringUtils_compareStrings(const char* a, const char* b)
     {
         if ((*a == 0) || (*b == 0))
         {
-            return b - a;
+            return (int)(b - a);
         }
 
         diff = StringUtils_compareChars(*++a, *++b);
@@ -595,13 +614,13 @@ StringUtils_sortList(LinkedList list)
 static bool
 convertHexStrToUint16(char* hexStr, uint16_t* result)
 {
-    int strSize = strlen(hexStr);
+    size_t strSize = strlen(hexStr);
 
     if (strSize > 4)
         return false;
 
     int val = 0;
-    int i;
+    size_t i;
     int nibble;
 
     for (i = 0; i < strSize; i++)
@@ -629,7 +648,7 @@ convertHexStrToUint16(char* hexStr, uint16_t* result)
         val += nibble;
     }
 
-    *result = val;
+    *result = (uint16_t)val;
 
     return true;
 }
@@ -651,7 +670,7 @@ StringUtils_convertIPv6AdddressStringToByteArray(const char* addressString, uint
 
     while (sepPos)
     {
-        memcpy(tokenBuf, savePtr, sepPos - savePtr);
+        memcpy(tokenBuf, savePtr, (size_t)(sepPos - savePtr));
         tokenBuf[sepPos - savePtr] = 0;
         savePtr = sepPos + 1;
 
@@ -722,8 +741,8 @@ StringUtils_convertIPv6AdddressStringToByteArray(const char* addressString, uint
 
     for (i = 0; i < 8; i++)
     {
-        ipV6Addr[(i * 2)] = addrBlocks[i] / 0x100;
-        ipV6Addr[(i * 2) + 1] = addrBlocks[i] & 0xff;
+        ipV6Addr[(i * 2)] = (uint8_t)(addrBlocks[i] / 0x100);
+        ipV6Addr[(i * 2) + 1] = (uint8_t)(addrBlocks[i] & 0xff);
     }
 
     return true;
