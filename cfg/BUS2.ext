@@ -132,8 +132,8 @@ ER(sample_a3 BUS2LD1/TR2TCTR3.AmpSv.instMag.i PDIF_out_Amp3_1 Poll BUS2/);
 ER(sample_a4 BUS2LD1/TR2TCTR4.AmpSv.instMag.i PDIF_out_Amp4_1 Poll BUS2/);
 ER(null FEED1LD1/XSWI4.Pos.stVal PDIF_in_swi_0 GOOSE FEED1LD1/LLN0.Feed1SwiPosCtl);
 ER(null FEED2LD1/XSWI4.Pos.stVal PDIF_in_swi_1 GOOSE FEED2LD1/LLN0.Feed2SwiPosCtl);
-ER(null TR1LD1/XSWI4.Pos.stVal PDIF_out_swi_0 GOOSE TR1LD1/LLN0.Trafo1SwiPosCtl);
-ER(null TR2LD1/XSWI4.Pos.stVal PDIF_out_swi_1 GOOSE TR2LD1/LLN0.Trafo2SwiPosCtl);
+ER(null TR1LD1/XSWI3.Pos.stVal PDIF_out_swi_0 GOOSE TR1LD1/LLN0.Trafo1SwiPosCtl);
+ER(null TR2LD1/XSWI3.Pos.stVal PDIF_out_swi_1 GOOSE TR2LD1/LLN0.Trafo2SwiPosCtl);
 }
 }
 LN(CILO1){
@@ -151,13 +151,13 @@ ER(null FEED2LD1/XSWI4.Pos.stVal in_nor_0 GOOSE FEED2LD1/LLN0.Feed2SwiPosCtl);
 LN(CILO3){
 CL(CILO);
 IN{
-ER(null TR1LD1/XSWI4.Pos.stVal in_nor_0 GOOSE TR1LD1/LLN0.Trafo1SwiPosCtl);
+ER(null TR1LD1/XSWI3.Pos.stVal in_nor_0 GOOSE TR1LD1/LLN0.Trafo1SwiPosCtl);
 }
 }
 LN(CILO4){
 CL(CILO);
 IN{
-ER(null TR2LD1/XSWI4.Pos.stVal in_nor_0 GOOSE TR2LD1/LLN0.Trafo2SwiPosCtl);
+ER(null TR2LD1/XSWI3.Pos.stVal in_nor_0 GOOSE TR2LD1/LLN0.Trafo2SwiPosCtl);
 }
 }
 LN(PTRC1){

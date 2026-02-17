@@ -28,7 +28,7 @@
 #include "MMXU.h"
 #include "LLN0.h"
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 4096
 
 typedef enum {
     JSON_TYPE_BOOLEAN,
