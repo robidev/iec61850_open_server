@@ -1,6 +1,6 @@
 services:
   ied1_xcbr:
-    image: ghcr.io/passific/libiec61850_server:latest
+    image: ghcr.io/robidev/libiec61850_server:latest
     hostname: IED1_XCBR
     command: "/srv/libiec61850_server eth0 102 /cfg/IED1_XCBR.cfg /cfg/IED1_XCBR.ext R"
     volumes:
@@ -8,13 +8,12 @@ services:
     networks:
       subnetwork1:
         ipv4_address: 10.0.0.2
-#    privileged: true
     cap_add:
       - NET_ADMIN
       - NET_RAW
 
   ied2_ptoc:
-    image: ghcr.io/passific/libiec61850_server:latest
+    image: ghcr.io/robidev/libiec61850_server:latest
     hostname: IED2_PTOC
     command: "/srv/libiec61850_server eth0 102 /cfg/IED2_PTOC.cfg /cfg/IED2_PTOC.ext R"
     volumes:
@@ -22,13 +21,12 @@ services:
     networks:
       subnetwork1:
         ipv4_address: 10.0.0.3
-#    privileged: true
     cap_add:
       - NET_ADMIN
       - NET_RAW
 
   ied3_smv:
-    image: ghcr.io/passific/libiec61850_server:latest
+    image: ghcr.io/robidev/libiec61850_server:latest
     hostname: IED3_SMV
     command: "/srv/libiec61850_server eth0 102 /cfg/IED3_SMV.cfg /cfg/IED3_SMV.ext R"
     volumes:
@@ -36,13 +34,12 @@ services:
     networks:
       subnetwork1:
         ipv4_address: 10.0.0.4
-#    privileged: true
     cap_add:
       - NET_ADMIN
       - NET_RAW
 
   ied4_smv:
-    image: ghcr.io/passific/libiec61850_server:latest
+    image: ghcr.io/robidev/libiec61850_server:latest
     hostname: IED4_SMV
     command: "/srv/libiec61850_server eth0 102 /cfg/IED4_SMV.cfg /cfg/IED4_SMV.ext R"
     volumes:
@@ -50,7 +47,6 @@ services:
     networks:
       subnetwork1:
         ipv4_address: 10.0.0.5
-#    privileged: true
     cap_add:
       - NET_ADMIN
       - NET_RAW

@@ -1,13 +1,12 @@
 services:
   simulator:
-    image: ghcr.io/passific/circuit_simulator:latest
+    image: ghcr.io/robidev/circuit_simulator:latest
     hostname: simulator
     volumes:
       - ./scd:/srv/scd
     networks:
       subnetwork1:
         ipv4_address: 10.0.0.254
-#    privileged: true
     cap_add:
       - NET_ADMIN
       - NET_RAW
@@ -15,12 +14,11 @@ services:
       - "5010:5010"
 
   client:
-    image: ghcr.io/passific/libiec61850_client:latest
+    image: ghcr.io/robidev/libiec61850_client:latest
     hostname: client
     networks:
       subnetwork1:
         ipv4_address: 10.0.0.11
-#    privileged: true
     cap_add:
       - NET_ADMIN
       - NET_RAW
