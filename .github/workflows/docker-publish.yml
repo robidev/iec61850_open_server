@@ -1,0 +1,62 @@
+name: Docker-build-n-push
+
+on:
+  push:
+    branches:
+      - "**"
+    tags-ignore:
+      - '**'
+  release:
+    types: [released, prereleased]
+  workflow_dispatch:
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: Dockerfile.libiec61850_server
+            image: libiec61850_server
+          - dockerfile: Dockerfile.circuit_simulator
+            image: circuit_simulator
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3.3.0
+        with:
+          registry: https://ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set Docker tag
+        run: |
+          TAG="$(echo '${{ github.ref_name }}' | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9._-]+/-/g' | sed -E 's/^-+|-+$//g')"
+          echo "DOCKER_TAG=$TAG" >> $GITHUB_ENV
+          OWNER="$(echo '${{ github.repository_owner }}' | tr '[:upper:]' '[:lower:]')"
+          echo "DOCKER_OWNER=$OWNER" >> $GITHUB_ENV
+
+      - name: Build ${{ (github.event.action == 'released' || github.event.action == 'prereleased') && 'and push ' || '' }}Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: ${{ github.event.action == 'released' || github.event.action == 'prereleased' }}
+          platforms: linux/amd64 #, linux/arm64
+          tags: ghcr.io/${{ env.DOCKER_OWNER }}/${{ matrix.image }}:${{ env.DOCKER_TAG }},ghcr.io/${{ env.DOCKER_OWNER }}/${{ matrix.image }}:latest-dev${{ github.event.action == 'released' && format(',ghcr.io/{0}/{1}:latest', env.DOCKER_OWNER, matrix.image) || '' }}
+          build-args: |
+            BUILD_DATE=${{ github.event.repository.updated_at }}
+            BUILD_REF=$(git rev-parse --short HEAD)
+            BUILD_VERSION=${{ github.ref_name }}
